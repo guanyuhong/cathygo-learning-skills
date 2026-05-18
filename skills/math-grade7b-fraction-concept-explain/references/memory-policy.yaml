@@ -1,0 +1,13 @@
+skill_name: math-grade7b-fraction-concept-explain
+allowed_memory:
+  - "Learner often forgets to check denominator restrictions."
+  - "Learner confuses terms with factors during cancellation."
+  - "Learner prefers visual analogies for algebraic fractions."
+disallowed_memory:
+  - "Sensitive personal information."
+  - "Permanent judgments about mathematical ability."
+  - "School, publisher, or workbook ownership details unless needed for immediate context and not stored."
+update_rules:
+  - "Rewrite notes when the learner demonstrates improvement."
+  - "Store misconceptions as temporary learning support, not identity labels."
+  - "Do not store copied textbook content from the learner's materials."

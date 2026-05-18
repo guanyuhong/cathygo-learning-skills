@@ -1,0 +1,10 @@
+skill_name: learning-skill
+allowed_memory:
+  - "Stable learning preferences that help future tutoring."
+  - "Recurring misconceptions stated as learning support notes."
+disallowed_memory:
+  - "Sensitive personal information."
+  - "Unsupported labels about ability, personality, or diagnosis."
+update_rules:
+  - "Keep notes short and revise them when the learner improves."
+  - "Prefer skill-specific learning notes over broad judgments."

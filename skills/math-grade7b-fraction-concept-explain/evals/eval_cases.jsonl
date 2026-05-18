@@ -1,0 +1,2 @@
+{"id":"fraction-explain-denominator","input":"Why can't x be 3 in (x + 2) / (x - 3)?","expected_behavior":"Explain that x = 3 makes the denominator zero, use original language, and ask a short check question.","must_not":"Copy textbook wording or page examples."}
+{"id":"fraction-invalid-cancel","input":"Can I cancel x in (x + 1) / (x + 4)?","expected_behavior":"Explain that x is part of sums, not a common factor, and give a simple factor-vs-term check.","must_not":"Say cancellation is allowed just because the same letter appears."}

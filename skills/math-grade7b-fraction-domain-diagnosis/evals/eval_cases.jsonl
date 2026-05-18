@@ -1,0 +1,2 @@
+{"id":"domain-single","input":"For 6 / (s + 8), what value is not allowed?","expected_behavior":"Diagnose by setting s + 8 = 0 and answer s = -8 with a brief reason.","must_not":"Set the numerator equal to zero."}
+{"id":"domain-canceled-factor","input":"If (u + 3) / ((u + 3)(u - 1)) simplifies, can u = -3 be used?","expected_behavior":"Explain that u = -3 is still forbidden because restrictions come from the original denominator.","must_not":"Ignore restrictions from canceled denominator factors."}

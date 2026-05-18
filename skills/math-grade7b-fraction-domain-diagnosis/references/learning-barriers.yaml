@@ -1,0 +1,20 @@
+skill_name: math-grade7b-fraction-domain-diagnosis
+barriers:
+  - id: checks-simplified-only
+    signal: "The learner cancels a factor and forgets the restriction from the original denominator."
+    likely_cause: "The learner thinks simplification erases all earlier restrictions."
+    diagnostic_question: "If (t - 2) / ((t - 2)(t + 1)) simplifies, is t = 2 allowed in the original expression?"
+    intervention: "Ask the learner to write restrictions before simplifying and keep them beside the simplified form."
+    follow_up_check: "Give a new expression with a canceled denominator factor and ask for all forbidden values."
+  - id: solves-wrong-equation
+    signal: "The learner sets the numerator equal to zero to find forbidden values."
+    likely_cause: "The learner knows zero matters but applies it to the wrong part."
+    diagnostic_question: "Which part creates a division-by-zero problem: numerator or denominator?"
+    intervention: "Use a two-column check: numerator zero can be allowed, denominator zero is not allowed."
+    follow_up_check: "Ask for the forbidden value of (z - 4) / (z + 4)."
+  - id: misses-factor-product
+    signal: "The learner finds only one forbidden value in a denominator with two factors."
+    likely_cause: "The learner does not know that a product is zero if any factor is zero."
+    diagnostic_question: "For (a - 3)(a + 6), which factor could become zero?"
+    intervention: "Have the learner test each factor separately."
+    follow_up_check: "Ask for restrictions in 2 / ((b + 1)(b - 5))."

@@ -1,0 +1,38 @@
+skill_name: math-grade7b-fraction-concept-explain
+comic_lessons:
+  - id: denominator-gate
+    title: Denominator Gate
+    characters:
+      - "Gatekeeper Den"
+      - "Variable Courier X"
+    scene: "A tiny delivery road passes through a gate labeled 'denominator'. The gate closes whenever its meter reads zero."
+    learning_goal: "Remember that denominator values cannot be zero."
+    beats:
+      - panel: 1
+        action: "Variable Courier X arrives with a package marked x = 3."
+        dialogue: "Courier X: I need to pass through x - 3."
+      - panel: 2
+        action: "The gate meter turns to 0 and the gate locks."
+        dialogue: "Gatekeeper Den: Zero in the denominator means no entry."
+      - panel: 3
+        action: "Courier X tries x = 4, and the meter reads 1."
+        dialogue: "Courier X: So I should check the gate before traveling."
+    clean_room_note: "Original characters and scene; no textbook artwork or layout."
+  - id: factor-badge
+    title: The Factor Badge
+    characters:
+      - "Factor Ranger"
+      - "Term Twins"
+    scene: "A math workshop where only complete multiplying groups receive a badge."
+    learning_goal: "Cancel common factors, not isolated terms inside addition."
+    beats:
+      - panel: 1
+        action: "Term Twins stand inside two different addition boxes."
+        dialogue: "Term Twins: We look alike, can we disappear?"
+      - panel: 2
+        action: "Factor Ranger points to the plus signs."
+        dialogue: "Factor Ranger: Matching letters are not enough. You must be whole factors."
+      - panel: 3
+        action: "A complete factor appears on top and bottom and receives a badge."
+        dialogue: "Factor Ranger: Now cancellation is allowed."
+    clean_room_note: "Original comic script for CathyGO tutoring."

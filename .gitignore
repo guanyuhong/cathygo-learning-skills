@@ -1,0 +1,5 @@
+.generated/
+dist/
+__pycache__/
+.DS_Store
+*.zip

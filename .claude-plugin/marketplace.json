@@ -1,0 +1,43 @@
+{
+  "name": "cathygo-learning-skills",
+  "owner": {
+    "name": "CathyGO"
+  },
+  "metadata": {
+    "description": "Official CathyGO Learning Skills marketplace for AI Tutor and CathyGO Agent education workflows.",
+    "version": "0.1.0",
+    "license": "MIT"
+  },
+  "plugins": [
+    {
+      "name": "common-tutor-skills",
+      "description": "Reusable tutor Skills for explanation, quiz generation, and answer checking.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/common-concept-explain",
+        "./skills/common-quiz-generate",
+        "./skills/common-answer-check"
+      ]
+    },
+    {
+      "name": "math-grade7b-fraction",
+      "description": "Demo Skills for Grade 7B algebraic fraction concept explanation and domain diagnosis.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/math-grade7b-fraction-concept-explain",
+        "./skills/math-grade7b-fraction-domain-diagnosis"
+      ]
+    },
+    {
+      "name": "cathygo-authoring-skills",
+      "description": "Official Skill authoring helper for creating CathyGO Learning Skills.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/cathygo-skill-creator"
+      ]
+    }
+  ]
+}

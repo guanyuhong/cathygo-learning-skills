@@ -1,0 +1,27 @@
+skill_name: math-grade7b-fraction-domain-diagnosis
+subject: mathematics
+grade_band: Grade 7B
+topic: algebraic fraction domain restrictions
+clean_room_origin: "Original CathyGO-authored diagnostic content using standard math facts."
+diagnostic_goal: "Find whether the learner can identify values that make denominators zero."
+core_rule: "A variable value is not allowed if it makes any denominator equal zero."
+diagnostic_steps:
+  - "Underline every denominator in the original expression."
+  - "Set each denominator equal to zero."
+  - "Solve for the variable value that would close the denominator."
+  - "State restrictions before and after simplification."
+  - "Use the original expression to keep restrictions that may disappear after cancellation."
+original_examples:
+  - expression: "8 / (n + 5)"
+    forbidden_values:
+      - "n = -5"
+    reason: "n + 5 becomes zero when n is -5."
+  - expression: "(q - 1) / ((q - 1)(q + 2))"
+    forbidden_values:
+      - "q = 1"
+      - "q = -2"
+    reason: "Both q - 1 and q + 2 are denominator factors in the original expression."
+out_of_scope:
+  - "Graphing rational functions."
+  - "Advanced interval notation."
+  - "Publisher homework answer lookup."
