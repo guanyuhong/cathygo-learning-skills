@@ -1,0 +1,17 @@
+knowledge_points:
+  - subsection: "4.1"
+    points:
+      - id: factorization-meaning
+        statement: "Factorization rewrites an expression as a product of factors without changing its value."
+  - subsection: "4.2"
+    points:
+      - id: common-factor
+        statement: "A common factor is a factor shared by every term in an expression."
+      - id: extract-common-factor
+        statement: "Extracting a common factor divides each term by that factor and places the factor outside parentheses."
+  - subsection: "4.3"
+    points:
+      - id: difference-of-squares
+        statement: "A difference of two squares can be factored as a product of a sum and a difference."
+      - id: perfect-square-pattern
+        statement: "A perfect square trinomial has first and last square terms and a matching middle term."

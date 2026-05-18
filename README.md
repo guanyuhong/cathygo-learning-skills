@@ -28,6 +28,13 @@ cathygo-learning-skills/
     common-concept-explain/
     common-quiz-generate/
     common-answer-check/
+    math-grade7b-cn-zj-s2-course-guide/
+    math-grade7b-cn-zj-s2-ch01-lines-and-parallels/
+    math-grade7b-cn-zj-s2-ch02-equation-systems/
+    math-grade7b-cn-zj-s2-ch03-polynomial-ops/
+    math-grade7b-cn-zj-s2-ch04-factorization/
+    math-grade7b-cn-zj-s2-ch05-fractions/
+    math-grade7b-cn-zj-s2-ch06-data-statistics/
     math-grade7b-fraction-concept-explain/
     math-grade7b-fraction-domain-diagnosis/
     cathygo-skill-creator/
@@ -53,6 +60,8 @@ Install a plugin:
 
 ```bash
 /plugin install common-tutor-skills@cathygo-learning-skills
+/plugin install math-grade7b-cn-zj-s2@cathygo-learning-skills
+/plugin install math-grade7b-cn-zj-s2-ch05-fractions@cathygo-learning-skills
 /plugin install math-grade7b-fraction@cathygo-learning-skills
 /plugin install cathygo-authoring-skills@cathygo-learning-skills
 ```
@@ -70,8 +79,62 @@ python tools/cathygo.py validate
 | Plugin | Purpose | Skills |
 | --- | --- | --- |
 | `common-tutor-skills` | Common tutor behaviors that can be reused across subjects. | `common-concept-explain`, `common-quiz-generate`, `common-answer-check` |
+| `math-grade7b-cn-zj-s2` | Full Grade 7B CN-ZJ semester 2 math course skeleton. | course guide plus 6 chapter Skills |
 | `math-grade7b-fraction` | First demo plugin for Grade 7B algebraic fraction learning. | `math-grade7b-fraction-concept-explain`, `math-grade7b-fraction-domain-diagnosis` |
 | `cathygo-authoring-skills` | Authoring support for creating new CathyGO Learning Skills. | `cathygo-skill-creator` |
+
+## Available Math Grade 7B plugins
+
+| Plugin | Scope |
+| --- | --- |
+| `math-grade7b-cn-zj-s2` | Full semester 2 course skeleton with common tutor Skills, course guide, and all chapter Skills. |
+| `math-grade7b-cn-zj-s2-ch01-lines` | Chapter 1: intersecting lines, angle relationships, parallel lines, and translation. |
+| `math-grade7b-cn-zj-s2-ch02-equation-systems` | Chapter 2: two-variable and three-variable linear equation systems. |
+| `math-grade7b-cn-zj-s2-ch03-polynomial-ops` | Chapter 3: multiplication, formulas, simplification, and division of polynomials. |
+| `math-grade7b-cn-zj-s2-ch04-factorization` | Chapter 4: meaning of factorization, common factor extraction, and formula-based factorization. |
+| `math-grade7b-cn-zj-s2-ch05-fractions` | Chapter 5: algebraic fractions and fraction equations. |
+| `math-grade7b-cn-zj-s2-ch06-data-statistics` | Chapter 6: data collection, charts, frequency, and histograms. |
+
+Install examples:
+
+```bash
+/plugin install math-grade7b-cn-zj-s2@cathygo-learning-skills
+/plugin install math-grade7b-cn-zj-s2-ch05-fractions@cathygo-learning-skills
+```
+
+## Course structure
+
+The Grade 7B CN-ZJ semester 2 course skeleton uses clean-room topic maps for six chapters:
+
+1. Intersecting Lines and Parallel Lines
+2. Systems of Linear Equations
+3. Polynomial Operations
+4. Factorization
+5. Algebraic Fractions
+6. Data and Statistical Charts
+
+The chapter maps are topic-aligned skeletons only. They do not contain textbook pages, copied explanations, copied exercise prompts, or publisher images.
+
+## Level ladder
+
+Course and chapter Skills use four learning levels:
+
+- `C`: foundation repair for missing prerequisites and basic recognition.
+- `B`: standard mastery for core procedures and routine checks.
+- `A`: stable improvement with mixed tasks and explanation of reasoning.
+- `A_plus`: stretch challenges that combine ideas or require strategic choices.
+
+## Comic learning design
+
+The course guide defines an original CathyGO comic world for each chapter, such as Geometry Detective Street, Equation Twin Cities, Polynomial Energy Factory, Factorization Workshop, Fraction City, and Data Detective Bureau.
+
+Every comic lesson follows the same learning beat:
+
+```text
+hook -> intuition -> rule -> guided_example -> common_trap -> student_check -> recap -> next_mission
+```
+
+Comic scripts must use original CathyGO characters, scenes, dialogue, and visual descriptions. They must not copy textbook illustrations, page layouts, or publisher settings.
 
 ## How to create a learning skill
 

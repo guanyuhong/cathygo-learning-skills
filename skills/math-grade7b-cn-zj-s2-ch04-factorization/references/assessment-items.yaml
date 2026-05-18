@@ -1,0 +1,15 @@
+assessment_items:
+  - id: ch04-item-001
+    source: cathygo_original
+    target: common factor extraction
+    difficulty: B
+    prompt: "Factor 6x + 9."
+    expected_answer: "3(2x + 3)."
+    feedback_guidance: "Ask which number divides both 6 and 9."
+  - id: ch04-item-002
+    source: cathygo_original
+    target: difference of squares
+    difficulty: B
+    prompt: "Factor y^2 - 16."
+    expected_answer: "(y - 4)(y + 4)."
+    feedback_guidance: "Ask the learner to identify the two square terms."

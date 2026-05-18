@@ -1,0 +1,29 @@
+knowledge_points:
+  - subsection: "3.1"
+    points:
+      - id: same-base-multiply
+        statement: "When multiplying powers with the same nonzero base, keep the base and add exponents."
+  - subsection: "3.2"
+    points:
+      - id: monomial-product
+        statement: "A monomial product combines coefficients and powers of matching variables."
+  - subsection: "3.3"
+    points:
+      - id: distributive-expansion
+        statement: "Polynomial multiplication distributes every term in one polynomial across every term in the other."
+  - subsection: "3.4"
+    points:
+      - id: square-sum-pattern
+        statement: "Multiplication formulas are reusable expansion patterns that still come from distribution."
+  - subsection: "3.5"
+    points:
+      - id: combine-like-terms
+        statement: "After expansion, only like terms can be combined."
+  - subsection: "3.6"
+    points:
+      - id: same-base-divide
+        statement: "When dividing powers with the same nonzero base, keep the base and subtract exponents."
+  - subsection: "3.7"
+    points:
+      - id: polynomial-divide-monomial
+        statement: "Dividing a polynomial by a monomial means dividing each term by that monomial."

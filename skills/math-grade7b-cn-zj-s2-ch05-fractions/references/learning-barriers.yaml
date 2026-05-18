@@ -1,0 +1,13 @@
+barriers:
+  - id: ignores-restrictions
+    signal: "Learner simplifies or solves without checking denominator values."
+    likely_cause: "The learner treats algebraic fractions like ordinary numbers and forgets division by zero."
+    diagnostic_question: "Which value would make the original denominator zero?"
+    intervention: "Start every problem with a restriction line."
+    follow_up_check: "Ask for the forbidden value of 4 / (x - 5)."
+  - id: cancels-terms
+    signal: "Learner cancels a letter that is part of an addition or subtraction term."
+    likely_cause: "The learner matches symbols visually instead of identifying common factors."
+    diagnostic_question: "Is the letter multiplying the whole numerator and denominator?"
+    intervention: "Have the learner box complete factors before canceling."
+    follow_up_check: "Ask whether x can be canceled in (x + 2) / (x + 7)."

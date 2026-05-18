@@ -1,0 +1,21 @@
+nodes:
+  - same-base-multiply
+  - monomial-product
+  - distributive-expansion
+  - square-sum-pattern
+  - combine-like-terms
+  - same-base-divide
+  - polynomial-divide-monomial
+edges:
+  - from: same-base-multiply
+    to: monomial-product
+    relation: "supports variable part multiplication"
+  - from: distributive-expansion
+    to: square-sum-pattern
+    relation: "formulas summarize distribution"
+  - from: distributive-expansion
+    to: combine-like-terms
+    relation: "expansion creates terms to simplify"
+  - from: same-base-divide
+    to: polynomial-divide-monomial
+    relation: "supports term-by-term division"

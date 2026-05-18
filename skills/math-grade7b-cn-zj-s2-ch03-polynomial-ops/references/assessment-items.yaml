@@ -1,0 +1,15 @@
+assessment_items:
+  - id: ch03-item-001
+    source: cathygo_original
+    target: same-base multiplication
+    difficulty: C
+    prompt: "Simplify a^3 * a^4."
+    expected_answer: "a^7."
+    feedback_guidance: "If the learner says a^12, ask them to count repeated factors."
+  - id: ch03-item-002
+    source: cathygo_original
+    target: polynomial multiplication
+    difficulty: B
+    prompt: "Expand and simplify (x + 3)(x + 2)."
+    expected_answer: "x^2 + 5x + 6."
+    feedback_guidance: "Check that the learner multiplies all four term pairs."

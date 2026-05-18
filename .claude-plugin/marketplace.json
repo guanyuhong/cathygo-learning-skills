@@ -38,6 +38,96 @@
       "skills": [
         "./skills/cathygo-skill-creator"
       ]
+    },
+    {
+      "name": "math-grade7b-cn-zj-s2",
+      "description": "Full Grade 7B CN-ZJ semester 2 math course skeleton with common tutor Skills and chapter Skills.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/common-concept-explain",
+        "./skills/common-quiz-generate",
+        "./skills/common-answer-check",
+        "./skills/math-grade7b-cn-zj-s2-course-guide",
+        "./skills/math-grade7b-cn-zj-s2-ch01-lines-and-parallels",
+        "./skills/math-grade7b-cn-zj-s2-ch02-equation-systems",
+        "./skills/math-grade7b-cn-zj-s2-ch03-polynomial-ops",
+        "./skills/math-grade7b-cn-zj-s2-ch04-factorization",
+        "./skills/math-grade7b-cn-zj-s2-ch05-fractions",
+        "./skills/math-grade7b-cn-zj-s2-ch06-data-statistics"
+      ]
+    },
+    {
+      "name": "math-grade7b-cn-zj-s2-ch01-lines",
+      "description": "Chapter 1 Skill plugin for intersecting lines, parallel lines, angle relationships, and translations.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/common-concept-explain",
+        "./skills/common-quiz-generate",
+        "./skills/common-answer-check",
+        "./skills/math-grade7b-cn-zj-s2-ch01-lines-and-parallels"
+      ]
+    },
+    {
+      "name": "math-grade7b-cn-zj-s2-ch02-equation-systems",
+      "description": "Chapter 2 Skill plugin for two-variable and three-variable linear equation systems.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/common-concept-explain",
+        "./skills/common-quiz-generate",
+        "./skills/common-answer-check",
+        "./skills/math-grade7b-cn-zj-s2-ch02-equation-systems"
+      ]
+    },
+    {
+      "name": "math-grade7b-cn-zj-s2-ch03-polynomial-ops",
+      "description": "Chapter 3 Skill plugin for monomial and polynomial multiplication, division, and formula use.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/common-concept-explain",
+        "./skills/common-quiz-generate",
+        "./skills/common-answer-check",
+        "./skills/math-grade7b-cn-zj-s2-ch03-polynomial-ops"
+      ]
+    },
+    {
+      "name": "math-grade7b-cn-zj-s2-ch04-factorization",
+      "description": "Chapter 4 Skill plugin for the meaning and methods of factorization.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/common-concept-explain",
+        "./skills/common-quiz-generate",
+        "./skills/common-answer-check",
+        "./skills/math-grade7b-cn-zj-s2-ch04-factorization"
+      ]
+    },
+    {
+      "name": "math-grade7b-cn-zj-s2-ch05-fractions",
+      "description": "Chapter 5 Skill plugin for algebraic fractions, operations, and fraction equations.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/common-concept-explain",
+        "./skills/common-quiz-generate",
+        "./skills/common-answer-check",
+        "./skills/math-grade7b-cn-zj-s2-ch05-fractions"
+      ]
+    },
+    {
+      "name": "math-grade7b-cn-zj-s2-ch06-data-statistics",
+      "description": "Chapter 6 Skill plugin for data collection, statistical charts, frequency, and histograms.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/common-concept-explain",
+        "./skills/common-quiz-generate",
+        "./skills/common-answer-check",
+        "./skills/math-grade7b-cn-zj-s2-ch06-data-statistics"
+      ]
     }
   ]
 }

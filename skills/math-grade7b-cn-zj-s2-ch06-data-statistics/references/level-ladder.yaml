@@ -1,0 +1,21 @@
+levels:
+  C:
+    goal: "Read simple tables and identify chart types."
+    task_style: "Single chart reading and basic counts."
+    feedback_style: "Ask what the chart is comparing before interpreting."
+    typical_assessment_types: ["read a value", "choose a chart type"]
+  B:
+    goal: "Organize data and interpret standard charts."
+    task_style: "Build frequency tables and answer direct chart questions."
+    feedback_style: "Require evidence from the data for each conclusion."
+    typical_assessment_types: ["frequency table", "chart interpretation"]
+  A:
+    goal: "Choose suitable charts and make supported comparisons."
+    task_style: "Chart selection, explanation, and multi-step interpretation."
+    feedback_style: "Ask why the chart type matches the data goal."
+    typical_assessment_types: ["chart choice", "compare trends"]
+  A_plus:
+    goal: "Critique data displays and design clean data investigations."
+    task_style: "Survey design, chart critique, and bias checks."
+    feedback_style: "Prompt for assumptions, sample limits, and clearer representation."
+    typical_assessment_types: ["critique a chart", "design a data plan"]

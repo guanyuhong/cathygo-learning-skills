@@ -1,0 +1,15 @@
+assessment_items:
+  - id: ch05-item-001
+    source: cathygo_original
+    target: denominator restriction
+    difficulty: C
+    prompt: "For 8 / (x - 5), which value of x is not allowed?"
+    expected_answer: "x = 5 is not allowed."
+    feedback_guidance: "Ask the learner to solve x - 5 = 0."
+  - id: ch05-item-002
+    source: cathygo_original
+    target: simplification with restriction
+    difficulty: B
+    prompt: "Simplify 6a / 9a and state the restriction on a."
+    expected_answer: "2 / 3, with a not equal to 0."
+    feedback_guidance: "Credit the simplification and the restriction separately."

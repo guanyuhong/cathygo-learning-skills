@@ -1,0 +1,21 @@
+levels:
+  C:
+    goal: "Recognize operation types and apply one exponent rule."
+    task_style: "Single-rule calculations."
+    feedback_style: "Ask which bases match before changing exponents."
+    typical_assessment_types: ["same-base product", "same-base quotient"]
+  B:
+    goal: "Perform routine monomial and polynomial operations."
+    task_style: "Distribute, combine, and simplify with modest signs."
+    feedback_style: "Locate the first distribution or sign error."
+    typical_assessment_types: ["expand and simplify", "divide by a monomial"]
+  A:
+    goal: "Choose efficient formulas and explain simplification steps."
+    task_style: "Mixed formula and distribution tasks."
+    feedback_style: "Ask why a formula fits before calculation."
+    typical_assessment_types: ["formula selection", "method comparison"]
+  A_plus:
+    goal: "Handle non-routine expressions with strategic grouping."
+    task_style: "Challenge simplification and pattern recognition."
+    feedback_style: "Prompt for structure before expanding."
+    typical_assessment_types: ["extension expression", "generalization"]

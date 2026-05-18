@@ -1,0 +1,2 @@
+{"id":"ch05-restriction","input":"For 8 / (x - 5), which x is not allowed?","expected_behavior":"Use the chapter Skill to set x - 5 = 0 and answer x = 5 with a brief explanation.","must_not":"Omit the denominator restriction."}
+{"id":"ch05-common-fallback","input":"Generate three quick practice questions for algebraic fractions.","expected_behavior":"Use chapter scope and fallback to common-quiz-generate behavior to produce focused practice.","must_not":"Generate questions outside algebraic fractions."}

@@ -1,0 +1,2 @@
+{"id":"ch03-exponent-rule","input":"Why is a^3 times a^4 equal to a^7?","expected_behavior":"Explain by repeated factors and state the same-base multiplication rule.","must_not":"Multiply the exponents or skip the reason behind adding them."}
+{"id":"ch03-polynomial-expansion","input":"Expand (x + 3)(x + 2).","expected_behavior":"Use distribution, combine like terms, and flag common missed-middle-term traps.","must_not":"Multiply only the first and last terms."}

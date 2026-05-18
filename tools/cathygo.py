@@ -16,6 +16,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 MARKETPLACE_PATH = ROOT / ".claude-plugin" / "marketplace.json"
 SKILLS_ROOT = ROOT / "skills"
+COURSE_CHAPTER_SKILL_PREFIX = "math-grade7b-cn-zj-s2-ch"
 
 DISALLOWED_EXTENSIONS = {
     ".pdf",
@@ -179,6 +180,9 @@ def validate_skill_dir(skill_dir: Path, errors: list[str]) -> None:
 
     validate_jsonl(eval_cases, errors)
 
+    if skill_dir.name.startswith(COURSE_CHAPTER_SKILL_PREFIX):
+        validate_chapter_skill(skill_dir, errors)
+
 
 def validate_jsonl(path: Path, errors: list[str]) -> None:
     lines = path.read_text(encoding="utf-8").splitlines()
@@ -196,6 +200,27 @@ def validate_jsonl(path: Path, errors: list[str]) -> None:
             continue
         if not isinstance(value, dict):
             errors.append(f"{path.relative_to(ROOT)} line {line_number} must be a JSON object.")
+
+
+def validate_chapter_skill(skill_dir: Path, errors: list[str]) -> None:
+    coverage_matrix = skill_dir / "references" / "coverage-matrix.yaml"
+    if not coverage_matrix.exists():
+        errors.append(f"{skill_dir.relative_to(ROOT)} is missing references/coverage-matrix.yaml.")
+        return
+
+    try:
+        data = yaml.safe_load(coverage_matrix.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as exc:
+        errors.append(f"{coverage_matrix.relative_to(ROOT)} is not valid YAML: {exc}")
+        return
+
+    if not isinstance(data, dict):
+        errors.append(f"{coverage_matrix.relative_to(ROOT)} must contain a YAML mapping.")
+        return
+
+    coverage = data.get("coverage")
+    if not isinstance(coverage, list) or not coverage:
+        errors.append(f"{coverage_matrix.relative_to(ROOT)} must contain a non-empty coverage list.")
 
 
 def validate_disallowed_assets(errors: list[str]) -> None:

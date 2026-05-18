@@ -1,0 +1,25 @@
+coverage:
+  - subsection: "1.1"
+    status: partial
+    covered_by: ["vertical-angles", "ch01-item-001"]
+    todo: "Add more adjacent-angle and perpendicular-line tasks."
+  - subsection: "1.2"
+    status: skeleton
+    covered_by: ["angle-pair-position"]
+    todo: "Add recognition items for each angle-pair type."
+  - subsection: "1.3"
+    status: skeleton
+    covered_by: ["parallel-meaning"]
+    todo: "Add representation and notation tasks."
+  - subsection: "1.4"
+    status: partial
+    covered_by: ["parallel-criterion", "ch01-item-002"]
+    todo: "Add criteria comparison tasks."
+  - subsection: "1.5"
+    status: skeleton
+    covered_by: ["parallel-property"]
+    todo: "Add property-based angle calculation tasks."
+  - subsection: "1.6"
+    status: skeleton
+    covered_by: ["translation"]
+    todo: "Add coordinate and vector-style translation tasks."

@@ -1,0 +1,13 @@
+task_templates:
+  - id: angle-pair-recognition
+    level: C
+    prompt_shape: "Describe two lines cut by one transversal and ask the learner to name a marked angle pair."
+  - id: parallel-rule-application
+    level: B
+    prompt_shape: "Give one angle relation and ask whether two lines are parallel, with a reason."
+  - id: translation-check
+    level: B
+    prompt_shape: "Give a point movement vector and ask for the image of a second point under the same translation."
+  - id: mixed-geometry-case
+    level: A
+    prompt_shape: "Combine one parallel-line property and one linear-pair calculation."

@@ -1,0 +1,11 @@
+allowed_memory:
+  - "Learner confuses expansion direction with factorization direction."
+  - "Learner often skips the common-factor scan."
+  - "Learner benefits from verifying factorization by expansion."
+disallowed_memory:
+  - "Sensitive personal information."
+  - "Exact private learner context that is not needed for future learning support."
+  - "Permanent claims about symbolic reasoning."
+update_rules:
+  - "Keep notes brief and topic-specific."
+  - "Revise after the learner independently scans for common factors."

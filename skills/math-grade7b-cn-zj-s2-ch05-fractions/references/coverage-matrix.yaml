@@ -1,0 +1,21 @@
+coverage:
+  - subsection: "5.1"
+    status: partial
+    covered_by: ["algebraic-fraction-meaning", "denominator-not-zero", "ch05-item-001"]
+    todo: "Add non-example recognition tasks."
+  - subsection: "5.2"
+    status: skeleton
+    covered_by: ["equivalent-fraction-property"]
+    todo: "Add equivalent transformation tasks with restrictions."
+  - subsection: "5.3"
+    status: partial
+    covered_by: ["fraction-multiply-divide", "ch05-item-002"]
+    todo: "Add multiplication and division variants."
+  - subsection: "5.4"
+    status: skeleton
+    covered_by: ["common-denominator"]
+    todo: "Add common denominator addition and subtraction items."
+  - subsection: "5.5"
+    status: skeleton
+    covered_by: ["fraction-equation-check"]
+    todo: "Add solve-and-check fraction equation tasks."

@@ -1,0 +1,11 @@
+allowed_memory:
+  - "Learner confuses adding and multiplying exponents."
+  - "Learner misses middle terms during binomial multiplication."
+  - "Learner needs sign checks after distribution."
+disallowed_memory:
+  - "Sensitive personal information."
+  - "Exact private learner context that is not needed for future learning support."
+  - "Permanent labels about algebraic fluency."
+update_rules:
+  - "Store notes as temporary learning supports."
+  - "Revise once the learner explains the rule correctly in their own words."

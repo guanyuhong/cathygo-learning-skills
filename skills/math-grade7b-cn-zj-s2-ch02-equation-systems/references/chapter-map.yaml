@@ -1,0 +1,21 @@
+chapter:
+  id: ch02-equation-systems
+  title: "二元一次方程组"
+  skill: math-grade7b-cn-zj-s2-ch02-equation-systems
+  scope_note: "Chapter map for routing and coverage tracking."
+subsections:
+  - id: "2.1"
+    title: "二元一次方程"
+    focus: "Equations with two variables and first-degree terms."
+  - id: "2.2"
+    title: "二元一次方程组和它的解"
+    focus: "Meaning of a system and checking ordered-pair solutions."
+  - id: "2.3"
+    title: "解二元一次方程组"
+    focus: "Substitution, elimination, and solution checking."
+  - id: "2.4"
+    title: "二元一次方程组的应用"
+    focus: "Original modeling tasks with variable definitions."
+  - id: "2.5"
+    title: "三元一次方程组及其解法"
+    focus: "Introductory three-variable systems and reduction strategies."

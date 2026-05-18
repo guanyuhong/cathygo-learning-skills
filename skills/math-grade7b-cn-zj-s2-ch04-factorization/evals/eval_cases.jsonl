@@ -1,0 +1,2 @@
+{"id":"ch04-common-factor","input":"Factor 6x + 9.","expected_behavior":"Use the chapter Skill to extract 3 and verify by expansion.","must_not":"Skip the common-factor scan."}
+{"id":"ch04-direction-trap","input":"I expanded when asked to factor. How do I know the right direction?","expected_behavior":"Explain that factorization targets product form and contrast it with expansion.","must_not":"Leave the learner without a way to identify target form."}

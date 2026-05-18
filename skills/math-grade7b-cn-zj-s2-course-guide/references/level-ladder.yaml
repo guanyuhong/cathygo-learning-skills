@@ -1,0 +1,49 @@
+levels:
+  C:
+    label: "基础补缺"
+    goal: "Repair prerequisite gaps and make the learner comfortable recognizing the core idea."
+    task_style:
+      - "one-step recognition"
+      - "guided fill-in"
+      - "small-number or visually anchored cases"
+    feedback_style: "Use short corrective feedback, concrete hints, and immediate confirmation after each step."
+    typical_assessment_types:
+      - "definition check"
+      - "single-step procedure"
+      - "identify the next move"
+  B:
+    label: "达标掌握"
+    goal: "Reach standard mastery of routine chapter procedures and explain the main rule in simple words."
+    task_style:
+      - "standard examples with light variation"
+      - "two-step procedures"
+      - "routine error correction"
+    feedback_style: "Point to the exact step that succeeds or fails, then ask the learner to revise."
+    typical_assessment_types:
+      - "routine calculation"
+      - "rule application"
+      - "short explanation"
+  A:
+    label: "稳定提升"
+    goal: "Handle mixed tasks steadily, choose methods deliberately, and explain why a method fits."
+    task_style:
+      - "mixed-topic practice"
+      - "method selection"
+      - "multi-step reasoning"
+    feedback_style: "Ask for reasoning, compare methods, and encourage concise mathematical language."
+    typical_assessment_types:
+      - "mixed problem set"
+      - "method comparison"
+      - "justify a conclusion"
+  A_plus:
+    label: "拔尖挑战"
+    goal: "Tackle non-routine or connected problems while keeping reasoning clear and clean."
+    task_style:
+      - "challenge prompts"
+      - "strategy-first tasks"
+      - "cross-chapter connections"
+    feedback_style: "Use Socratic prompts, ask for proof-like explanation, and avoid giving away the key idea too early."
+    typical_assessment_types:
+      - "extension problem"
+      - "open strategy question"
+      - "generalization or proof sketch"

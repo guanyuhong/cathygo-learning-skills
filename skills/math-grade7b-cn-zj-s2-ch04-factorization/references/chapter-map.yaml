@@ -1,0 +1,15 @@
+chapter:
+  id: ch04-factorization
+  title: "因式分解"
+  skill: math-grade7b-cn-zj-s2-ch04-factorization
+  scope_note: "Chapter map for routing and coverage tracking."
+subsections:
+  - id: "4.1"
+    title: "因式分解的意义"
+    focus: "Understand factorization as rewriting a sum or difference into a product."
+  - id: "4.2"
+    title: "提取公因式法"
+    focus: "Find and extract common factors."
+  - id: "4.3"
+    title: "用乘法公式分解因式"
+    focus: "Use formula patterns to factor expressions."

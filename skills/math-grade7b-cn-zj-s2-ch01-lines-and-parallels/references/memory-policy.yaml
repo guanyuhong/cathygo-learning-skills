@@ -1,0 +1,11 @@
+allowed_memory:
+  - "Learner confuses angle-pair names and benefits from tracing the transversal first."
+  - "Learner needs reminders to distinguish criteria from properties."
+  - "Learner prefers verbal diagram descriptions before calculations."
+disallowed_memory:
+  - "Sensitive personal information."
+  - "Exact private learner context that is not needed for future learning support."
+  - "Permanent claims about spatial ability."
+update_rules:
+  - "Store only short skill-support notes."
+  - "Revise notes after the learner correctly explains the rule direction twice."

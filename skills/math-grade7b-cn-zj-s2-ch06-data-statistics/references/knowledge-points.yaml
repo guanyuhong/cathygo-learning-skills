@@ -1,0 +1,21 @@
+knowledge_points:
+  - subsection: "6.1"
+    points:
+      - id: data-question
+        statement: "Data collection should start with a clear question and a defined group."
+  - subsection: "6.2"
+    points:
+      - id: bar-vs-line-chart
+        statement: "Bar charts compare categories; line charts show change across ordered points such as time."
+  - subsection: "6.3"
+    points:
+      - id: pie-chart-part-whole
+        statement: "A pie chart shows how a whole is divided into parts."
+  - subsection: "6.4"
+    points:
+      - id: frequency-relative-frequency
+        statement: "Frequency is a count; relative frequency compares that count with the total."
+  - subsection: "6.5"
+    points:
+      - id: histogram-groups
+        statement: "A histogram groups numerical data into intervals and shows how many values fall in each interval."

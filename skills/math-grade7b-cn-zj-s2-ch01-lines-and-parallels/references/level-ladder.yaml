@@ -1,0 +1,21 @@
+levels:
+  C:
+    goal: "Recognize basic angle pairs and parallel-line language."
+    task_style: "Label angles and choose from two rules."
+    feedback_style: "Point to the diagram position before naming the rule."
+    typical_assessment_types: ["name the angle pair", "single angle calculation"]
+  B:
+    goal: "Apply standard parallel-line criteria and properties."
+    task_style: "Routine rule selection with one or two steps."
+    feedback_style: "Ask which condition is known and which conclusion follows."
+    typical_assessment_types: ["rule application", "short justification"]
+  A:
+    goal: "Connect angle relationships across a mixed diagram."
+    task_style: "Multi-step angle chasing with explanation."
+    feedback_style: "Require a reason for each angle relation."
+    typical_assessment_types: ["mixed diagram", "justify each step"]
+  A_plus:
+    goal: "Solve non-routine geometry clues with clean reasoning."
+    task_style: "Open clue chain or minimal-information tasks."
+    feedback_style: "Use prompts that preserve the strategy challenge."
+    typical_assessment_types: ["challenge proof sketch", "design a counterexample"]

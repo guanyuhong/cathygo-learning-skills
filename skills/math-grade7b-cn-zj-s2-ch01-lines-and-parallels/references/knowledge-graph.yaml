@@ -1,0 +1,17 @@
+nodes:
+  - vertical-angles
+  - linear-pair
+  - angle-pair-position
+  - parallel-criterion
+  - parallel-property
+  - translation
+edges:
+  - from: angle-pair-position
+    to: parallel-criterion
+    relation: "recognition supports proof"
+  - from: parallel-criterion
+    to: parallel-property
+    relation: "criterion proves, property concludes"
+  - from: translation
+    to: parallel-relationship
+    relation: "movement preserves direction and shape"

@@ -1,0 +1,23 @@
+knowledge_points:
+  - subsection: "5.1"
+    points:
+      - id: algebraic-fraction-meaning
+        statement: "An algebraic fraction has an algebraic expression in the numerator or denominator."
+      - id: denominator-not-zero
+        statement: "Any value that makes a denominator zero is not allowed."
+  - subsection: "5.2"
+    points:
+      - id: equivalent-fraction-property
+        statement: "Multiplying or dividing numerator and denominator by the same nonzero factor can create an equivalent fraction."
+  - subsection: "5.3"
+    points:
+      - id: fraction-multiply-divide
+        statement: "Multiplication and division of algebraic fractions work through factoring, reciprocal use, and simplification."
+  - subsection: "5.4"
+    points:
+      - id: common-denominator
+        statement: "Adding or subtracting algebraic fractions requires a shared denominator before combining numerators."
+  - subsection: "5.5"
+    points:
+      - id: fraction-equation-check
+        statement: "A solution to a fraction equation must be checked against the original denominators."

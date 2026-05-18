@@ -1,0 +1,24 @@
+chapter:
+  id: ch01-lines-and-parallels
+  title: "相交线与平行线"
+  skill: math-grade7b-cn-zj-s2-ch01-lines-and-parallels
+  scope_note: "Chapter map for routing and coverage tracking."
+subsections:
+  - id: "1.1"
+    title: "直线的相交"
+    focus: "Intersecting lines and basic angle relationships."
+  - id: "1.2"
+    title: "同位角、内错角、同旁内角"
+    focus: "Angle-pair recognition with a transversal."
+  - id: "1.3"
+    title: "平行线"
+    focus: "Meaning and representation of parallel lines."
+  - id: "1.4"
+    title: "平行线的判定"
+    focus: "Conditions that justify two lines are parallel."
+  - id: "1.5"
+    title: "平行线的性质"
+    focus: "Angle conclusions when two lines are parallel."
+  - id: "1.6"
+    title: "图形的平移"
+    focus: "Translation direction, distance, and corresponding points."

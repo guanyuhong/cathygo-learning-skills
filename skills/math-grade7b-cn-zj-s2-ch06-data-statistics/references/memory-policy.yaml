@@ -1,0 +1,11 @@
+allowed_memory:
+  - "Learner confuses chart purposes and needs a chart-choice cue."
+  - "Learner forgets to divide by total for relative frequency."
+  - "Learner benefits from evidence-based conclusion prompts."
+disallowed_memory:
+  - "Sensitive personal information."
+  - "Exact private learner context that is not needed for future learning support."
+  - "Permanent claims about data literacy."
+update_rules:
+  - "Use only anonymized learning patterns in memory notes."
+  - "Revise notes when learner explains chart choice independently."

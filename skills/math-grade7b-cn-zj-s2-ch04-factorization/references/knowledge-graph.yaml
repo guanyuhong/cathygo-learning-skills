@@ -1,0 +1,19 @@
+nodes:
+  - factorization-meaning
+  - common-factor
+  - extract-common-factor
+  - difference-of-squares
+  - perfect-square-pattern
+edges:
+  - from: factorization-meaning
+    to: common-factor
+    relation: "meaning guides method choice"
+  - from: common-factor
+    to: extract-common-factor
+    relation: "shared factor can be extracted"
+  - from: factorization-meaning
+    to: difference-of-squares
+    relation: "formula patterns produce products"
+  - from: factorization-meaning
+    to: perfect-square-pattern
+    relation: "formula patterns produce products"

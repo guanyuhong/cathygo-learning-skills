@@ -1,0 +1,13 @@
+task_templates:
+  - id: exponent-rule-check
+    level: C
+    prompt_shape: "Ask for the result of multiplying or dividing same-base powers."
+  - id: monomial-product
+    level: B
+    prompt_shape: "Multiply two monomials with coefficients and variables."
+  - id: polynomial-expansion
+    level: B
+    prompt_shape: "Expand a binomial product and combine like terms."
+  - id: formula-choice
+    level: A
+    prompt_shape: "Ask whether a multiplication formula applies before expanding."

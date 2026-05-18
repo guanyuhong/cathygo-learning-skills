@@ -1,0 +1,20 @@
+nodes:
+  - algebraic-fraction-meaning
+  - denominator-not-zero
+  - equivalent-fraction-property
+  - fraction-multiply-divide
+  - common-denominator
+  - fraction-equation-check
+edges:
+  - from: denominator-not-zero
+    to: equivalent-fraction-property
+    relation: "allowed values control transformations"
+  - from: equivalent-fraction-property
+    to: fraction-multiply-divide
+    relation: "simplification uses equivalent forms"
+  - from: equivalent-fraction-property
+    to: common-denominator
+    relation: "rewriting supports addition and subtraction"
+  - from: denominator-not-zero
+    to: fraction-equation-check
+    relation: "solutions must respect original denominators"
