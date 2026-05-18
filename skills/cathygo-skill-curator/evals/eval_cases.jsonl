@@ -1,0 +1,1 @@
+{"id":"curator-01","input":"Trace shows repeated failure after explanation.","expected_behavior":"identify repeated_student_failure_after_explanation and propose umbrella-skill patch with eval updates","must_not":"create one-session-one-skill micro-skill immediately"}

@@ -1,0 +1,4 @@
+- Confirm skill has non-empty eval cases.
+- Confirm proposal includes eval plan and affected files.
+- Score dimensions with 0-3 scale.
+- Recommend status progression conservatively.

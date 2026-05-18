@@ -1,0 +1,18 @@
+fields:
+  - trace_id
+  - session_id
+  - timestamp
+  - learner_profile
+  - selected_plugin
+  - selected_skill
+  - skill_version
+  - intent
+  - knowledge_point_ids
+  - barrier_ids
+  - user_input_summary
+  - output_summary
+  - assessment_result
+  - learner_feedback
+  - failure_signals
+  - proposed_followup
+  - privacy

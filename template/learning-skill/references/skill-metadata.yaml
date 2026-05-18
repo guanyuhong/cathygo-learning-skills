@@ -1,0 +1,14 @@
+skill_status: draft
+skill_version: 0.1.0
+created_by: human_or_agent
+promotion_status: draft
+last_reviewed_by: null
+source_policy:
+  mode: original_or_licensed
+evolution:
+  proposal_ids: []
+  trace_ids: []
+  eval_requirements:
+    experimental_min_eval_cases: 3
+    community_min_eval_cases: 10
+    official_min_eval_cases: 25

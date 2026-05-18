@@ -1,0 +1,1 @@
+{"id":"maintainer-01","input":"Accepted proposal updates barriers and assessment items.","expected_behavior":"apply file changes, update evals, and keep status below official until review gates pass","must_not":"directly mark official without approvals"}

@@ -177,3 +177,44 @@ Install it with:
 ```bash
 /plugin install math-grade7b-fraction@cathygo-learning-skills
 ```
+
+## Self-Growing SkillRepo Architecture
+
+Official skills in this repository are **seed skills**. They provide stable, reviewed starting points for CathyGO tutoring workflows.
+
+The repository supports a controlled skill evolution loop:
+
+`Use -> Trace -> Detect Failure -> Propose -> Patch via Codex -> Validate -> Eval -> Review -> Promote -> Release`
+
+Key governance rules:
+
+- Skills evolve through traces, proposals, evals, review, and staged promotion.
+- `cathygo-agent` can produce learning traces and improvement proposals, but it does not directly mutate official Skills.
+- Accepted proposals are turned into pull requests by Codex Cloud workflows and reviewed before merge.
+- Class-level umbrella Skills are preferred over one-session-one-skill micro-fragmentation.
+
+## Official skills are seed skills
+
+Official Skills are the curated baseline. Runtime learning should first produce evidence and proposals, then repository updates are applied through reviewable PRs.
+
+## Skill evolution lifecycle
+
+1. Use existing Skills in tutoring.
+2. Capture trace data.
+3. Detect failures or gaps.
+4. Write a structured proposal.
+5. Apply patch through Codex-based PR changes.
+6. Run validate checks.
+7. Run eval checks and case updates.
+8. Human reviewers approve or request revision.
+9. Promote status (`draft` -> `experimental` -> `community` -> `official`).
+10. Release through marketplace metadata.
+
+## Additional CLI examples
+
+```bash
+python tools/cathygo.py eval
+python tools/cathygo.py inspect-skill math-grade7b-cn-zj-s2-ch05-fractions
+python tools/cathygo.py proposals list
+python tools/cathygo.py proposals validate evolution/proposals/example.yaml
+```
