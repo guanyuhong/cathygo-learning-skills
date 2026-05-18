@@ -1,0 +1,3 @@
+- Ensure proposal declares source_policy.
+- Ensure content remains clean-room authored or properly licensed.
+- Block promotion if source-policy review is incomplete.

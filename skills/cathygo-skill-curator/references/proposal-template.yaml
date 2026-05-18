@@ -1,0 +1,16 @@
+proposal_id: proposal-example-001
+created_by: cathygo-agent
+created_at: 2026-05-18T00:00:00Z
+source: tutoring_trace
+source_trace_ids: []
+target_plugin: math-grade7b-fraction
+target_skill: math-grade7b-fraction-domain-diagnosis
+operation: add_learning_barrier
+problem_summary: Brief summary
+evidence: []
+proposed_changes: []
+affected_files: []
+eval_plan: add or update evals/eval_cases.jsonl
+source_policy:
+  mode: original_or_licensed
+status: draft

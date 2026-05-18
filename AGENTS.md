@@ -20,12 +20,23 @@ This repository is the CathyGO Learning Skills marketplace. Keep it focused on l
 - Skill support files should live under the same Skill folder, commonly in `references/`, `assets/`, `scripts/`, and `evals/`.
 - Every public Skill must include `evals/eval_cases.jsonl`.
 
+## Evolution governance rules
+
+- Do not create one-session-one-skill micro-skills.
+- Default to class-level umbrella skills and broaden existing Skills before introducing new ones.
+- Put new operational and knowledge content in `references/` first; keep `SKILL.md` concise.
+- Any Skill update must include corresponding `evals/` updates.
+- Official Skills are never directly mutated by agent runtime.
+- Agent-generated changes must be represented as proposals first.
+
 ## Validation
 
 After modifying Skill content, marketplace metadata, templates, specs, or validation code, run:
 
 ```bash
+python tools/cathygo.py list
 python tools/cathygo.py validate
+python tools/cathygo.py eval
 ```
 
 Do not introduce complex application code. This repository initializes and maintains a Learning Skills marketplace; it is not the CathyGO Agent implementation.

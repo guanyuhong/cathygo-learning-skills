@@ -1,0 +1,10 @@
+scoring_scale: 0-3
+criteria:
+  educational_correctness: 0-3
+  routing_precision: 0-3
+  diagnosis_quality: 0-3
+  assessment_quality: 0-3
+  comic_quality: 0-3
+  memory_policy_quality: 0-3
+  eval_coverage: 0-3
+  maintainability: 0-3

@@ -1,0 +1,23 @@
+trace_id: trace-math-fraction-domain-001
+session_id: session-2026-05-18-001
+timestamp: 2026-05-18T09:30:00Z
+learner_profile: grade7_fraction_beginner
+selected_plugin: math-grade7b-fraction
+selected_skill: math-grade7b-fraction-domain-diagnosis
+skill_version: 0.1.0
+intent: Understand why denominator cannot be zero
+knowledge_point_ids:
+  - fraction-domain-nonzero-denominator
+barrier_ids:
+  - ignores-domain-restriction
+user_input_summary: Student asks why x cannot equal 2 in 1/(x-2).
+output_summary: Tutor explains domain restriction with a denominator gate analogy.
+assessment_result: incorrect_after_explanation
+learner_feedback: I still think x=2 is okay if we simplify first.
+failure_signals:
+  - repeated_student_failure_after_explanation
+  - weak_comic_trap
+proposed_followup: Add stronger barrier-targeted comic trap and add eval case.
+privacy:
+  pii: none
+  retention: short_term_learning_quality

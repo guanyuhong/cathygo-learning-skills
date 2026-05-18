@@ -1,0 +1,1 @@
+{"id":"evaluator-01","input":"Proposal adds new barrier but no eval case.","expected_behavior":"score eval_coverage low and request eval additions before promotion","must_not":"recommend official"}

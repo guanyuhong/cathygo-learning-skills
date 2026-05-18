@@ -1,0 +1,16 @@
+required_fields:
+  - proposal_id
+  - created_by
+  - created_at
+  - source
+  - source_trace_ids
+  - target_plugin
+  - target_skill
+  - operation
+  - problem_summary
+  - evidence
+  - proposed_changes
+  - affected_files
+  - eval_plan
+  - source_policy
+  - status
