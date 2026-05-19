@@ -9,7 +9,7 @@ A CathyGO Learning Skill is a small, installable education capability. Each Skil
 CathyGO Learning Skills are designed to help an AI Tutor:
 
 - explain concepts with age-appropriate language;
-- generate clean-room practice questions;
+- generate original and rights-safe practice questions;
 - check learner answers with actionable feedback;
 - diagnose learning barriers;
 - keep only appropriate learning memory;
@@ -104,7 +104,7 @@ Install examples:
 
 ## Course structure
 
-The Grade 7B CN-ZJ semester 2 course skeleton uses clean-room topic maps for six chapters:
+The Grade 7B CN-ZJ semester 2 course skeleton uses rights-safe topic maps for six chapters:
 
 1. Intersecting Lines and Parallel Lines
 2. Systems of Linear Equations
@@ -148,9 +148,9 @@ Comic scripts must use original CathyGO characters, scenes, dialogue, and visual
 6. Add the Skill path to `.claude-plugin/marketplace.json` when it should be installable.
 7. Run `python tools/cathygo.py validate`.
 
-## Clean-room authoring policy
+## Source & Rights Policy
 
-All public content in this repository must be clean-room authored.
+All public content in this repository must satisfy Source & Rights Policy.
 
 Do not commit:
 
@@ -217,4 +217,27 @@ python tools/cathygo.py eval
 python tools/cathygo.py inspect-skill math-grade7b-cn-zj-s2-ch05-fractions
 python tools/cathygo.py proposals list
 python tools/cathygo.py proposals validate evolution/proposals/example.yaml
+```
+
+
+## Iterative Skill Evolution
+
+Official skills are seed skills. Runtime traces produce Skill Improvement Proposals, and accepted proposals are applied through Codex Cloud pull requests.
+
+Evolution loop:
+
+`Use -> Trace -> Detect Failure -> Propose -> Patch via Codex -> Validate -> Eval -> Review -> Promote -> Release`
+
+## Chapter 5 Fractions Golden Sample
+
+`skills/math-grade7b-cn-zj-s2-ch05-fractions` is upgraded as Golden Sample v0.1 with complete section coverage, barriers, assessment items, comic lessons, and multi-file eval suites.
+
+## How to inspect and evaluate
+
+```bash
+python tools/cathygo.py list
+python tools/cathygo.py validate
+python tools/cathygo.py eval
+python tools/cathygo.py inspect-skill math-grade7b-cn-zj-s2-ch05-fractions
+python tools/cathygo.py proposals list
 ```

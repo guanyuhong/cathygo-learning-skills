@@ -1,0 +1,16 @@
+source_policy:
+  mode: original_or_licensed
+  allowed_sources:
+    - curriculum_topic_map
+    - public_subject_facts
+    - original_cathygo_content
+    - licensed_reference_materials
+  publishable_content:
+    - skill_instructions
+    - original_explanations
+    - original_assessment_items
+    - original_comic_lessons
+    - eval_cases
+  restricted_content_notes:
+    - avoid committing unlicensed source PDFs or screenshots to public repositories
+    - record license or authorization when using licensed materials

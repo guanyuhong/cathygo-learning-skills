@@ -1,9 +1,28 @@
-# Source Policy
+# Source & Rights Policy
 
-All repository content must follow clean-room requirements unless explicit licensed content metadata is provided.
+All repository content must satisfy source and rights requirements.
 
-## Requirements
+## Allowed sources
 
-- Agent-generated proposals must declare `source_policy`.
-- Licensed or private materials should be represented through `source-metadata.yaml` (or equivalent metadata) and must not be copied directly into public content.
-- Official promotion requires source policy review by maintainers.
+- original CathyGO content
+- public subject facts
+- curriculum topic maps
+- public domain content
+- open licensed content
+- licensed reference materials
+
+## Publishable content
+
+- skill instructions
+- original explanations
+- original assessment items
+- original comic lessons
+- eval cases
+- topic maps
+
+## Restricted content notes
+
+- avoid committing unlicensed source PDFs or screenshots to public repositories
+- avoid copying textbook prose, textbook examples, publisher images, and answer pages without rights
+- agent-generated proposals must declare `source_policy`
+- official promotion requires source policy review

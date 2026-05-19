@@ -1,15 +1,4 @@
 comic_lessons:
-  - id: equation-twin-cities-balance-bridge
-    title: "Balance Bridge in Equation Twin Cities"
-    world: "方程双城"
-    characters: ["Cathy", "GoGo", "Mayor X", "Mayor Y"]
-    beat:
-      hook: "Two cities must agree on one pair of passport numbers."
-      intuition: "Each city gate accepts many pairs, but the bridge accepts only a pair that satisfies both gates."
-      rule: "A system solution makes every equation true at the same time."
-      guided_example: "Test x = 2 and y = 1 in two gate rules."
-      common_trap: "GoGo checks only the first city gate and celebrates too early."
-      student_check: "Ask the learner to test the second gate."
-      recap: "A system needs shared truth."
-      next_mission: "Use elimination tunnel to find the shared pair faster."
-    implementation_note: "Use the scene to show that one solution pair must satisfy every gate."
+  - id: comic-stub-1
+    section_id: sample
+    beat: [hook, intuition, rule, guided_example, common_trap, student_check, recap, next_mission]

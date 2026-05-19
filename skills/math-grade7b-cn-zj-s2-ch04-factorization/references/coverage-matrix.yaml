@@ -1,13 +1,7 @@
 coverage:
-  - subsection: "4.1"
-    status: skeleton
-    covered_by: ["factorization-meaning"]
-    todo: "Add form recognition and reverse-check tasks."
-  - subsection: "4.2"
-    status: partial
-    covered_by: ["common-factor", "extract-common-factor", "ch04-item-001"]
-    todo: "Add variable common-factor examples."
-  - subsection: "4.3"
-    status: partial
-    covered_by: ["difference-of-squares", "perfect-square-pattern", "ch04-item-002"]
-    todo: "Add perfect-square trinomial items and mixed method tasks."
+  - section_id: sample
+    knowledge_point_ids: [kp-1, kp-2, kp-3]
+    learning_barrier_ids: [lb-1, lb-2]
+    assessment_item_ids: [ai-1, ai-2]
+    comic_lesson_ids: [comic-stub-1]
+    eval_files: [evals/eval_cases.jsonl]

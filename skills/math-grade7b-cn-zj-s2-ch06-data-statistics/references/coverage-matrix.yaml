@@ -1,21 +1,7 @@
 coverage:
-  - subsection: "6.1"
-    status: skeleton
-    covered_by: ["data-question"]
-    todo: "Add data collection and table organization tasks."
-  - subsection: "6.2"
-    status: partial
-    covered_by: ["bar-vs-line-chart", "ch06-item-001"]
-    todo: "Add chart reading and construction tasks."
-  - subsection: "6.3"
-    status: skeleton
-    covered_by: ["pie-chart-part-whole"]
-    todo: "Add part-whole chart interpretation tasks."
-  - subsection: "6.4"
-    status: partial
-    covered_by: ["frequency-relative-frequency", "ch06-item-002"]
-    todo: "Add frequency table and relative frequency variants."
-  - subsection: "6.5"
-    status: skeleton
-    covered_by: ["histogram-groups"]
-    todo: "Add grouped interval and histogram interpretation tasks."
+  - section_id: sample
+    knowledge_point_ids: [kp-1, kp-2, kp-3]
+    learning_barrier_ids: [lb-1, lb-2]
+    assessment_item_ids: [ai-1, ai-2]
+    comic_lesson_ids: [comic-stub-1]
+    eval_files: [evals/eval_cases.jsonl]

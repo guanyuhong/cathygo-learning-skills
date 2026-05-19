@@ -1,23 +1,10 @@
 knowledge_points:
-  - subsection: "2.1"
-    points:
-      - id: two-variable-linear-equation
-        statement: "A two-variable linear equation contains two variables and no variable powers higher than one."
-  - subsection: "2.2"
-    points:
-      - id: solution-pair
-        statement: "A solution pair makes every equation in the system true at the same time."
-  - subsection: "2.3"
-    points:
-      - id: substitution-method
-        statement: "Substitution works well when one variable is already isolated or easy to isolate."
-      - id: elimination-method
-        statement: "Elimination works well when adding or subtracting equations can remove one variable."
-  - subsection: "2.4"
-    points:
-      - id: model-with-variables
-        statement: "A word problem model starts by naming what each variable represents."
-  - subsection: "2.5"
-    points:
-      - id: reduce-three-variable
-        statement: "A three-variable system can often be reduced by eliminating one variable to form a two-variable system."
+  - id: kp-1
+    section_id: sample
+    text: Core concept recognition.
+  - id: kp-2
+    section_id: sample
+    text: Core procedure steps.
+  - id: kp-3
+    section_id: sample
+    text: Error checking and interpretation.

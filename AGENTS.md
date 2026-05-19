@@ -2,13 +2,13 @@
 
 This repository is the CathyGO Learning Skills marketplace. Keep it focused on learning Skill packages, marketplace metadata, documentation, validation, and small helper scripts.
 
-## Clean-room authoring
+## Source & Rights Policy
 
-- All public content must be clean-room authored.
-- Do not commit textbook PDFs.
-- Do not commit textbook screenshots, scans, page captures, or page-layout recreations.
-- Do not commit copied textbook prose, copied textbook examples, answer keys, or publisher images.
-- General facts are allowed, such as "a denominator cannot be zero", but explanations, examples, assessments, stories, and comic scenes must be original.
+- All public content must satisfy Source & Rights Policy.
+- Do not commit unlicensed textbook PDFs.
+- Do not commit unlicensed textbook screenshots, scans, page captures, or page-layout recreations.
+- Do not commit copied textbook prose, copied textbook examples, answer keys, or publisher images without rights.
+- Allowed sources include original CathyGO content, public subject facts, curriculum topic maps, public domain content, open licensed content, and licensed reference materials.
 
 ## Skill structure
 
@@ -38,5 +38,3 @@ python tools/cathygo.py list
 python tools/cathygo.py validate
 python tools/cathygo.py eval
 ```
-
-Do not introduce complex application code. This repository initializes and maintains a Learning Skills marketplace; it is not the CathyGO Agent implementation.

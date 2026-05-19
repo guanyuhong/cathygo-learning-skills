@@ -1,15 +1,146 @@
 comic_lessons:
-  - id: fraction-city-denominator-gate
-    title: "Restriction Map in Fraction City"
-    world: "分式城"
-    characters: ["Cathy", "GoGo", "Variable Courier X"]
-    beat:
-      hook: "Variable Courier X reaches a gate that locks when the denominator becomes zero."
-      intuition: "Cathy checks the gate rule before sending the courier through."
-      rule: "Values that make denominators zero are not allowed."
-      guided_example: "For 8 / (x - 5), solve x - 5 = 0 to find the closed gate."
-      common_trap: "GoGo simplifies first and forgets the original gate."
-      student_check: "Ask for the forbidden value in 4 / (y + 3)."
-      recap: "Restrictions come before operations."
-      next_mission: "Use common-denominator roads for addition."
-    implementation_note: "Use the scene to make denominator restrictions visible before operations."
+- id: comic-5.1
+  section_id: '5.1'
+  knowledge_point_ids:
+  - kp-5.1-1
+  - kp-5.1-2
+  - kp-5.1-3
+  learning_barrier_ids:
+  - lb-5.1-1
+  - lb-5.1-2
+  - lb-5.1-3
+  assessment_item_ids:
+  - ai-5.1-C
+  - ai-5.1-B
+  - ai-5.1-A
+  - ai-5.1-A_plus
+  target_levels:
+  - C
+  - B
+  - A
+  - A_plus
+  beat:
+    hook: Hook at 分母门
+    intuition: Intuition scene
+    rule: State the rule
+    guided_example: Work one example
+    common_trap: Show common trap
+    student_check: Quick check
+    recap: Recap key points
+    next_mission: Next mission
+- id: comic-5.2
+  section_id: '5.2'
+  knowledge_point_ids:
+  - kp-5.2-1
+  - kp-5.2-2
+  - kp-5.2-3
+  learning_barrier_ids:
+  - lb-5.2-1
+  - lb-5.2-2
+  - lb-5.2-3
+  assessment_item_ids:
+  - ai-5.2-C
+  - ai-5.2-B
+  - ai-5.2-A
+  - ai-5.2-A_plus
+  target_levels:
+  - C
+  - B
+  - A
+  - A_plus
+  beat:
+    hook: Hook at 约分修理铺
+    intuition: Intuition scene
+    rule: State the rule
+    guided_example: Work one example
+    common_trap: Show common trap
+    student_check: Quick check
+    recap: Recap key points
+    next_mission: Next mission
+- id: comic-5.3
+  section_id: '5.3'
+  knowledge_point_ids:
+  - kp-5.3-1
+  - kp-5.3-2
+  - kp-5.3-3
+  learning_barrier_ids:
+  - lb-5.3-1
+  - lb-5.3-2
+  - lb-5.3-3
+  assessment_item_ids:
+  - ai-5.3-C
+  - ai-5.3-B
+  - ai-5.3-A
+  - ai-5.3-A_plus
+  target_levels:
+  - C
+  - B
+  - A
+  - A_plus
+  beat:
+    hook: Hook at 倒数传送门
+    intuition: Intuition scene
+    rule: State the rule
+    guided_example: Work one example
+    common_trap: Show common trap
+    student_check: Quick check
+    recap: Recap key points
+    next_mission: Next mission
+- id: comic-5.4
+  section_id: '5.4'
+  knowledge_point_ids:
+  - kp-5.4-1
+  - kp-5.4-2
+  - kp-5.4-3
+  learning_barrier_ids:
+  - lb-5.4-1
+  - lb-5.4-2
+  - lb-5.4-3
+  assessment_item_ids:
+  - ai-5.4-C
+  - ai-5.4-B
+  - ai-5.4-A
+  - ai-5.4-A_plus
+  target_levels:
+  - C
+  - B
+  - A
+  - A_plus
+  beat:
+    hook: Hook at 通分桥
+    intuition: Intuition scene
+    rule: State the rule
+    guided_example: Work one example
+    common_trap: Show common trap
+    student_check: Quick check
+    recap: Recap key points
+    next_mission: Next mission
+- id: comic-5.5
+  section_id: '5.5'
+  knowledge_point_ids:
+  - kp-5.5-1
+  - kp-5.5-2
+  - kp-5.5-3
+  learning_barrier_ids:
+  - lb-5.5-1
+  - lb-5.5-2
+  - lb-5.5-3
+  assessment_item_ids:
+  - ai-5.5-C
+  - ai-5.5-B
+  - ai-5.5-A
+  - ai-5.5-A_plus
+  target_levels:
+  - C
+  - B
+  - A
+  - A_plus
+  beat:
+    hook: Hook at 增根陷阱
+    intuition: Intuition scene
+    rule: State the rule
+    guided_example: Work one example
+    common_trap: Show common trap
+    student_check: Quick check
+    recap: Recap key points
+    next_mission: Next mission

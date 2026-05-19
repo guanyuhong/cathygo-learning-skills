@@ -284,6 +284,9 @@ def command_eval() -> int:
     errors: list[str] = []
     data = load_marketplace(errors)
     checked = 0
+    total_eval_cases = 0
+    chapter_coverage_ok = 0
+    chapter_coverage_total = 0
 
     if data is None:
         print("Eval failed: invalid marketplace.")
@@ -296,17 +299,21 @@ def command_eval() -> int:
             errors.append(f"{skill_dir.relative_to(ROOT)} missing evals/eval_cases.jsonl")
         else:
             validate_jsonl(eval_cases, errors)
+            total_eval_cases += sum(1 for line in eval_cases.read_text(encoding="utf-8").splitlines() if line.strip())
         if skill_dir.name.startswith(COURSE_CHAPTER_SKILL_PREFIX):
+            chapter_coverage_total += 1
             if not (skill_dir / "references" / "coverage-matrix.yaml").exists():
                 errors.append(f"{skill_dir.relative_to(ROOT)} missing references/coverage-matrix.yaml")
+            else:
+                chapter_coverage_ok += 1
 
     if errors:
-        print(f"Eval failed. skills_checked={checked} errors={len(errors)}")
+        print(f"Eval failed. skills_checked={checked} eval_cases={total_eval_cases} chapter_coverage={chapter_coverage_ok}/{chapter_coverage_total} errors={len(errors)}")
         for error in errors:
             print(f"  - {error}")
         return 1
 
-    print(f"Eval passed. skills_checked={checked} errors=0")
+    print(f"Eval passed. skills_checked={checked} eval_cases={total_eval_cases} chapter_coverage={chapter_coverage_ok}/{chapter_coverage_total} errors=0")
     return 0
 
 
@@ -377,7 +384,11 @@ def command_inspect_skill(skill_name: str) -> int:
     print(f"plugin_membership: {', '.join(memberships) if memberships else 'none'}")
     print(f"references_files: {', '.join(refs) if refs else 'none'}")
     print(f"eval_case_count: {eval_count}")
+    cov = "missing"
+    if (ref_dir / "coverage-matrix.yaml").exists():
+        cov = "present"
     print(f"skill_status: {status}")
+    print(f"coverage_status: {cov}")
     return 0
 
 

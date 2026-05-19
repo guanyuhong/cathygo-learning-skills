@@ -1,13 +1,7 @@
-barriers:
-  - id: undefined-variables
-    signal: "Learner writes equations for a word problem without saying what x and y mean."
-    likely_cause: "The learner jumps to symbols before mapping the situation."
-    diagnostic_question: "What does x count, and what does y count?"
-    intervention: "Require a variable sentence before any equation."
-    follow_up_check: "Ask the learner to label variables in a new short scenario."
-  - id: elimination-sign-error
-    signal: "Learner changes signs incorrectly when subtracting equations."
-    likely_cause: "The learner treats subtraction of an equation as subtracting only the first term."
-    diagnostic_question: "Which entire row is being subtracted?"
-    intervention: "Wrap the second equation in parentheses before subtracting."
-    follow_up_check: "Ask the learner to perform one row subtraction without solving the whole system."
+learning_barriers:
+  - id: lb-1
+    signal: mixes concepts
+    intervention: compare definitions with counterexample
+  - id: lb-2
+    signal: skips condition checks
+    intervention: add condition checklist before solving

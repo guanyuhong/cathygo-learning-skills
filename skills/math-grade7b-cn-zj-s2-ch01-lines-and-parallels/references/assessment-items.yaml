@@ -1,15 +1,7 @@
 assessment_items:
-  - id: ch01-item-001
-    source: cathygo_original
-    target: vertical angles
-    difficulty: C
-    prompt: "Two straight lines cross at O. One angle is 48 degrees. What is the measure of the opposite angle?"
-    expected_answer: "48 degrees, because vertical opposite angles are equal."
-    feedback_guidance: "If the learner adds to 180, ask whether the angle is opposite or adjacent."
-  - id: ch01-item-002
-    source: cathygo_original
-    target: parallel-line criterion
-    difficulty: B
-    prompt: "A transversal cuts lines l and m. A pair of corresponding angles are both 63 degrees. What can you conclude about l and m?"
-    expected_answer: "l and m are parallel, because equal corresponding angles can show parallel lines."
-    feedback_guidance: "Ask the learner to state the evidence before the conclusion."
+  - id: ai-1
+    level: B
+    prompt: Original routine check item.
+  - id: ai-2
+    level: A
+    prompt: Original mixed-reasoning item.

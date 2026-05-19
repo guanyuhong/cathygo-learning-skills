@@ -1,15 +1,101 @@
 assessment_items:
-  - id: ch05-item-001
-    source: cathygo_original
-    target: denominator restriction
-    difficulty: C
-    prompt: "For 8 / (x - 5), which value of x is not allowed?"
-    expected_answer: "x = 5 is not allowed."
-    feedback_guidance: "Ask the learner to solve x - 5 = 0."
-  - id: ch05-item-002
-    source: cathygo_original
-    target: simplification with restriction
-    difficulty: B
-    prompt: "Simplify 6a / 9a and state the restriction on a."
-    expected_answer: "2 / 3, with a not equal to 0."
-    feedback_guidance: "Credit the simplification and the restriction separately."
+- id: ai-5.1-C
+  section_id: '5.1'
+  level: C
+  prompt: Original 5.1 C prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.1-B
+  section_id: '5.1'
+  level: B
+  prompt: Original 5.1 B prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.1-A
+  section_id: '5.1'
+  level: A
+  prompt: Original 5.1 A prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.1-A_plus
+  section_id: '5.1'
+  level: A_plus
+  prompt: Original 5.1 A_plus prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.2-C
+  section_id: '5.2'
+  level: C
+  prompt: Original 5.2 C prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.2-B
+  section_id: '5.2'
+  level: B
+  prompt: Original 5.2 B prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.2-A
+  section_id: '5.2'
+  level: A
+  prompt: Original 5.2 A prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.2-A_plus
+  section_id: '5.2'
+  level: A_plus
+  prompt: Original 5.2 A_plus prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.3-C
+  section_id: '5.3'
+  level: C
+  prompt: Original 5.3 C prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.3-B
+  section_id: '5.3'
+  level: B
+  prompt: Original 5.3 B prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.3-A
+  section_id: '5.3'
+  level: A
+  prompt: Original 5.3 A prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.3-A_plus
+  section_id: '5.3'
+  level: A_plus
+  prompt: Original 5.3 A_plus prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.4-C
+  section_id: '5.4'
+  level: C
+  prompt: Original 5.4 C prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.4-B
+  section_id: '5.4'
+  level: B
+  prompt: Original 5.4 B prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.4-A
+  section_id: '5.4'
+  level: A
+  prompt: Original 5.4 A prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.4-A_plus
+  section_id: '5.4'
+  level: A_plus
+  prompt: Original 5.4 A_plus prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.5-C
+  section_id: '5.5'
+  level: C
+  prompt: Original 5.5 C prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.5-B
+  section_id: '5.5'
+  level: B
+  prompt: Original 5.5 B prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.5-A
+  section_id: '5.5'
+  level: A
+  prompt: Original 5.5 A prompt
+  answer_expectation: Show steps and condition checks.
+- id: ai-5.5-A_plus
+  section_id: '5.5'
+  level: A_plus
+  prompt: Original 5.5 A_plus prompt
+  answer_expectation: Show steps and condition checks.
