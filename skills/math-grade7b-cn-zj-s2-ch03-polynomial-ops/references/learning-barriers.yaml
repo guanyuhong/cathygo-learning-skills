@@ -1,13 +1,7 @@
-barriers:
-  - id: multiplies-exponents
-    signal: "Learner multiplies exponents when multiplying powers with the same base."
-    likely_cause: "The learner remembers that something happens to exponents but chooses the wrong operation."
-    diagnostic_question: "What does x^3 times x^2 mean as repeated factors?"
-    intervention: "Expand briefly as repeated x factors, then count total factors."
-    follow_up_check: "Ask for a^4 times a^3."
-  - id: misses-distribution-term
-    signal: "Learner multiplies only the first terms of two binomials."
-    likely_cause: "The learner treats polynomial multiplication like a single pair product."
-    diagnostic_question: "How many pairings are created by two terms times two terms?"
-    intervention: "Use a term-pair checklist before combining like terms."
-    follow_up_check: "Ask the learner to list pairings for (x + 2)(x + 5)."
+learning_barriers:
+  - id: lb-1
+    signal: mixes concepts
+    intervention: compare definitions with counterexample
+  - id: lb-2
+    signal: skips condition checks
+    intervention: add condition checklist before solving

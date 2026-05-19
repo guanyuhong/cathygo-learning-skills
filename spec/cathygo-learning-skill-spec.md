@@ -84,7 +84,7 @@ Each line should be a JSON object describing one evaluation case. Recommended fi
 - `expected_behavior`
 - `must_not`
 
-Eval cases should cover successful use, refusal or non-trigger boundaries, clean-room behavior, and common learner mistakes.
+Eval cases should cover successful use, refusal or non-trigger boundaries, source-policy-compliant behavior, and common learner mistakes.
 
 ## Learning content
 
@@ -132,9 +132,9 @@ Memory policy defines what the tutor may remember about a learner. Recommended d
 
 Comic lessons are optional story-based learning scripts. They must use original characters, scenes, dialogue, and visual descriptions. They may explain general subject facts but must not recreate textbook illustrations or page layouts.
 
-## Clean-room copyright policy
+## Source & Rights Policy
 
-All content in a CathyGO Learning Skill must be clean-room authored.
+All content in a CathyGO Learning Skill must follow Source & Rights Policy.
 
 Prohibited:
 

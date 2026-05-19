@@ -1,15 +1,4 @@
 comic_lessons:
-  - id: geometry-detective-street-angle-clues
-    title: "Angle Clues on Geometry Detective Street"
-    world: "几何侦探街"
-    characters: ["Cathy", "GoGo", "Detective Ray"]
-    beat:
-      hook: "A street sign turns two angle clues into a mystery."
-      intuition: "Cathy notices that opposite clues face each other across the crossing."
-      rule: "Vertical opposite angles are equal; adjacent angles on a straight line add to 180 degrees."
-      guided_example: "Detective Ray gives one 48-degree clue and asks for the opposite clue."
-      common_trap: "GoGo almost uses 180 degrees for the opposite angle instead of the adjacent one."
-      student_check: "Ask which angle would add with 48 degrees to make a straight line."
-      recap: "Position decides the relationship."
-      next_mission: "Use angle-pair clues to investigate parallel tracks."
-    implementation_note: "Use the scene to make angle position and rule direction visible."
+  - id: comic-stub-1
+    section_id: sample
+    beat: [hook, intuition, rule, guided_example, common_trap, student_check, recap, next_mission]

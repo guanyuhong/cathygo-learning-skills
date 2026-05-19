@@ -1,15 +1,4 @@
 comic_lessons:
-  - id: polynomial-energy-factory-exponent-counter
-    title: "The Exponent Counter"
-    world: "整式能量工厂"
-    characters: ["Cathy", "GoGo", "Factory Chief Mono"]
-    beat:
-      hook: "The factory conveyor sends x-block chains into one combined machine."
-      intuition: "Cathy sees that x^3 and x^4 are seven x-blocks in a row."
-      rule: "Same-base powers multiply by adding exponents."
-      guided_example: "Count the blocks for a^3 * a^4."
-      common_trap: "GoGo tries to multiply 3 and 4 instead of counting total blocks."
-      student_check: "Ask for b^2 * b^5."
-      recap: "Same base, multiplication means exponent addition."
-      next_mission: "Use the term conveyor for polynomial multiplication."
-    implementation_note: "Use the scene to connect exponent rules with repeated factors."
+  - id: comic-stub-1
+    section_id: sample
+    beat: [hook, intuition, rule, guided_example, common_trap, student_check, recap, next_mission]

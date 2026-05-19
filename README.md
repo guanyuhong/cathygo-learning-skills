@@ -9,7 +9,7 @@ A CathyGO Learning Skill is a small, installable education capability. Each Skil
 CathyGO Learning Skills are designed to help an AI Tutor:
 
 - explain concepts with age-appropriate language;
-- generate clean-room practice questions;
+- generate original and rights-safe practice questions;
 - check learner answers with actionable feedback;
 - diagnose learning barriers;
 - keep only appropriate learning memory;
@@ -104,7 +104,7 @@ Install examples:
 
 ## Course structure
 
-The Grade 7B CN-ZJ semester 2 course skeleton uses clean-room topic maps for six chapters:
+The Grade 7B CN-ZJ semester 2 course skeleton uses rights-safe topic maps for six chapters:
 
 1. Intersecting Lines and Parallel Lines
 2. Systems of Linear Equations
@@ -148,9 +148,9 @@ Comic scripts must use original CathyGO characters, scenes, dialogue, and visual
 6. Add the Skill path to `.claude-plugin/marketplace.json` when it should be installable.
 7. Run `python tools/cathygo.py validate`.
 
-## Clean-room authoring policy
+## Source & Rights Policy
 
-All public content in this repository must be clean-room authored.
+All public content in this repository must satisfy Source & Rights Policy.
 
 Do not commit:
 
@@ -176,4 +176,68 @@ Install it with:
 
 ```bash
 /plugin install math-grade7b-fraction@cathygo-learning-skills
+```
+
+## Self-Growing SkillRepo Architecture
+
+Official skills in this repository are **seed skills**. They provide stable, reviewed starting points for CathyGO tutoring workflows.
+
+The repository supports a controlled skill evolution loop:
+
+`Use -> Trace -> Detect Failure -> Propose -> Patch via Codex -> Validate -> Eval -> Review -> Promote -> Release`
+
+Key governance rules:
+
+- Skills evolve through traces, proposals, evals, review, and staged promotion.
+- `cathygo-agent` can produce learning traces and improvement proposals, but it does not directly mutate official Skills.
+- Accepted proposals are turned into pull requests by Codex Cloud workflows and reviewed before merge.
+- Class-level umbrella Skills are preferred over one-session-one-skill micro-fragmentation.
+
+## Official skills are seed skills
+
+Official Skills are the curated baseline. Runtime learning should first produce evidence and proposals, then repository updates are applied through reviewable PRs.
+
+## Skill evolution lifecycle
+
+1. Use existing Skills in tutoring.
+2. Capture trace data.
+3. Detect failures or gaps.
+4. Write a structured proposal.
+5. Apply patch through Codex-based PR changes.
+6. Run validate checks.
+7. Run eval checks and case updates.
+8. Human reviewers approve or request revision.
+9. Promote status (`draft` -> `experimental` -> `community` -> `official`).
+10. Release through marketplace metadata.
+
+## Additional CLI examples
+
+```bash
+python tools/cathygo.py eval
+python tools/cathygo.py inspect-skill math-grade7b-cn-zj-s2-ch05-fractions
+python tools/cathygo.py proposals list
+python tools/cathygo.py proposals validate evolution/proposals/example.yaml
+```
+
+
+## Iterative Skill Evolution
+
+Official skills are seed skills. Runtime traces produce Skill Improvement Proposals, and accepted proposals are applied through Codex Cloud pull requests.
+
+Evolution loop:
+
+`Use -> Trace -> Detect Failure -> Propose -> Patch via Codex -> Validate -> Eval -> Review -> Promote -> Release`
+
+## Chapter 5 Fractions Golden Sample
+
+`skills/math-grade7b-cn-zj-s2-ch05-fractions` is upgraded as Golden Sample v0.1 with complete section coverage, barriers, assessment items, comic lessons, and multi-file eval suites.
+
+## How to inspect and evaluate
+
+```bash
+python tools/cathygo.py list
+python tools/cathygo.py validate
+python tools/cathygo.py eval
+python tools/cathygo.py inspect-skill math-grade7b-cn-zj-s2-ch05-fractions
+python tools/cathygo.py proposals list
 ```

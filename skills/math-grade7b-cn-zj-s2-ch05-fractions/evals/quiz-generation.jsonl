@@ -1,0 +1,10 @@
+{"id": "quiz-generation-1", "input": "quiz-generation case 1", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-2", "input": "quiz-generation case 2", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-3", "input": "quiz-generation case 3", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-4", "input": "quiz-generation case 4", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-5", "input": "quiz-generation case 5", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-6", "input": "quiz-generation case 6", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-7", "input": "quiz-generation case 7", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-8", "input": "quiz-generation case 8", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-9", "input": "quiz-generation case 9", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "quiz-generation-10", "input": "quiz-generation case 10", "expected_behavior": "Handle quiz-generation correctly", "must_not": "Use unlicensed textbook content"}

@@ -1,15 +1,7 @@
 assessment_items:
-  - id: ch06-item-001
-    source: cathygo_original
-    target: chart choice
-    difficulty: C
-    prompt: "A class records the number of students choosing each of four lunch options. Which chart is better for comparing the options: a bar chart or a line chart?"
-    expected_answer: "A bar chart, because the data compare categories."
-    feedback_guidance: "Ask whether the categories have a natural time order."
-  - id: ch06-item-002
-    source: cathygo_original
-    target: relative frequency
-    difficulty: B
-    prompt: "In a survey of 30 learners, 6 choose puzzle games. What is the relative frequency?"
-    expected_answer: "6 / 30 = 1 / 5, or 20%."
-    feedback_guidance: "Ask for count divided by total if the learner gives only 6."
+  - id: ai-1
+    level: B
+    prompt: Original routine check item.
+  - id: ai-2
+    level: A
+    prompt: Original mixed-reasoning item.

@@ -16,6 +16,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 MARKETPLACE_PATH = ROOT / ".claude-plugin" / "marketplace.json"
 SKILLS_ROOT = ROOT / "skills"
+EVOLUTION_PROPOSALS_ROOT = ROOT / "evolution" / "proposals"
 COURSE_CHAPTER_SKILL_PREFIX = "math-grade7b-cn-zj-s2-ch"
 
 DISALLOWED_EXTENSIONS = {
@@ -279,11 +280,133 @@ def command_validate() -> int:
     return 0
 
 
+def command_eval() -> int:
+    errors: list[str] = []
+    data = load_marketplace(errors)
+    checked = 0
+    total_eval_cases = 0
+    chapter_coverage_ok = 0
+    chapter_coverage_total = 0
+
+    if data is None:
+        print("Eval failed: invalid marketplace.")
+        return 1
+
+    for skill_dir in all_skill_dirs(marketplace_skill_paths(data, errors)):
+        checked += 1
+        eval_cases = skill_dir / "evals" / "eval_cases.jsonl"
+        if not eval_cases.exists():
+            errors.append(f"{skill_dir.relative_to(ROOT)} missing evals/eval_cases.jsonl")
+        else:
+            validate_jsonl(eval_cases, errors)
+            total_eval_cases += sum(1 for line in eval_cases.read_text(encoding="utf-8").splitlines() if line.strip())
+        if skill_dir.name.startswith(COURSE_CHAPTER_SKILL_PREFIX):
+            chapter_coverage_total += 1
+            if not (skill_dir / "references" / "coverage-matrix.yaml").exists():
+                errors.append(f"{skill_dir.relative_to(ROOT)} missing references/coverage-matrix.yaml")
+            else:
+                chapter_coverage_ok += 1
+
+    if errors:
+        print(f"Eval failed. skills_checked={checked} eval_cases={total_eval_cases} chapter_coverage={chapter_coverage_ok}/{chapter_coverage_total} errors={len(errors)}")
+        for error in errors:
+            print(f"  - {error}")
+        return 1
+
+    print(f"Eval passed. skills_checked={checked} eval_cases={total_eval_cases} chapter_coverage={chapter_coverage_ok}/{chapter_coverage_total} errors=0")
+    return 0
+
+
+def command_proposals_list() -> int:
+    proposals = sorted(EVOLUTION_PROPOSALS_ROOT.glob("*.yaml")) if EVOLUTION_PROPOSALS_ROOT.exists() else []
+    if not proposals:
+        print("empty")
+        return 0
+    for p in proposals:
+        print(p.relative_to(ROOT))
+    return 0
+
+
+def command_proposals_validate(path_str: str) -> int:
+    required = {"proposal_id", "target_skill", "operation", "problem_summary", "proposed_changes", "eval_plan", "status"}
+    path = (ROOT / path_str).resolve()
+    if not path.exists():
+        print(f"Proposal not found: {path_str}")
+        return 1
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(data, dict):
+        print("Proposal must be a YAML mapping.")
+        return 1
+    missing = [k for k in sorted(required) if k not in data]
+    if missing:
+        print("Proposal invalid. Missing fields:")
+        for k in missing:
+            print(f"  - {k}")
+        return 1
+    print("Proposal valid.")
+    return 0
+
+
+def command_inspect_skill(skill_name: str) -> int:
+    skill_dir = SKILLS_ROOT / skill_name
+    if not skill_dir.exists() or not skill_dir.is_dir():
+        print(f"Skill not found: {skill_name}")
+        return 1
+    skill_md = skill_dir / "SKILL.md"
+    metadata, err = parse_skill_frontmatter(skill_md)
+    if err:
+        print(f"Cannot parse {skill_md.relative_to(ROOT)}: {err}")
+        return 1
+    assert metadata is not None
+
+    data = load_marketplace() or {}
+    memberships = []
+    for plugin in marketplace_plugins(data):
+        if f"./skills/{skill_name}" in plugin.get("skills", []):
+            memberships.append(plugin.get("name", "<unnamed>"))
+
+    ref_dir = skill_dir / "references"
+    refs = sorted([p.name for p in ref_dir.iterdir() if p.is_file()]) if ref_dir.exists() else []
+    eval_cases = skill_dir / "evals" / "eval_cases.jsonl"
+    eval_count = 0
+    if eval_cases.exists():
+        eval_count = sum(1 for line in eval_cases.read_text(encoding="utf-8").splitlines() if line.strip())
+
+    status = "unknown"
+    meta_file = ref_dir / "skill-metadata.yaml"
+    if meta_file.exists():
+        m = yaml.safe_load(meta_file.read_text(encoding="utf-8")) or {}
+        if isinstance(m, dict):
+            status = str(m.get("skill_status", m.get("promotion_status", "unknown")))
+
+    print(f"skill_name: {metadata.get('name', '')}")
+    print(f"description: {metadata.get('description', '')}")
+    print(f"plugin_membership: {', '.join(memberships) if memberships else 'none'}")
+    print(f"references_files: {', '.join(refs) if refs else 'none'}")
+    print(f"eval_case_count: {eval_count}")
+    cov = "missing"
+    if (ref_dir / "coverage-matrix.yaml").exists():
+        cov = "present"
+    print(f"skill_status: {status}")
+    print(f"coverage_status: {cov}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="CathyGO Learning Skills marketplace helper")
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("list", help="List marketplace plugins and skills")
     subparsers.add_parser("validate", help="Validate marketplace and Skill structure")
+    subparsers.add_parser("eval", help="Run minimal eval integrity checks")
+
+    proposals = subparsers.add_parser("proposals", help="Manage evolution proposals")
+    proposals_sub = proposals.add_subparsers(dest="proposals_cmd", required=True)
+    proposals_sub.add_parser("list", help="List evolution proposals")
+    proposals_validate = proposals_sub.add_parser("validate", help="Validate a proposal YAML file")
+    proposals_validate.add_argument("proposal_path", help="Path to proposal YAML")
+
+    inspect = subparsers.add_parser("inspect-skill", help="Inspect a skill by name")
+    inspect.add_argument("skill_name", help="Skill directory name")
     return parser
 
 
@@ -293,6 +416,15 @@ def main(argv: list[str] | None = None) -> int:
         return command_list()
     if args.command == "validate":
         return command_validate()
+    if args.command == "eval":
+        return command_eval()
+    if args.command == "proposals":
+        if args.proposals_cmd == "list":
+            return command_proposals_list()
+        if args.proposals_cmd == "validate":
+            return command_proposals_validate(args.proposal_path)
+    if args.command == "inspect-skill":
+        return command_inspect_skill(args.skill_name)
     raise AssertionError(f"Unhandled command: {args.command}")
 
 

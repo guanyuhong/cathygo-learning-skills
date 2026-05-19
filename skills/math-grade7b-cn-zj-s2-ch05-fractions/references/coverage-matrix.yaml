@@ -1,21 +1,116 @@
 coverage:
-  - subsection: "5.1"
-    status: partial
-    covered_by: ["algebraic-fraction-meaning", "denominator-not-zero", "ch05-item-001"]
-    todo: "Add non-example recognition tasks."
-  - subsection: "5.2"
-    status: skeleton
-    covered_by: ["equivalent-fraction-property"]
-    todo: "Add equivalent transformation tasks with restrictions."
-  - subsection: "5.3"
-    status: partial
-    covered_by: ["fraction-multiply-divide", "ch05-item-002"]
-    todo: "Add multiplication and division variants."
-  - subsection: "5.4"
-    status: skeleton
-    covered_by: ["common-denominator"]
-    todo: "Add common denominator addition and subtraction items."
-  - subsection: "5.5"
-    status: skeleton
-    covered_by: ["fraction-equation-check"]
-    todo: "Add solve-and-check fraction equation tasks."
+- section_id: '5.1'
+  knowledge_point_ids:
+  - kp-5.1-1
+  - kp-5.1-2
+  - kp-5.1-3
+  learning_barrier_ids:
+  - lb-5.1-1
+  - lb-5.1-2
+  - lb-5.1-3
+  assessment_item_ids:
+  - ai-5.1-C
+  - ai-5.1-B
+  - ai-5.1-A
+  - ai-5.1-A_plus
+  comic_lesson_ids:
+  - comic-5.1
+  eval_files:
+  - evals/eval_cases.jsonl
+  - evals/routing.jsonl
+  - evals/diagnosis.jsonl
+  - evals/answer-check.jsonl
+  - evals/quiz-generation.jsonl
+  - evals/comic-lesson.jsonl
+- section_id: '5.2'
+  knowledge_point_ids:
+  - kp-5.2-1
+  - kp-5.2-2
+  - kp-5.2-3
+  learning_barrier_ids:
+  - lb-5.2-1
+  - lb-5.2-2
+  - lb-5.2-3
+  assessment_item_ids:
+  - ai-5.2-C
+  - ai-5.2-B
+  - ai-5.2-A
+  - ai-5.2-A_plus
+  comic_lesson_ids:
+  - comic-5.2
+  eval_files:
+  - evals/eval_cases.jsonl
+  - evals/routing.jsonl
+  - evals/diagnosis.jsonl
+  - evals/answer-check.jsonl
+  - evals/quiz-generation.jsonl
+  - evals/comic-lesson.jsonl
+- section_id: '5.3'
+  knowledge_point_ids:
+  - kp-5.3-1
+  - kp-5.3-2
+  - kp-5.3-3
+  learning_barrier_ids:
+  - lb-5.3-1
+  - lb-5.3-2
+  - lb-5.3-3
+  assessment_item_ids:
+  - ai-5.3-C
+  - ai-5.3-B
+  - ai-5.3-A
+  - ai-5.3-A_plus
+  comic_lesson_ids:
+  - comic-5.3
+  eval_files:
+  - evals/eval_cases.jsonl
+  - evals/routing.jsonl
+  - evals/diagnosis.jsonl
+  - evals/answer-check.jsonl
+  - evals/quiz-generation.jsonl
+  - evals/comic-lesson.jsonl
+- section_id: '5.4'
+  knowledge_point_ids:
+  - kp-5.4-1
+  - kp-5.4-2
+  - kp-5.4-3
+  learning_barrier_ids:
+  - lb-5.4-1
+  - lb-5.4-2
+  - lb-5.4-3
+  assessment_item_ids:
+  - ai-5.4-C
+  - ai-5.4-B
+  - ai-5.4-A
+  - ai-5.4-A_plus
+  comic_lesson_ids:
+  - comic-5.4
+  eval_files:
+  - evals/eval_cases.jsonl
+  - evals/routing.jsonl
+  - evals/diagnosis.jsonl
+  - evals/answer-check.jsonl
+  - evals/quiz-generation.jsonl
+  - evals/comic-lesson.jsonl
+- section_id: '5.5'
+  knowledge_point_ids:
+  - kp-5.5-1
+  - kp-5.5-2
+  - kp-5.5-3
+  learning_barrier_ids:
+  - lb-5.5-1
+  - lb-5.5-2
+  - lb-5.5-3
+  assessment_item_ids:
+  - ai-5.5-C
+  - ai-5.5-B
+  - ai-5.5-A
+  - ai-5.5-A_plus
+  comic_lesson_ids:
+  - comic-5.5
+  eval_files:
+  - evals/eval_cases.jsonl
+  - evals/routing.jsonl
+  - evals/diagnosis.jsonl
+  - evals/answer-check.jsonl
+  - evals/quiz-generation.jsonl
+  - evals/comic-lesson.jsonl

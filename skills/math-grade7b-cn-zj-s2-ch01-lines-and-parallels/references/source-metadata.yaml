@@ -1,0 +1,7 @@
+source_policy:
+  mode: original_or_licensed
+  allowed_sources:
+    - curriculum_topic_map
+    - public_subject_facts
+    - original_cathygo_content
+    - licensed_reference_materials

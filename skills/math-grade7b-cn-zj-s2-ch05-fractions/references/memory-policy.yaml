@@ -1,11 +1,6 @@
-allowed_memory:
-  - "Learner often forgets original denominator restrictions."
-  - "Learner cancels terms instead of factors."
-  - "Learner benefits from writing a restriction map before operations."
-disallowed_memory:
-  - "Sensitive personal information."
-  - "Exact private learner context that is not needed for future learning support."
-  - "Permanent ability labels."
-update_rules:
-  - "Keep notes as temporary support."
-  - "Revise after the learner consistently states restrictions first."
+store:
+  - recurring barrier patterns
+  - preferred explanation style
+avoid:
+  - personal sensitive information
+  - permanent ability labels

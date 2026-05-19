@@ -1,21 +1,12 @@
-chapter:
-  id: ch05-fractions
-  title: "分式"
-  skill: math-grade7b-cn-zj-s2-ch05-fractions
-  scope_note: "Chapter map for routing and coverage tracking."
-subsections:
-  - id: "5.1"
-    title: "分式的意义"
-    focus: "Meaning of algebraic fractions and denominator restrictions."
-  - id: "5.2"
-    title: "分式的基本性质"
-    focus: "Equivalent transformations that preserve value under allowed conditions."
-  - id: "5.3"
-    title: "分式的乘除"
-    focus: "Factor, multiply, divide, and simplify with restrictions."
-  - id: "5.4"
-    title: "分式的加减"
-    focus: "Use common denominators and combine numerators."
-  - id: "5.5"
-    title: "分式方程"
-    focus: "Solve equations with algebraic fractions and check restrictions."
+chapter_id: ch05-fractions
+sections:
+  - id: 5.1
+    title: Fraction meaning
+  - id: 5.2
+    title: Fundamental properties
+  - id: 5.3
+    title: Multiplication and division
+  - id: 5.4
+    title: Addition and subtraction
+  - id: 5.5
+    title: Fraction equations

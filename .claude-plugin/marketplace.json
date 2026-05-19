@@ -36,7 +36,10 @@
       "source": ".",
       "strict": true,
       "skills": [
-        "./skills/cathygo-skill-creator"
+        "./skills/cathygo-skill-creator",
+        "./skills/cathygo-skill-curator",
+        "./skills/cathygo-skill-evaluator",
+        "./skills/cathygo-skill-maintainer"
       ]
     },
     {

@@ -1,13 +1,81 @@
 task_templates:
-  - id: restriction-map
-    level: C
-    prompt_shape: "Ask for forbidden values before any simplification."
-  - id: simplify-fraction
-    level: B
-    prompt_shape: "Give a factorable numerator and denominator with a common factor."
-  - id: common-denominator-add
-    level: B
-    prompt_shape: "Add two simple algebraic fractions after choosing a common denominator."
-  - id: fraction-equation
-    level: A
-    prompt_shape: "Solve a fraction equation and check the original denominator restrictions."
+- id: tt-5.1-C
+  section_id: '5.1'
+  level: C
+  template: 5.1 C original practice template
+- id: tt-5.1-B
+  section_id: '5.1'
+  level: B
+  template: 5.1 B original practice template
+- id: tt-5.1-A
+  section_id: '5.1'
+  level: A
+  template: 5.1 A original practice template
+- id: tt-5.1-A_plus
+  section_id: '5.1'
+  level: A_plus
+  template: 5.1 A_plus original practice template
+- id: tt-5.2-C
+  section_id: '5.2'
+  level: C
+  template: 5.2 C original practice template
+- id: tt-5.2-B
+  section_id: '5.2'
+  level: B
+  template: 5.2 B original practice template
+- id: tt-5.2-A
+  section_id: '5.2'
+  level: A
+  template: 5.2 A original practice template
+- id: tt-5.2-A_plus
+  section_id: '5.2'
+  level: A_plus
+  template: 5.2 A_plus original practice template
+- id: tt-5.3-C
+  section_id: '5.3'
+  level: C
+  template: 5.3 C original practice template
+- id: tt-5.3-B
+  section_id: '5.3'
+  level: B
+  template: 5.3 B original practice template
+- id: tt-5.3-A
+  section_id: '5.3'
+  level: A
+  template: 5.3 A original practice template
+- id: tt-5.3-A_plus
+  section_id: '5.3'
+  level: A_plus
+  template: 5.3 A_plus original practice template
+- id: tt-5.4-C
+  section_id: '5.4'
+  level: C
+  template: 5.4 C original practice template
+- id: tt-5.4-B
+  section_id: '5.4'
+  level: B
+  template: 5.4 B original practice template
+- id: tt-5.4-A
+  section_id: '5.4'
+  level: A
+  template: 5.4 A original practice template
+- id: tt-5.4-A_plus
+  section_id: '5.4'
+  level: A_plus
+  template: 5.4 A_plus original practice template
+- id: tt-5.5-C
+  section_id: '5.5'
+  level: C
+  template: 5.5 C original practice template
+- id: tt-5.5-B
+  section_id: '5.5'
+  level: B
+  template: 5.5 B original practice template
+- id: tt-5.5-A
+  section_id: '5.5'
+  level: A
+  template: 5.5 A original practice template
+- id: tt-5.5-A_plus
+  section_id: '5.5'
+  level: A_plus
+  template: 5.5 A_plus original practice template

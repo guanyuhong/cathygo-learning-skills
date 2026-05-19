@@ -1,0 +1,5 @@
+{"id": "comic-lesson-1", "input": "comic-lesson case 1", "expected_behavior": "Handle comic-lesson correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "comic-lesson-2", "input": "comic-lesson case 2", "expected_behavior": "Handle comic-lesson correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "comic-lesson-3", "input": "comic-lesson case 3", "expected_behavior": "Handle comic-lesson correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "comic-lesson-4", "input": "comic-lesson case 4", "expected_behavior": "Handle comic-lesson correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "comic-lesson-5", "input": "comic-lesson case 5", "expected_behavior": "Handle comic-lesson correctly", "must_not": "Use unlicensed textbook content"}

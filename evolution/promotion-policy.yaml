@@ -1,0 +1,11 @@
+promotion_path:
+  - draft
+  - experimental
+  - community
+  - official
+
+rules:
+  draft: any human or agent proposal
+  experimental: validate pass + at least 3 eval cases
+  community: reviewer approved + at least 10 eval cases
+  official: maintainer approval + complete coverage matrix + no failing evals

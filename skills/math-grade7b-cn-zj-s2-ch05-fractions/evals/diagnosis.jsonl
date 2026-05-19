@@ -1,0 +1,10 @@
+{"id": "diagnosis-1", "input": "diagnosis case 1", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-2", "input": "diagnosis case 2", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-3", "input": "diagnosis case 3", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-4", "input": "diagnosis case 4", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-5", "input": "diagnosis case 5", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-6", "input": "diagnosis case 6", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-7", "input": "diagnosis case 7", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-8", "input": "diagnosis case 8", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-9", "input": "diagnosis case 9", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "diagnosis-10", "input": "diagnosis case 10", "expected_behavior": "Handle diagnosis correctly", "must_not": "Use unlicensed textbook content"}

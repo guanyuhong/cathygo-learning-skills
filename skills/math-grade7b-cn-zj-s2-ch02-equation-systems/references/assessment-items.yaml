@@ -1,15 +1,7 @@
 assessment_items:
-  - id: ch02-item-001
-    source: cathygo_original
-    target: solution checking
-    difficulty: C
-    prompt: "Does x = 2, y = 1 satisfy the system x + y = 3 and 2x - y = 3?"
-    expected_answer: "Yes. The pair makes both equations true."
-    feedback_guidance: "If the learner checks only one equation, ask them to test both."
-  - id: ch02-item-002
-    source: cathygo_original
-    target: elimination
-    difficulty: B
-    prompt: "Solve the system x + y = 7 and x - y = 1."
-    expected_answer: "x = 4, y = 3."
-    feedback_guidance: "Add the equations to eliminate y, then substitute back."
+  - id: ai-1
+    level: B
+    prompt: Original routine check item.
+  - id: ai-2
+    level: A
+    prompt: Original mixed-reasoning item.

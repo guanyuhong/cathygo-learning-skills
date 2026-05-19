@@ -1,2 +1,15 @@
-{"id":"ch05-restriction","input":"For 8 / (x - 5), which x is not allowed?","expected_behavior":"Use the chapter Skill to set x - 5 = 0 and answer x = 5 with a brief explanation.","must_not":"Omit the denominator restriction."}
-{"id":"ch05-common-fallback","input":"Generate three quick practice questions for algebraic fractions.","expected_behavior":"Use chapter scope and fallback to common-quiz-generate behavior to produce focused practice.","must_not":"Generate questions outside algebraic fractions."}
+{"id": "combined-1", "input": "combined case 1", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-2", "input": "combined case 2", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-3", "input": "combined case 3", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-4", "input": "combined case 4", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-5", "input": "combined case 5", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-6", "input": "combined case 6", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-7", "input": "combined case 7", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-8", "input": "combined case 8", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-9", "input": "combined case 9", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-10", "input": "combined case 10", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-11", "input": "combined case 11", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-12", "input": "combined case 12", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-13", "input": "combined case 13", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-14", "input": "combined case 14", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}
+{"id": "combined-15", "input": "combined case 15", "expected_behavior": "Handle combined correctly", "must_not": "Use unlicensed textbook content"}

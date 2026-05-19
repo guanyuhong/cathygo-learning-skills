@@ -1,0 +1,10 @@
+skill_status: experimental
+skill_version: 0.1.0
+created_by: human_or_agent
+promotion_status: experimental
+last_reviewed_by: curriculum-team
+source_policy:
+  mode: original_or_licensed
+evolution:
+  proposal_ids: []
+  trace_ids: []
