@@ -1,0 +1,27 @@
+{
+  "_note": "Clean-room synthetic single-page layout input.",
+  "skill": "cathygo.ocr_layout",
+  "version": "0.1",
+  "status": "ok",
+  "provider": { "name": "zhipu", "model": "glm-ocr" },
+  "sourceImage": { "imageId": "page_0", "width": 900, "height": 600, "mimeType": "image/png" },
+  "text": {
+    "markdown": "1. 小舟从码头 A 出发，求 x 的值。",
+    "plain": "1. 小舟从码头 A 出发，求 x 的值。"
+  },
+  "elements": [
+    {
+      "id": "layout_0_0",
+      "pageIndex": 0,
+      "index": 0,
+      "type": "text",
+      "label": "text",
+      "nativeLabel": "text",
+      "content": "1. 小舟从码头 A 出发，求 x 的值。",
+      "bbox": { "x": 0.08, "y": 0.1, "width": 0.8, "height": 0.1, "unit": "normalized" },
+      "source": { "provider": "zhipu", "model": "glm-ocr", "field": "layout_details", "imageId": "page_0" }
+    }
+  ],
+  "screenshotCandidates": [],
+  "diagnostics": {}
+}

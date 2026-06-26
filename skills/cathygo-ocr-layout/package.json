@@ -1,0 +1,12 @@
+{
+  "name": "cathygo-ocr-layout-skill",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check scripts/run-zhipu-glm-ocr-layout.mjs && node --check scripts/normalize-glm-ocr-layout.mjs && node --check scripts/ocr-layout-to-html.mjs && node --check scripts/crop-layout-assets.mjs && node --check scripts/build-reasoning-context.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.34.2"
+  }
+}

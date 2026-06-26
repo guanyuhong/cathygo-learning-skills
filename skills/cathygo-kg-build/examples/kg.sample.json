@@ -1,0 +1,110 @@
+{
+  "schema": "cgo.kg.v1",
+  "kind": "kg",
+  "id": "algebraic-fractions-demo",
+  "title": "Algebraic Fractions Demo KG",
+  "version": "0.1.0",
+  "language": "en",
+  "profile": "learning-kg",
+  "meta": {
+    "created_by": "cathygo-kg-build example"
+  },
+  "compat": {},
+  "sources": [
+    {
+      "id": "fractions-source",
+      "type": "markdown",
+      "title": "Algebraic Fractions Mini Source",
+      "origin": {
+        "path": "examples/fractions-source.md",
+        "license": "original"
+      },
+      "chunks": [
+        {
+          "id": "c001",
+          "locator": "paragraph:1",
+          "text": "An algebraic fraction has a denominator that contains a variable."
+        },
+        {
+          "id": "c002",
+          "locator": "paragraph:2",
+          "text": "Before simplifying or solving, the original denominator cannot be zero."
+        },
+        {
+          "id": "c003",
+          "locator": "paragraph:3",
+          "text": "A common mistake is canceling matching letters that are not complete factors."
+        },
+        {
+          "id": "c004",
+          "locator": "paragraph:4",
+          "text": "When solving a fraction equation, candidate answers must be checked against the original denominators."
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "algebraic-fraction",
+      "type": "concept",
+      "name": "Algebraic fraction",
+      "definition": "A fraction whose denominator contains a variable.",
+      "aliases": ["variable fraction"],
+      "subject": "math",
+      "stage": "middle",
+      "tags": ["fraction", "algebra"],
+      "source_refs": ["fractions-source#c001"],
+      "confidence": 0.98,
+      "review": { "state": "accepted" }
+    },
+    {
+      "id": "denominator-not-zero",
+      "type": "concept",
+      "name": "Denominator cannot be zero",
+      "definition": "Values that make the original denominator zero are excluded.",
+      "subject": "math",
+      "stage": "middle",
+      "tags": ["restriction", "domain"],
+      "source_refs": ["fractions-source#c002"],
+      "confidence": 0.98,
+      "review": { "state": "accepted" }
+    },
+    {
+      "id": "invalid-letter-cancellation",
+      "type": "misconception",
+      "name": "Canceling matching letters instead of factors",
+      "summary": "The learner cancels symbols that are not complete factors.",
+      "subject": "math",
+      "stage": "middle",
+      "tags": ["misconception", "simplification"],
+      "source_refs": ["fractions-source#c003"],
+      "confidence": 0.95,
+      "review": { "state": "accepted" }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:requires:denominator-not-zero:algebraic-fraction",
+      "type": "requires",
+      "source": "denominator-not-zero",
+      "target": "algebraic-fraction",
+      "evidence": "Before simplifying or solving, the original denominator cannot be zero.",
+      "source_refs": ["fractions-source#c002"],
+      "confidence": 0.9,
+      "review": { "state": "accepted" }
+    },
+    {
+      "id": "edge:misconception_of:invalid-letter-cancellation:algebraic-fraction",
+      "type": "misconception_of",
+      "source": "invalid-letter-cancellation",
+      "target": "algebraic-fraction",
+      "evidence": "A common mistake is canceling matching letters that are not complete factors.",
+      "source_refs": ["fractions-source#c003"],
+      "confidence": 0.95,
+      "review": { "state": "accepted" }
+    }
+  ],
+  "collections": [],
+  "views": [],
+  "quality": {}
+}

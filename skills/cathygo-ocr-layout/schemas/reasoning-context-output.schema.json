@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CathyGO Reasoning Context Output",
+  "type": "object",
+  "required": [
+    "skill",
+    "version",
+    "status",
+    "capability",
+    "source",
+    "text",
+    "parts",
+    "attachments",
+    "diagnostics"
+  ],
+  "properties": {
+    "skill": {
+      "const": "cathygo.reasoning_context"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "status": {
+      "enum": ["ok", "failed"]
+    },
+    "capability": {
+      "enum": ["chat", "photo_question"]
+    },
+    "source": {
+      "type": "object",
+      "required": ["scope", "imagePath", "cropOutDir"],
+      "properties": {
+        "layoutPath": { "type": ["string", "null"] },
+        "imagePath": { "type": "string" },
+        "scope": { "type": "string" },
+        "cropOutDir": { "type": "string" }
+      }
+    },
+    "text": {
+      "type": "object",
+      "required": ["mode", "plain", "markdown"],
+      "properties": {
+        "mode": { "enum": ["plain", "markdown"] },
+        "plain": { "type": "string" },
+        "markdown": { "type": "string" }
+      }
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["type", "text"],
+            "properties": {
+              "type": { "const": "text" },
+              "text": { "type": "string" }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "attachment_id"],
+            "properties": {
+              "type": { "const": "image" },
+              "attachment_id": { "type": "string" },
+              "role": { "type": "string" }
+            }
+          }
+        ]
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "attachment_id",
+          "kind",
+          "role",
+          "mime_type",
+          "path",
+          "uri",
+          "screenshotCandidateId",
+          "bbox"
+        ],
+        "properties": {
+          "attachment_id": { "type": "string" },
+          "kind": { "const": "image" },
+          "role": { "enum": ["diagram", "problem_crop", "page", "image"] },
+          "mime_type": { "type": "string" },
+          "path": { "type": "string" },
+          "uri": { "type": "string" },
+          "screenshotCandidateId": { "type": "string" },
+          "title": { "type": "string" },
+          "bbox": { "type": "object" },
+          "data_base64": { "type": "string" }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "object"
+    }
+  }
+}
