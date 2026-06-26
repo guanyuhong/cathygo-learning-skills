@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "cathygo-learning-skills",
+  "description": "CathyGO content-production skill library for knowledge maps, learning packs, and QIJ question artifacts.",
+  "version": "0.3.0",
+  "author": {
+    "name": "CathyGO"
+  },
+  "homepage": "https://github.com/guanyuhong/cathygo-learning-skills",
+  "repository": "https://github.com/guanyuhong/cathygo-learning-skills",
+  "license": "MIT",
+  "keywords": [
+    "cathygo",
+    "learning",
+    "knowledge-graph",
+    "learning-pack",
+    "qij",
+    "k12"
+  ]
+}

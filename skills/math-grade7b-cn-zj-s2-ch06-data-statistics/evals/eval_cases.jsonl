@@ -1,2 +1,0 @@
-{"id":"ch06-chart-choice","input":"Should I use a bar chart or line chart for counts of favorite lunch options?","expected_behavior":"Use the chapter Skill to explain that category comparison fits a bar chart.","must_not":"Choose a chart type without asking what the data needs to show."}
-{"id":"ch06-relative-frequency","input":"6 out of 30 learners picked puzzle games. What is the relative frequency?","expected_behavior":"Compute 6 / 30 = 1 / 5 = 20% and explain count over total.","must_not":"Treat the count 6 as the relative frequency."}

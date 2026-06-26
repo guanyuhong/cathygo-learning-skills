@@ -1,0 +1,48 @@
+{
+  "id": "algebraic-fractions-demo",
+  "pack_id": "algebraic-fractions-demo",
+  "node_id": "math-m-algebraic-fractions-demo",
+  "name": "Algebraic Fractions Demo",
+  "name_zh": "代数分式示例",
+  "subject": "math",
+  "grade": 7,
+  "stage": "middle",
+  "domain": "algebra",
+  "status": "demo",
+  "author": "CathyGO",
+  "version": "0.1.0",
+  "curriculum": "CathyGO clean-room demo content",
+  "description": "A minimal content-first pack for algebraic fractions, denominator restrictions, and invalid cancellation misconceptions.",
+  "tags": [
+    "algebraic fractions",
+    "domain restrictions",
+    "misconceptions"
+  ],
+  "prerequisites": [
+    "equivalent-fractions",
+    "simple-factorization"
+  ],
+  "leads_to": [
+    "fraction-equations",
+    "rational-expressions"
+  ],
+  "learning_objectives": [
+    "Recognize an algebraic fraction and explain why its denominator matters.",
+    "Exclude values that make the original denominator zero before simplifying or solving.",
+    "Avoid canceling matching letters unless they are complete common factors."
+  ],
+  "artifacts": {
+    "kg": "kg.json",
+    "learning_pack": "learning-pack.json",
+    "knowledge_context": "knowledge-context.json"
+  },
+  "compat": {
+    "teachany": {
+      "node_id": "math-m-algebraic-fractions-demo",
+      "lesson_type": "new-concept",
+      "free_mode": false
+    }
+  },
+  "created_at": "2026-06-26",
+  "updated_at": "2026-06-26"
+}

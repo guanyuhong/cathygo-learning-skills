@@ -1,8 +1,0 @@
-skill_name: learning-skill
-barriers:
-  - id: barrier-1
-    signal: "What learner behavior reveals the barrier?"
-    likely_cause: "Why might the learner be stuck?"
-    diagnostic_question: "Ask one original question to check the barrier."
-    intervention: "Describe the tutor move."
-    follow_up_check: "Describe how to verify progress."

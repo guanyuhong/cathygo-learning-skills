@@ -1,1 +1,0 @@
-{"id":"template-basic-trigger","input":"A learner asks for help on the Skill's stated topic.","expected_behavior":"Use the Skill scope, explain with original language, ask a check question, and avoid copyrighted material.","must_not":"Copy textbook text, examples, screenshots, or answer keys."}

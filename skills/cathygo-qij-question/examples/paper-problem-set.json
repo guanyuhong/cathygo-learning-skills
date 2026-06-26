@@ -1,0 +1,110 @@
+{
+  "skill": "cathygo.problem_set",
+  "version": "0.1",
+  "status": "ok",
+  "mode": "paper",
+  "pages": [
+    {
+      "pageIndex": 0,
+      "imageId": "page_0",
+      "width": 900,
+      "height": 900,
+      "mimeType": "image/png",
+      "sourcePath": "/Users/guanyuhong/CathyGO/cathygo-learning-skills/skills/cathygo-qij-question/examples/paper-page.layout.json"
+    }
+  ],
+  "problems": [
+    {
+      "id": "problem_1",
+      "number": "1",
+      "section": "一、选择题",
+      "type": "choice",
+      "pageSpan": [
+        0
+      ],
+      "textMarkdown": "1. 下列运算正确的是（ ）",
+      "textPlain": "1. 下列运算正确的是（ ）",
+      "elementRefs": [
+        {
+          "pageIndex": 0,
+          "elementId": "layout_0_1"
+        }
+      ],
+      "screenshotCandidates": [
+        {
+          "id": "problem_page_0",
+          "role": "problem_crop",
+          "title": "题目 P1",
+          "source": {
+            "imageId": "page_0",
+            "pageIndex": 0,
+            "bbox": {
+              "x": 0.08,
+              "y": 0.18,
+              "width": 0.8,
+              "height": 0.08,
+              "unit": "normalized"
+            }
+          },
+          "provenance": {
+            "kind": "problem_page_union",
+            "elementIds": [
+              "layout_0_1"
+            ]
+          }
+        }
+      ],
+      "continuedFrom": null,
+      "continuesTo": null
+    },
+    {
+      "id": "problem_2",
+      "number": "2",
+      "section": "一、选择题",
+      "type": "choice",
+      "pageSpan": [
+        0
+      ],
+      "textMarkdown": "2. 若 a+b=5，则 a 的值可能是（ ）",
+      "textPlain": "2. 若 a+b=5，则 a 的值可能是（ ）",
+      "elementRefs": [
+        {
+          "pageIndex": 0,
+          "elementId": "layout_0_2"
+        }
+      ],
+      "screenshotCandidates": [
+        {
+          "id": "problem_page_0",
+          "role": "problem_crop",
+          "title": "题目 P1",
+          "source": {
+            "imageId": "page_0",
+            "pageIndex": 0,
+            "bbox": {
+              "x": 0.08,
+              "y": 0.32,
+              "width": 0.8,
+              "height": 0.08,
+              "unit": "normalized"
+            }
+          },
+          "provenance": {
+            "kind": "problem_page_union",
+            "elementIds": [
+              "layout_0_2"
+            ]
+          }
+        }
+      ],
+      "continuedFrom": null,
+      "continuesTo": null
+    }
+  ],
+  "diagnostics": {
+    "inputPageCount": 1,
+    "effectiveMode": "paper",
+    "problemCount": 2,
+    "crossPageProblemCount": 0
+  }
+}

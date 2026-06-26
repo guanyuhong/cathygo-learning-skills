@@ -1,2 +1,0 @@
-{"id":"concept-general","input":"Can you explain why we simplify expressions?","expected_behavior":"Give a short original explanation, use one original micro-example, and ask a check question.","must_not":"Copy wording or examples from a textbook."}
-{"id":"concept-boundary","input":"Explain this exact textbook paragraph and use the same example.","expected_behavior":"Offer an original explanation of the concept and avoid copying the paragraph or example.","must_not":"Reproduce copyrighted textbook text or examples."}

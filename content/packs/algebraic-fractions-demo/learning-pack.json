@@ -1,0 +1,102 @@
+{
+  "schema": "cgo.learning_pack.v1",
+  "kind": "learning_pack",
+  "id": "algebraic-fractions-demo",
+  "title": "Algebraic Fractions Demo",
+  "version": "0.1.0",
+  "language": "en",
+  "subject": "math",
+  "stage": "middle",
+  "grade_band": "grade7",
+  "source_refs": [
+    "fractions-source#c001",
+    "fractions-source#c002",
+    "fractions-source#c003",
+    "fractions-source#c004"
+  ],
+  "kg_refs": [
+    "algebraic-fraction",
+    "denominator-not-zero",
+    "invalid-letter-cancellation"
+  ],
+  "objectives": [
+    {
+      "id": "obj-define-algebraic-fraction",
+      "text": "Recognize an algebraic fraction and explain why its denominator matters.",
+      "kg_refs": ["algebraic-fraction"],
+      "level": "B"
+    },
+    {
+      "id": "obj-domain-check",
+      "text": "Exclude values that make the original denominator zero before simplifying or solving.",
+      "kg_refs": ["denominator-not-zero"],
+      "level": "B"
+    },
+    {
+      "id": "obj-avoid-invalid-cancellation",
+      "text": "Avoid canceling matching letters unless they are complete common factors.",
+      "kg_refs": ["invalid-letter-cancellation"],
+      "level": "A"
+    }
+  ],
+  "knowledge_context": {
+    "primary_node": "algebraic-fraction",
+    "focus_nodes": [
+      "algebraic-fraction",
+      "denominator-not-zero",
+      "invalid-letter-cancellation"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "task-precheck-001",
+      "type": "pretest",
+      "prompt": "Which values must be excluded before simplifying an algebraic fraction?",
+      "answer_key": "Values that make the original denominator zero.",
+      "kg_refs": ["denominator-not-zero"],
+      "source_refs": ["fractions-source#c002"],
+      "review": { "state": "accepted" }
+    },
+    {
+      "id": "task-concept-001",
+      "type": "concept_check",
+      "prompt": "Why is canceling matching letters not always valid in an algebraic fraction?",
+      "answer_key": "Only complete common factors may be canceled; matching letters inside terms are not automatically common factors.",
+      "kg_refs": ["invalid-letter-cancellation"],
+      "source_refs": ["fractions-source#c003"],
+      "review": { "state": "accepted" }
+    }
+  ],
+  "misconceptions": [
+    {
+      "id": "mis-invalid-letter-cancellation",
+      "kg_ref": "invalid-letter-cancellation",
+      "summary": "The learner cancels matching symbols instead of common factors.",
+      "source_refs": ["fractions-source#c003"]
+    }
+  ],
+  "remediations": [
+    {
+      "id": "rem-factor-first",
+      "target": "mis-invalid-letter-cancellation",
+      "strategy": "Ask the learner to factor numerator and denominator first, then identify complete common factors.",
+      "kg_refs": ["invalid-letter-cancellation"]
+    }
+  ],
+  "assessment": [
+    {
+      "id": "assess-domain-and-cancel",
+      "task_refs": ["task-precheck-001", "task-concept-001"],
+      "kg_refs": ["denominator-not-zero", "invalid-letter-cancellation"]
+    }
+  ],
+  "compat": {
+    "teachany": {
+      "node_id": "math-m-algebraic-fractions-demo",
+      "lesson_type": "new-concept"
+    }
+  },
+  "review": {
+    "state": "accepted"
+  }
+}

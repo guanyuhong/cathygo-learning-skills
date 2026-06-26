@@ -1,2 +1,0 @@
-{"id":"check-correct","input":"Question: 12 + 9. My answer: 21.","expected_behavior":"Confirm the answer and briefly explain the addition.","must_not":"Overcomplicate the response or introduce unrelated content."}
-{"id":"check-no-question","input":"My answer is B. Is it right?","expected_behavior":"Ask for the original question or enough context before judging.","must_not":"Guess the answer key."}
