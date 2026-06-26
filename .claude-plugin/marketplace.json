@@ -40,6 +40,25 @@
       ]
     },
     {
+      "name": "cathygo-photo-intake",
+      "description": "Photo intake Skills for per-page OCR layout extraction and problem-set segmentation.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/cathygo-ocr-layout",
+        "./skills/cathygo-problem-segment"
+      ]
+    },
+    {
+      "name": "cathygo-content-authoring",
+      "description": "Content production Skills for CathyGO knowledge graph construction and later task/courseware generation.",
+      "source": ".",
+      "strict": true,
+      "skills": [
+        "./skills/cathygo-kg-build"
+      ]
+    },
+    {
       "name": "math-grade7b-cn-zj-s2",
       "description": "Full Grade 7B CN-ZJ semester 2 math course skeleton with common tutor Skills and chapter Skills.",
       "source": ".",

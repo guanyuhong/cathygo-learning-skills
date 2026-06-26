@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cathygo.local/schemas/cgo.kg.v1.schema.json",
+  "title": "CathyGO Knowledge Graph",
+  "type": "object",
+  "required": ["schema", "kind", "id", "title", "version", "nodes", "edges"],
+  "additionalProperties": true,
+  "properties": {
+    "schema": { "const": "cgo.kg.v1" },
+    "kind": { "const": "kg" },
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "language": { "type": "string" },
+    "profile": { "type": "string" },
+    "sources": { "type": "array" },
+    "nodes": { "type": "array" },
+    "edges": { "type": "array" },
+    "collections": { "type": "array" },
+    "views": { "type": "array" },
+    "quality": { "type": "object" }
+  }
+}

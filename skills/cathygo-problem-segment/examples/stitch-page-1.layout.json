@@ -1,0 +1,27 @@
+{
+  "_note": "Clean-room synthetic cross-page layout input page 1.",
+  "skill": "cathygo.ocr_layout",
+  "version": "0.1",
+  "status": "ok",
+  "provider": { "name": "zhipu", "model": "glm-ocr" },
+  "sourceImage": { "imageId": "page_0", "width": 900, "height": 600, "mimeType": "image/png" },
+  "text": {
+    "markdown": "3. 阅读材料：某社区开展志愿服务，",
+    "plain": "3. 阅读材料：某社区开展志愿服务，"
+  },
+  "elements": [
+    {
+      "id": "layout_0_0",
+      "pageIndex": 0,
+      "index": 0,
+      "type": "text",
+      "label": "text",
+      "nativeLabel": "text",
+      "content": "3. 阅读材料：某社区开展志愿服务，",
+      "bbox": { "x": 0.08, "y": 0.72, "width": 0.8, "height": 0.12, "unit": "normalized" },
+      "source": { "provider": "zhipu", "model": "glm-ocr", "field": "layout_details", "imageId": "page_0" }
+    }
+  ],
+  "screenshotCandidates": [],
+  "diagnostics": {}
+}

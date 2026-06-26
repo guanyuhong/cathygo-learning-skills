@@ -1,0 +1,67 @@
+{
+  "_note": "Clean-room synthetic example. Not a real exam or textbook. Illustrates the cathygo.ocr_layout output shape only.",
+  "skill": "cathygo.ocr_layout",
+  "version": "0.1",
+  "status": "ok",
+  "provider": {
+    "name": "zhipu",
+    "model": "glm-ocr"
+  },
+  "sourceImage": {
+    "imageId": "recognition",
+    "width": 1000,
+    "height": 700,
+    "mimeType": "image/png"
+  },
+  "text": {
+    "markdown": "1. \u5982\u56fe\uff0c\u5c0f\u8239\u4ece A \u5730\u51fa\u53d1\uff0c\u6c42 x \u7684\u503c\u3002\n\n![](page=0,bbox=[60, 210, 280, 470])",
+    "plain": "1. \u5982\u56fe\uff0c\u5c0f\u8239\u4ece A \u5730\u51fa\u53d1\uff0c\u6c42 x \u7684\u503c\u3002"
+  },
+  "elements": [
+    {
+      "id": "layout_0_0",
+      "pageIndex": 0,
+      "index": 0,
+      "type": "text",
+      "label": "text",
+      "nativeLabel": "text",
+      "content": "1. \u5982\u56fe\uff0c\u5c0f\u8239\u4ece A \u5730\u51fa\u53d1\uff0c\u6c42 x \u7684\u503c\u3002",
+      "bbox": { "x": 0.06, "y": 0.06, "width": 0.86, "height": 0.12, "unit": "normalized" },
+      "source": { "provider": "zhipu", "model": "glm-ocr", "field": "layout_details", "imageId": "recognition" }
+    },
+    {
+      "id": "layout_0_1",
+      "pageIndex": 0,
+      "index": 1,
+      "type": "image",
+      "label": "image",
+      "nativeLabel": "image",
+      "content": "",
+      "bbox": { "x": 0.06, "y": 0.3, "width": 0.22, "height": 0.37, "unit": "normalized" },
+      "source": { "provider": "zhipu", "model": "glm-ocr", "field": "layout_details", "imageId": "recognition" }
+    }
+  ],
+  "screenshotCandidates": [
+    {
+      "id": "problem",
+      "role": "problem_crop",
+      "title": "\u9898\u76ee",
+      "source": {
+        "imageId": "recognition",
+        "bbox": { "x": 0.06, "y": 0.06, "width": 0.86, "height": 0.61, "unit": "normalized" }
+      },
+      "provenance": { "kind": "layout_union", "elementIds": ["layout_0_0", "layout_0_1"] }
+    },
+    {
+      "id": "diagram_1",
+      "role": "diagram_crop",
+      "title": "\u56fe 1",
+      "source": {
+        "imageId": "recognition",
+        "bbox": { "x": 0.06, "y": 0.3, "width": 0.22, "height": 0.37, "unit": "normalized" }
+      },
+      "provenance": { "kind": "image_element", "elementId": "layout_0_1" }
+    }
+  ],
+  "diagnostics": {}
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cathygo.local/schemas/cgo.kg.candidates.v1.schema.json",
+  "title": "CathyGO KG Candidate Batch",
+  "type": "object",
+  "required": ["schema", "kind", "id", "source_batch", "node_candidates", "edge_candidates"],
+  "additionalProperties": true,
+  "properties": {
+    "schema": { "const": "cgo.kg.candidates.v1" },
+    "kind": { "const": "kg_candidates" },
+    "id": { "type": "string", "minLength": 1 },
+    "target_kg": { "type": "string" },
+    "source_batch": { "type": "object" },
+    "node_candidates": { "type": "array" },
+    "edge_candidates": { "type": "array" },
+    "revisions": { "type": "array" },
+    "retirements": { "type": "array" },
+    "conflicts": { "type": "array" },
+    "review_queue": { "type": "array" }
+  }
+}

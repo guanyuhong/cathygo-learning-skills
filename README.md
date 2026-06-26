@@ -38,6 +38,8 @@ cathygo-learning-skills/
     math-grade7b-fraction-concept-explain/
     math-grade7b-fraction-domain-diagnosis/
     cathygo-skill-creator/
+    cathygo-ocr-layout/
+    cathygo-problem-segment/
   spec/
     cathygo-learning-skill-spec.md
   template/
@@ -82,6 +84,7 @@ python tools/cathygo.py validate
 | `math-grade7b-cn-zj-s2` | Full Grade 7B CN-ZJ semester 2 math course skeleton. | course guide plus 6 chapter Skills |
 | `math-grade7b-fraction` | First demo plugin for Grade 7B algebraic fraction learning. | `math-grade7b-fraction-concept-explain`, `math-grade7b-fraction-domain-diagnosis` |
 | `cathygo-authoring-skills` | Authoring support for creating new CathyGO Learning Skills. | `cathygo-skill-creator` |
+| `cathygo-photo-intake` | Photo intake for OCR layout extraction and problem-set segmentation. | `cathygo-ocr-layout`, `cathygo-problem-segment` |
 
 ## Available Math Grade 7B plugins
 

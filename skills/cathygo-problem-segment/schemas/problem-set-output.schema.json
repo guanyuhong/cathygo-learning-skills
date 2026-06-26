@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CathyGO Problem Set Skill Output",
+  "type": "object",
+  "required": [
+    "skill",
+    "version",
+    "status",
+    "mode",
+    "pages",
+    "problems",
+    "diagnostics"
+  ],
+  "properties": {
+    "skill": {
+      "const": "cathygo.problem_set"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "status": {
+      "enum": ["ok", "failed"]
+    },
+    "mode": {
+      "enum": ["single", "stitch", "paper", "auto"]
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pageIndex", "imageId", "width", "height"],
+        "properties": {
+          "pageIndex": { "type": "integer", "minimum": 0 },
+          "imageId": { "type": "string" },
+          "width": { "type": "number" },
+          "height": { "type": "number" },
+          "mimeType": { "type": "string" },
+          "sourcePath": { "type": "string" }
+        }
+      }
+    },
+    "problems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "section",
+          "type",
+          "pageSpan",
+          "textMarkdown",
+          "textPlain",
+          "elementRefs",
+          "screenshotCandidates"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "number": { "type": ["string", "null"] },
+          "section": { "type": ["string", "null"] },
+          "type": {
+            "enum": ["choice", "fill", "solve", "unknown"]
+          },
+          "pageSpan": {
+            "type": "array",
+            "items": { "type": "integer", "minimum": 0 }
+          },
+          "textMarkdown": { "type": "string" },
+          "textPlain": { "type": "string" },
+          "elementRefs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["pageIndex", "elementId"],
+              "properties": {
+                "pageIndex": { "type": "integer", "minimum": 0 },
+                "elementId": { "type": "string" }
+              }
+            }
+          },
+          "screenshotCandidates": {
+            "type": "array",
+            "items": { "type": "object" }
+          },
+          "continuedFrom": { "type": ["string", "null"] },
+          "continuesTo": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "object"
+    }
+  }
+}

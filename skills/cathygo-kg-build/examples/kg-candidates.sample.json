@@ -1,0 +1,40 @@
+{
+  "schema": "cgo.kg.candidates.v1",
+  "kind": "kg_candidates",
+  "id": "fractions-candidates-001",
+  "target_kg": "algebraic-fractions-demo",
+  "source_batch": {
+    "id": "fractions-source",
+    "sources": []
+  },
+  "node_candidates": [
+    {
+      "id": "fraction-equation-check",
+      "type": "skill",
+      "name": "Check fraction equation candidates",
+      "summary": "Check each candidate answer against the original denominators.",
+      "subject": "math",
+      "stage": "middle",
+      "tags": ["equation", "checking"],
+      "source_refs": ["fractions-source#c004"],
+      "confidence": 0.96,
+      "review": { "state": "accepted" }
+    }
+  ],
+  "edge_candidates": [
+    {
+      "id": "edge:requires:denominator-not-zero:fraction-equation-check",
+      "type": "requires",
+      "source": "denominator-not-zero",
+      "target": "fraction-equation-check",
+      "evidence": "Candidate answers must be checked against the original denominators.",
+      "source_refs": ["fractions-source#c004"],
+      "confidence": 0.95,
+      "review": { "state": "accepted" }
+    }
+  ],
+  "revisions": [],
+  "retirements": [],
+  "conflicts": [],
+  "review_queue": []
+}

@@ -225,7 +225,7 @@ def validate_chapter_skill(skill_dir: Path, errors: list[str]) -> None:
 
 def validate_disallowed_assets(errors: list[str]) -> None:
     for path in ROOT.rglob("*"):
-        if ".git" in path.parts:
+        if ".git" in path.parts or "tmp" in path.parts or "node_modules" in path.parts:
             continue
         if not path.is_file():
             continue

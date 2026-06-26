@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CathyGO OCR Layout Skill Output",
+  "type": "object",
+  "required": [
+    "skill",
+    "version",
+    "status",
+    "provider",
+    "sourceImage",
+    "text",
+    "elements",
+    "screenshotCandidates",
+    "diagnostics"
+  ],
+  "properties": {
+    "skill": {
+      "const": "cathygo.ocr_layout"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "status": {
+      "enum": ["ok", "failed"]
+    },
+    "provider": {
+      "type": "object",
+      "required": ["name", "model"],
+      "properties": {
+        "name": { "type": "string" },
+        "model": { "type": "string" }
+      }
+    },
+    "sourceImage": {
+      "type": "object",
+      "required": ["imageId", "width", "height", "mimeType"],
+      "properties": {
+        "imageId": { "type": "string" },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "mimeType": { "type": "string" }
+      }
+    },
+    "text": {
+      "type": "object",
+      "required": ["markdown", "plain"],
+      "properties": {
+        "markdown": { "type": "string" },
+        "plain": { "type": "string" }
+      }
+    },
+    "elements": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "screenshotCandidates": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "diagnostics": {
+      "type": "object"
+    }
+  }
+}

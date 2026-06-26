@@ -1,0 +1,49 @@
+{
+  "_note": "Clean-room synthetic paper layout input with section and multiple questions.",
+  "skill": "cathygo.ocr_layout",
+  "version": "0.1",
+  "status": "ok",
+  "provider": { "name": "zhipu", "model": "glm-ocr" },
+  "sourceImage": { "imageId": "page_0", "width": 900, "height": 900, "mimeType": "image/png" },
+  "text": {
+    "markdown": "一、选择题\n1. 下列运算正确的是（ ）\n2. 若 a+b=5，则 a 的值可能是（ ）",
+    "plain": "一、选择题\n1. 下列运算正确的是（ ）\n2. 若 a+b=5，则 a 的值可能是（ ）"
+  },
+  "elements": [
+    {
+      "id": "layout_0_0",
+      "pageIndex": 0,
+      "index": 0,
+      "type": "text",
+      "label": "text",
+      "nativeLabel": "text",
+      "content": "一、选择题",
+      "bbox": { "x": 0.08, "y": 0.08, "width": 0.4, "height": 0.06, "unit": "normalized" },
+      "source": { "provider": "zhipu", "model": "glm-ocr", "field": "layout_details", "imageId": "page_0" }
+    },
+    {
+      "id": "layout_0_1",
+      "pageIndex": 0,
+      "index": 1,
+      "type": "text",
+      "label": "text",
+      "nativeLabel": "text",
+      "content": "1. 下列运算正确的是（ ）",
+      "bbox": { "x": 0.08, "y": 0.18, "width": 0.8, "height": 0.08, "unit": "normalized" },
+      "source": { "provider": "zhipu", "model": "glm-ocr", "field": "layout_details", "imageId": "page_0" }
+    },
+    {
+      "id": "layout_0_2",
+      "pageIndex": 0,
+      "index": 2,
+      "type": "text",
+      "label": "text",
+      "nativeLabel": "text",
+      "content": "2. 若 a+b=5，则 a 的值可能是（ ）",
+      "bbox": { "x": 0.08, "y": 0.32, "width": 0.8, "height": 0.08, "unit": "normalized" },
+      "source": { "provider": "zhipu", "model": "glm-ocr", "field": "layout_details", "imageId": "page_0" }
+    }
+  ],
+  "screenshotCandidates": [],
+  "diagnostics": {}
+}
