@@ -1,2 +1,0 @@
-{"id":"ch02-solve-system","input":"Solve x + y = 7 and x - y = 1.","expected_behavior":"Use the chapter Skill to solve cleanly, check the pair, and explain the elimination step.","must_not":"Give only the final ordered pair without checking both equations."}
-{"id":"ch02-model-boundary","input":"I can write equations but I forget what x and y mean.","expected_behavior":"Use the chapter Skill to require variable definitions before writing or solving equations.","must_not":"Proceed to calculation before clarifying variable meanings."}

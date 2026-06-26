@@ -1,182 +1,132 @@
-# CathyGO Learning Skills Marketplace
+# CathyGO Learning Skills
 
-This repository is the official CathyGO Learning Skills marketplace. It is not a general software template repository: it is a curated collection of self-contained education Skills for AI Tutor and CathyGO Agent workflows.
+CathyGO Learning Skills 是 CathyGO 的内容生产 Skill library。它采用类似 `taste-skill` 的单仓多 Skill 模式：一个仓库包含多个可选安装 Skill，用户按 `SKILL.md` frontmatter 里的 `name` 精确安装。
 
-## What is CathyGO Learning Skills
+## 可安装 Skill
 
-A CathyGO Learning Skill is a small, installable education capability. Each Skill lives in its own folder and contains at least a `SKILL.md` file. A Skill may also include structured learning references, assets, scripts, and eval cases.
+| Install name | 用途 |
+| --- | --- |
+| `cathygo-knowledge-map` | 基于指定参考材料构建、校验和增量维护 `cgo.kg.v1` 知识图谱。 |
+| `cathygo-learning-pack` | 基于 KG 和学习目标构建 `learning-pack.json`、`knowledge-context.json` 和内容包 manifest。 |
+| `cathygo-qij-question` | 构建 OCR layout、problem set、QIJ 1.0 题目包和题目侧 artifact。 |
 
-CathyGO Learning Skills are designed to help an AI Tutor:
+推荐按需安装：
 
-- explain concepts with age-appropriate language;
-- generate clean-room practice questions;
-- check learner answers with actionable feedback;
-- diagnose learning barriers;
-- keep only appropriate learning memory;
-- deliver original comic-style lessons without copying textbook material.
+```bash
+npx skills add https://github.com/guanyuhong/cathygo-learning-skills --skill "cathygo-knowledge-map"
+npx skills add https://github.com/guanyuhong/cathygo-learning-skills --skill "cathygo-learning-pack"
+npx skills add https://github.com/guanyuhong/cathygo-learning-skills --skill "cathygo-qij-question"
+```
 
-## Repository structure
+本地查看 Skill 路径：
+
+```bash
+source ./skill.sh cathygo-knowledge-map
+source ./skill.sh cathygo-learning-pack
+source ./skill.sh cathygo-qij-question
+```
+
+## 结构
 
 ```text
 cathygo-learning-skills/
   .claude-plugin/
     marketplace.json
-  .github/
-    workflows/
-      validate.yml
+    plugin.json
   skills/
-    common-concept-explain/
-    common-quiz-generate/
-    common-answer-check/
-    math-grade7b-cn-zj-s2-course-guide/
-    math-grade7b-cn-zj-s2-ch01-lines-and-parallels/
-    math-grade7b-cn-zj-s2-ch02-equation-systems/
-    math-grade7b-cn-zj-s2-ch03-polynomial-ops/
-    math-grade7b-cn-zj-s2-ch04-factorization/
-    math-grade7b-cn-zj-s2-ch05-fractions/
-    math-grade7b-cn-zj-s2-ch06-data-statistics/
-    math-grade7b-fraction-concept-explain/
-    math-grade7b-fraction-domain-diagnosis/
-    cathygo-skill-creator/
-    cathygo-ocr-layout/
-    cathygo-problem-segment/
-  spec/
-    cathygo-learning-skill-spec.md
-  template/
-    learning-skill/
+    cathygo-knowledge-map/
+      SKILL.md
+      scripts/
+      workflows/
+      references/
+      schemas/
+      examples/
+    cathygo-learning-pack/
+      SKILL.md
+      scripts/
+      workflows/
+      references/
+      schemas/
+    cathygo-qij-question/
+      SKILL.md
+      scripts/
+      workflows/
+      references/
+      schemas/
+      examples/
+  content/
+    packs/
+      algebraic-fractions-demo/
+        kg.json
+        learning-pack.json
+        knowledge-context.json
+        manifest.json
   tools/
     cathygo.py
 ```
 
-Every Skill directory must be self-contained. A consumer should be able to install one Skill folder and understand its purpose, references, evals, and usage rules without reading unrelated folders.
+## 内容包边界
 
-## How to install plugins
+`content/packs/<pack-id>/` 是内容沉淀位置，不是 Skill。内容包由三个专业 Skill 读取、校验和转换。
 
-Add this marketplace:
+每个内容包当前至少包含：
 
-```bash
-/plugin marketplace add guanyuhong/cathygo-learning-skills
-```
+- `kg.json`：`cgo.kg.v1`
+- `learning-pack.json`：`cgo.learning_pack.v1`
+- `knowledge-context.json`：TeachAny 兼容上下文
+- `manifest.json`：内容包元数据和 compat 信息
 
-Install a plugin:
+未来题目内容优先放在内容包内部的 `questions/*.qij.json` 或 `problem-set.json`，由 `cathygo-qij-question` 维护。
 
-```bash
-/plugin install common-tutor-skills@cathygo-learning-skills
-/plugin install math-grade7b-cn-zj-s2@cathygo-learning-skills
-/plugin install math-grade7b-cn-zj-s2-ch05-fractions@cathygo-learning-skills
-/plugin install math-grade7b-fraction@cathygo-learning-skills
-/plugin install cathygo-authoring-skills@cathygo-learning-skills
-```
+## 常用命令
 
-Run local validation before publishing changes:
+安装 Python 依赖：
 
 ```bash
 python -m pip install -r requirements.txt
+```
+
+校验仓库结构和内容包：
+
+```bash
 python tools/cathygo.py list
 python tools/cathygo.py validate
 ```
 
-## Available plugins
-
-| Plugin | Purpose | Skills |
-| --- | --- | --- |
-| `common-tutor-skills` | Common tutor behaviors that can be reused across subjects. | `common-concept-explain`, `common-quiz-generate`, `common-answer-check` |
-| `math-grade7b-cn-zj-s2` | Full Grade 7B CN-ZJ semester 2 math course skeleton. | course guide plus 6 chapter Skills |
-| `math-grade7b-fraction` | First demo plugin for Grade 7B algebraic fraction learning. | `math-grade7b-fraction-concept-explain`, `math-grade7b-fraction-domain-diagnosis` |
-| `cathygo-authoring-skills` | Authoring support for creating new CathyGO Learning Skills. | `cathygo-skill-creator` |
-| `cathygo-photo-intake` | Photo intake for OCR layout extraction and problem-set segmentation. | `cathygo-ocr-layout`, `cathygo-problem-segment` |
-
-## Available Math Grade 7B plugins
-
-| Plugin | Scope |
-| --- | --- |
-| `math-grade7b-cn-zj-s2` | Full semester 2 course skeleton with common tutor Skills, course guide, and all chapter Skills. |
-| `math-grade7b-cn-zj-s2-ch01-lines` | Chapter 1: intersecting lines, angle relationships, parallel lines, and translation. |
-| `math-grade7b-cn-zj-s2-ch02-equation-systems` | Chapter 2: two-variable and three-variable linear equation systems. |
-| `math-grade7b-cn-zj-s2-ch03-polynomial-ops` | Chapter 3: multiplication, formulas, simplification, and division of polynomials. |
-| `math-grade7b-cn-zj-s2-ch04-factorization` | Chapter 4: meaning of factorization, common factor extraction, and formula-based factorization. |
-| `math-grade7b-cn-zj-s2-ch05-fractions` | Chapter 5: algebraic fractions and fraction equations. |
-| `math-grade7b-cn-zj-s2-ch06-data-statistics` | Chapter 6: data collection, charts, frequency, and histograms. |
-
-Install examples:
+校验 KG：
 
 ```bash
-/plugin install math-grade7b-cn-zj-s2@cathygo-learning-skills
-/plugin install math-grade7b-cn-zj-s2-ch05-fractions@cathygo-learning-skills
+python skills/cathygo-knowledge-map/scripts/kg.py validate \
+  --kg content/packs/algebraic-fractions-demo/kg.json
 ```
 
-## Course structure
-
-The Grade 7B CN-ZJ semester 2 course skeleton uses clean-room topic maps for six chapters:
-
-1. Intersecting Lines and Parallel Lines
-2. Systems of Linear Equations
-3. Polynomial Operations
-4. Factorization
-5. Algebraic Fractions
-6. Data and Statistical Charts
-
-The chapter maps are topic-aligned skeletons only. They do not contain textbook pages, copied explanations, copied exercise prompts, or publisher images.
-
-## Level ladder
-
-Course and chapter Skills use four learning levels:
-
-- `C`: foundation repair for missing prerequisites and basic recognition.
-- `B`: standard mastery for core procedures and routine checks.
-- `A`: stable improvement with mixed tasks and explanation of reasoning.
-- `A_plus`: stretch challenges that combine ideas or require strategic choices.
-
-## Comic learning design
-
-The course guide defines an original CathyGO comic world for each chapter, such as Geometry Detective Street, Equation Twin Cities, Polynomial Energy Factory, Factorization Workshop, Fraction City, and Data Detective Bureau.
-
-Every comic lesson follows the same learning beat:
-
-```text
-hook -> intuition -> rule -> guided_example -> common_trap -> student_check -> recap -> next_mission
-```
-
-Comic scripts must use original CathyGO characters, scenes, dialogue, and visual descriptions. They must not copy textbook illustrations, page layouts, or publisher settings.
-
-## How to create a learning skill
-
-1. Copy `template/learning-skill/` to `skills/<new-skill-name>/`.
-2. Rename the Skill folder with lowercase words separated by hyphens.
-3. Edit `SKILL.md` frontmatter:
-   - `name` must exactly match the parent folder name.
-   - `description` must clearly say when to trigger the Skill and when not to trigger it.
-4. Fill the reference files with original learning content, barriers, assessment items, memory rules, and optional comic lesson scripts.
-5. Add `evals/eval_cases.jsonl` with representative tutor scenarios.
-6. Add the Skill path to `.claude-plugin/marketplace.json` when it should be installable.
-7. Run `python tools/cathygo.py validate`.
-
-## Clean-room authoring policy
-
-All public content in this repository must be clean-room authored.
-
-Do not commit:
-
-- textbook PDFs;
-- textbook screenshots or scans;
-- copied textbook prose;
-- copied textbook examples;
-- publisher images, page layouts, watermarks, or diagrams;
-- copyrighted worksheet images or answer keys.
-
-Allowed content includes original explanations, original assessment items, general mathematical or educational facts, and references written from scratch by contributors. When a Skill covers a textbook-aligned topic, express the concept in CathyGO's own words and use original examples.
-
-## First demo: math-grade7b-fraction
-
-The first demo plugin is `math-grade7b-fraction`. It focuses on Grade 7B algebraic fractions and includes:
-
-- concept explanation for algebraic fractions;
-- domain restriction guidance such as "a denominator cannot be zero";
-- diagnosis of common barriers like invalid cancellation and missing domain checks;
-- original comic lesson ideas using scenes such as "Denominator Gate" and "Variable Courier X".
-
-Install it with:
+校验 learning pack：
 
 ```bash
-/plugin install math-grade7b-fraction@cathygo-learning-skills
+python skills/cathygo-learning-pack/scripts/pack.py validate \
+  --pack content/packs/algebraic-fractions-demo/learning-pack.json
 ```
+
+分割 OCR layout 示例：
+
+```bash
+python skills/cathygo-qij-question/scripts/problem_set.py segment \
+  --pages skills/cathygo-qij-question/examples/single-page.layout.json \
+  --mode auto \
+  --out /tmp/cathygo-problem-set.json
+```
+
+从 OCR JSON 中选择题目和图形候选：
+
+```bash
+BEANX_LEARNING_CORE_PATH=/Users/guanyuhong/beanX/cathygo-agent/packages/learning-core/src \
+python skills/cathygo-qij-question/scripts/ocr.py select \
+  --input skills/cathygo-qij-question/examples/ocr-layout.example-output.json \
+  --question 1 \
+  --figure 图1 \
+  --out /tmp/cathygo-ocr-selection.json
+```
+
+## Clean-room 规则
+
+不要提交教材 PDF、扫描件、截图、复制来的教材正文、复制来的练习题、出版社图片或答案。只有在法律和授权允许时，才保留来源引用和短小 review excerpt。

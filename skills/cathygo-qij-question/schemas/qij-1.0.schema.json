@@ -1,0 +1,2259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:qij:schema:document:1.0",
+  "title": "Question Interchange JSON (QIJ) 1.0 Document",
+  "description": "A JSON format for interoperable questions, responses, grading rules, assets, and step-by-step solutions.",
+  "type": "object",
+  "required": [
+    "spec",
+    "version",
+    "id",
+    "title",
+    "language",
+    "items"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "spec": {
+      "const": "qij"
+    },
+    "version": {
+      "const": "1.0"
+    },
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "language": {
+      "$ref": "#/$defs/languageTag"
+    },
+    "delivery": {
+      "$ref": "#/$defs/delivery"
+    },
+    "assets": {
+      "$ref": "#/$defs/assets"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    },
+    "answerKey": {
+      "$ref": "#/$defs/answerKey"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "extensions": {
+      "$ref": "#/$defs/extensions"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,63}$",
+      "description": "A stable identifier with at most 64 ASCII characters."
+    },
+    "languageTag": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$",
+      "description": "A practical subset of BCP 47 language tags. Full BCP 47 validation is semantic."
+    },
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/jsonValue"
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*(?:\\.[A-Za-z0-9][A-Za-z0-9_-]*)+$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/jsonValue"
+      }
+    },
+    "delivery": {
+      "title": "Delivery preferences",
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "practice",
+            "exam",
+            "tutor"
+          ],
+          "default": "practice"
+        },
+        "submitMode": {
+          "enum": [
+            "item",
+            "all"
+          ],
+          "default": "item"
+        },
+        "solutionMode": {
+          "enum": [
+            "never",
+            "after-submit",
+            "step-by-step"
+          ],
+          "default": "after-submit"
+        },
+        "shuffleItems": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "item": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/question"
+        },
+        {
+          "$ref": "#/$defs/group"
+        }
+      ]
+    },
+    "question": {
+      "title": "Question",
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "points",
+        "content",
+        "responses"
+      ],
+      "properties": {
+        "kind": {
+          "const": "question"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contentBlock"
+          }
+        },
+        "responses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/responseDefinition"
+          }
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "group": {
+      "title": "Question group",
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "content",
+        "items"
+      ],
+      "properties": {
+        "kind": {
+          "const": "group"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/item"
+          }
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "contentBlock": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/markdownBlock"
+        },
+        {
+          "$ref": "#/$defs/mathBlock"
+        },
+        {
+          "$ref": "#/$defs/assetBlock"
+        },
+        {
+          "$ref": "#/$defs/tableBlock"
+        },
+        {
+          "$ref": "#/$defs/codeBlock"
+        },
+        {
+          "$ref": "#/$defs/responseBlock"
+        },
+        {
+          "$ref": "#/$defs/templateBlock"
+        }
+      ]
+    },
+    "displayContentBlock": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/markdownBlock"
+        },
+        {
+          "$ref": "#/$defs/mathBlock"
+        },
+        {
+          "$ref": "#/$defs/assetBlock"
+        },
+        {
+          "$ref": "#/$defs/tableBlock"
+        },
+        {
+          "$ref": "#/$defs/codeBlock"
+        },
+        {
+          "$ref": "#/$defs/passiveTemplateBlock"
+        }
+      ]
+    },
+    "markdownBlock": {
+      "title": "Markdown content block",
+      "type": "object",
+      "required": [
+        "type",
+        "text"
+      ],
+      "properties": {
+        "type": {
+          "const": "markdown"
+        },
+        "text": {
+          "type": "string"
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "mathBlock": {
+      "title": "Math content block",
+      "type": "object",
+      "required": [
+        "type",
+        "latex"
+      ],
+      "properties": {
+        "type": {
+          "const": "math"
+        },
+        "latex": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display": {
+          "enum": [
+            "inline",
+            "block"
+          ],
+          "default": "block"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetBlock": {
+      "title": "Asset reference content block",
+      "type": "object",
+      "required": [
+        "type",
+        "assetId"
+      ],
+      "properties": {
+        "type": {
+          "const": "asset"
+        },
+        "assetId": {
+          "$ref": "#/$defs/id"
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "tableCell": {
+      "type": [
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ]
+    },
+    "tableBlock": {
+      "title": "Table content block",
+      "type": "object",
+      "required": [
+        "type",
+        "rows"
+      ],
+      "properties": {
+        "type": {
+          "const": "table"
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/tableCell"
+            }
+          }
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "codeBlock": {
+      "title": "Code content block",
+      "type": "object",
+      "required": [
+        "type",
+        "code"
+      ],
+      "properties": {
+        "type": {
+          "const": "code"
+        },
+        "code": {
+          "type": "string"
+        },
+        "codeLanguage": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "lineNumbers": {
+          "type": "boolean",
+          "default": false
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "responseBlock": {
+      "title": "Response placement block",
+      "type": "object",
+      "required": [
+        "type",
+        "responseId"
+      ],
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "responseId": {
+          "$ref": "#/$defs/id"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "templateBlock": {
+      "title": "Inline template content block",
+      "type": "object",
+      "required": [
+        "type",
+        "parts"
+      ],
+      "properties": {
+        "type": {
+          "const": "template"
+        },
+        "parts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/templatePart"
+          }
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "passiveTemplateBlock": {
+      "title": "Template without response controls",
+      "type": "object",
+      "required": [
+        "type",
+        "parts"
+      ],
+      "properties": {
+        "type": {
+          "const": "template"
+        },
+        "parts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/passiveTemplatePart"
+          }
+        },
+        "language": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "templatePart": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/templateTextPart"
+        },
+        {
+          "$ref": "#/$defs/templateMathPart"
+        },
+        {
+          "$ref": "#/$defs/templateResponsePart"
+        }
+      ]
+    },
+    "passiveTemplatePart": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/templateTextPart"
+        },
+        {
+          "$ref": "#/$defs/templateMathPart"
+        }
+      ]
+    },
+    "templateTextPart": {
+      "type": "object",
+      "required": [
+        "type",
+        "text"
+      ],
+      "properties": {
+        "type": {
+          "const": "text"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "templateMathPart": {
+      "type": "object",
+      "required": [
+        "type",
+        "latex"
+      ],
+      "properties": {
+        "type": {
+          "const": "math"
+        },
+        "latex": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "additionalProperties": false
+    },
+    "templateResponsePart": {
+      "type": "object",
+      "required": [
+        "type",
+        "responseId"
+      ],
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "responseId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assets": {
+      "title": "Asset registry",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,63}$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "asset": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/imageAsset"
+        },
+        {
+          "$ref": "#/$defs/audioAsset"
+        },
+        {
+          "$ref": "#/$defs/videoAsset"
+        },
+        {
+          "$ref": "#/$defs/fileAsset"
+        },
+        {
+          "$ref": "#/$defs/widgetAsset"
+        }
+      ]
+    },
+    "mimeType": {
+      "type": "string",
+      "pattern": "^[^\\s/]+/[^\\s/]+$"
+    },
+    "sourceReference": {
+      "type": "string",
+      "minLength": 1,
+      "format": "uri-reference"
+    },
+    "imageAsset": {
+      "title": "Image asset",
+      "type": "object",
+      "required": [
+        "type",
+        "src",
+        "mimeType",
+        "alt"
+      ],
+      "properties": {
+        "type": {
+          "const": "image"
+        },
+        "src": {
+          "$ref": "#/$defs/sourceReference"
+        },
+        "mimeType": {
+          "$ref": "#/$defs/mimeType"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "audioAsset": {
+      "title": "Audio asset",
+      "type": "object",
+      "required": [
+        "type",
+        "src",
+        "mimeType"
+      ],
+      "properties": {
+        "type": {
+          "const": "audio"
+        },
+        "src": {
+          "$ref": "#/$defs/sourceReference"
+        },
+        "mimeType": {
+          "$ref": "#/$defs/mimeType"
+        },
+        "transcript": {
+          "type": "string"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "videoAsset": {
+      "title": "Video asset",
+      "type": "object",
+      "required": [
+        "type",
+        "src",
+        "mimeType"
+      ],
+      "properties": {
+        "type": {
+          "const": "video"
+        },
+        "src": {
+          "$ref": "#/$defs/sourceReference"
+        },
+        "mimeType": {
+          "$ref": "#/$defs/mimeType"
+        },
+        "captionSrc": {
+          "$ref": "#/$defs/sourceReference"
+        },
+        "transcript": {
+          "type": "string"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "fileAsset": {
+      "title": "File asset",
+      "type": "object",
+      "required": [
+        "type",
+        "src",
+        "mimeType",
+        "name"
+      ],
+      "properties": {
+        "type": {
+          "const": "file"
+        },
+        "src": {
+          "$ref": "#/$defs/sourceReference"
+        },
+        "mimeType": {
+          "$ref": "#/$defs/mimeType"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "widgetAsset": {
+      "title": "Registered widget asset",
+      "type": "object",
+      "required": [
+        "type",
+        "name",
+        "props",
+        "alt",
+        "fallbackAssetId"
+      ],
+      "properties": {
+        "type": {
+          "const": "widget"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,127}$"
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "fallbackAssetId": {
+          "$ref": "#/$defs/id"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "option": {
+      "title": "Option",
+      "type": "object",
+      "required": [
+        "id",
+        "content"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "matchingItem": {
+      "title": "Matching item",
+      "type": "object",
+      "required": [
+        "id",
+        "content"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "responseDefinition": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/choiceResponse"
+        },
+        {
+          "$ref": "#/$defs/booleanResponse"
+        },
+        {
+          "$ref": "#/$defs/textResponse"
+        },
+        {
+          "$ref": "#/$defs/numberResponse"
+        },
+        {
+          "$ref": "#/$defs/expressionResponse"
+        },
+        {
+          "$ref": "#/$defs/orderingResponse"
+        },
+        {
+          "$ref": "#/$defs/matchingResponse"
+        },
+        {
+          "$ref": "#/$defs/widgetResponse"
+        }
+      ]
+    },
+    "responseFallback": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/choiceFallback"
+        },
+        {
+          "$ref": "#/$defs/booleanFallback"
+        },
+        {
+          "$ref": "#/$defs/textFallback"
+        },
+        {
+          "$ref": "#/$defs/numberFallback"
+        },
+        {
+          "$ref": "#/$defs/expressionFallback"
+        }
+      ]
+    },
+    "choiceResponse": {
+      "title": "Choice response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "label",
+        "options"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "choice"
+        },
+        "multiple": {
+          "type": "boolean",
+          "default": false
+        },
+        "shuffle": {
+          "type": "boolean",
+          "default": false
+        },
+        "minSelections": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxSelections": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/option"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "not": {
+              "properties": {
+                "multiple": {
+                  "const": true
+                }
+              },
+              "required": [
+                "multiple"
+              ]
+            }
+          },
+          "then": {
+            "properties": {
+              "minSelections": {
+                "maximum": 1
+              },
+              "maxSelections": {
+                "maximum": 1
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "booleanResponse": {
+      "title": "Boolean response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "boolean"
+        },
+        "trueLabel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "falseLabel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "additionalProperties": false
+    },
+    "textResponse": {
+      "title": "Text response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "text"
+        },
+        "multiline": {
+          "type": "boolean",
+          "default": false
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberResponse": {
+      "title": "Number response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "number"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "expressionResponse": {
+      "title": "Expression response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "expression"
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "uniqueItems": true
+        },
+        "inputFormat": {
+          "enum": [
+            "latex",
+            "text"
+          ],
+          "default": "latex"
+        }
+      },
+      "additionalProperties": false
+    },
+    "orderingResponse": {
+      "title": "Ordering response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "label",
+        "options"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "ordering"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/option"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "matchingResponse": {
+      "title": "Matching response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "label",
+        "left",
+        "right"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "matching"
+        },
+        "left": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/matchingItem"
+          }
+        },
+        "right": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/matchingItem"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "widgetResponse": {
+      "title": "Widget response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "label",
+        "name",
+        "props",
+        "fallback"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "widget"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,127}$"
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "fallback": {
+          "$ref": "#/$defs/responseFallback"
+        }
+      },
+      "additionalProperties": false
+    },
+    "choiceFallback": {
+      "title": "Choice fallback response",
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "options"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "choice"
+        },
+        "multiple": {
+          "type": "boolean",
+          "default": false
+        },
+        "shuffle": {
+          "type": "boolean",
+          "default": false
+        },
+        "minSelections": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxSelections": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/option"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "not": {
+              "properties": {
+                "multiple": {
+                  "const": true
+                }
+              },
+              "required": [
+                "multiple"
+              ]
+            }
+          },
+          "then": {
+            "properties": {
+              "minSelections": {
+                "maximum": 1
+              },
+              "maxSelections": {
+                "maximum": 1
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "booleanFallback": {
+      "title": "Boolean fallback response",
+      "type": "object",
+      "required": [
+        "type",
+        "label"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "boolean"
+        },
+        "trueLabel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "falseLabel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "additionalProperties": false
+    },
+    "textFallback": {
+      "title": "Text fallback response",
+      "type": "object",
+      "required": [
+        "type",
+        "label"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "text"
+        },
+        "multiline": {
+          "type": "boolean",
+          "default": false
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberFallback": {
+      "title": "Number fallback response",
+      "type": "object",
+      "required": [
+        "type",
+        "label"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "number"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "expressionFallback": {
+      "title": "Expression fallback response",
+      "type": "object",
+      "required": [
+        "type",
+        "label"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "expression"
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "uniqueItems": true
+        },
+        "inputFormat": {
+          "enum": [
+            "latex",
+            "text"
+          ],
+          "default": "latex"
+        }
+      },
+      "additionalProperties": false
+    },
+    "answerKey": {
+      "title": "Answer key",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,63}$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/answerEntry"
+      }
+    },
+    "answerEntry": {
+      "title": "Answer entry for one question",
+      "type": "object",
+      "properties": {
+        "grading": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,63}$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/gradingRule"
+          }
+        },
+        "solution": {
+          "$ref": "#/$defs/solution"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "grading"
+          ]
+        },
+        {
+          "required": [
+            "solution"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "feedback": {
+      "title": "Feedback",
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "correct": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "incorrect": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "partial": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "normalization": {
+      "title": "String normalization settings",
+      "type": "object",
+      "properties": {
+        "trim": {
+          "type": "boolean",
+          "default": true
+        },
+        "caseSensitive": {
+          "type": "boolean",
+          "default": true
+        },
+        "collapseWhitespace": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "rubricCriterion": {
+      "title": "Rubric criterion",
+      "type": "object",
+      "required": [
+        "id",
+        "description",
+        "points"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "exactRule": {
+      "title": "Exact grading rule",
+      "type": "object",
+      "required": [
+        "type",
+        "accepted"
+      ],
+      "properties": {
+        "points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "feedback": {
+          "$ref": "#/$defs/feedback"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "exact"
+        },
+        "accepted": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "normalization": {
+          "$ref": "#/$defs/normalization"
+        }
+      },
+      "additionalProperties": false
+    },
+    "setRule": {
+      "title": "Set grading rule",
+      "type": "object",
+      "required": [
+        "type",
+        "expected"
+      ],
+      "properties": {
+        "points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "feedback": {
+          "$ref": "#/$defs/feedback"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "set"
+        },
+        "expected": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "partialCredit": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "numericRule": {
+      "title": "Numeric grading rule",
+      "type": "object",
+      "required": [
+        "type",
+        "expected"
+      ],
+      "properties": {
+        "points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "feedback": {
+          "$ref": "#/$defs/feedback"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "numeric"
+        },
+        "expected": {
+          "type": "number"
+        },
+        "absoluteTolerance": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        },
+        "relativeTolerance": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "expressionRule": {
+      "title": "Expression grading rule",
+      "type": "object",
+      "required": [
+        "type",
+        "expected"
+      ],
+      "properties": {
+        "points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "feedback": {
+          "$ref": "#/$defs/feedback"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "expression"
+        },
+        "expected": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "uniqueItems": true
+        },
+        "equivalence": {
+          "enum": [
+            "symbolic",
+            "numeric-sampling",
+            "exact-text"
+          ],
+          "default": "symbolic"
+        }
+      },
+      "additionalProperties": false
+    },
+    "rubricRule": {
+      "title": "Rubric grading rule",
+      "type": "object",
+      "required": [
+        "type",
+        "criteria"
+      ],
+      "properties": {
+        "points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "feedback": {
+          "$ref": "#/$defs/feedback"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "rubric"
+        },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/rubricCriterion"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "manualRule": {
+      "title": "Manual grading rule",
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "feedback": {
+          "$ref": "#/$defs/feedback"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        },
+        "type": {
+          "const": "manual"
+        }
+      },
+      "additionalProperties": false
+    },
+    "exactGradingRule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/exactRule"
+        },
+        {
+          "required": [
+            "points"
+          ]
+        }
+      ]
+    },
+    "setGradingRule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/setRule"
+        },
+        {
+          "required": [
+            "points"
+          ]
+        }
+      ]
+    },
+    "numericGradingRule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/numericRule"
+        },
+        {
+          "required": [
+            "points"
+          ]
+        }
+      ]
+    },
+    "expressionGradingRule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/expressionRule"
+        },
+        {
+          "required": [
+            "points"
+          ]
+        }
+      ]
+    },
+    "rubricGradingRule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/rubricRule"
+        },
+        {
+          "required": [
+            "points"
+          ]
+        }
+      ]
+    },
+    "manualGradingRule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/manualRule"
+        },
+        {
+          "required": [
+            "points"
+          ]
+        }
+      ]
+    },
+    "gradingRule": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/exactGradingRule"
+        },
+        {
+          "$ref": "#/$defs/setGradingRule"
+        },
+        {
+          "$ref": "#/$defs/numericGradingRule"
+        },
+        {
+          "$ref": "#/$defs/expressionGradingRule"
+        },
+        {
+          "$ref": "#/$defs/rubricGradingRule"
+        },
+        {
+          "$ref": "#/$defs/manualGradingRule"
+        }
+      ]
+    },
+    "checkpointGradingRule": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/exactRule"
+        },
+        {
+          "$ref": "#/$defs/setRule"
+        },
+        {
+          "$ref": "#/$defs/numericRule"
+        },
+        {
+          "$ref": "#/$defs/expressionRule"
+        },
+        {
+          "$ref": "#/$defs/rubricRule"
+        },
+        {
+          "$ref": "#/$defs/manualRule"
+        }
+      ]
+    },
+    "solution": {
+      "title": "Solution",
+      "type": "object",
+      "properties": {
+        "final": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "methods": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/solutionMethod"
+          }
+        },
+        "commonMistakes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "final"
+          ]
+        },
+        {
+          "required": [
+            "methods"
+          ]
+        },
+        {
+          "required": [
+            "commonMistakes"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "solutionMethod": {
+      "title": "Solution method",
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "steps"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/solutionStep"
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "solutionStep": {
+      "title": "Solution step",
+      "type": "object",
+      "required": [
+        "id",
+        "content"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/visualAction"
+          }
+        },
+        "checkpoint": {
+          "$ref": "#/$defs/checkpoint"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "visualAction": {
+      "title": "Visual action",
+      "type": "object",
+      "required": [
+        "assetId",
+        "action"
+      ],
+      "properties": {
+        "assetId": {
+          "$ref": "#/$defs/id"
+        },
+        "action": {
+          "enum": [
+            "highlight",
+            "show",
+            "hide",
+            "set",
+            "reset"
+          ]
+        },
+        "targetIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "params": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "enum": [
+                  "highlight",
+                  "show",
+                  "hide"
+                ]
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "required": [
+              "targetIds"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "const": "set"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "required": [
+              "params"
+            ]
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "checkpoint": {
+      "title": "Interactive solution checkpoint",
+      "type": "object",
+      "required": [
+        "prompt",
+        "response",
+        "grading"
+      ],
+      "properties": {
+        "prompt": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "response": {
+          "$ref": "#/$defs/responseDefinition"
+        },
+        "grading": {
+          "$ref": "#/$defs/checkpointGradingRule"
+        },
+        "hint": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/displayContentBlock"
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

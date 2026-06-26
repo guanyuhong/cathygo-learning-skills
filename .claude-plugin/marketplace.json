@@ -1,151 +1,40 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "cathygo-learning-skills",
   "owner": {
     "name": "CathyGO"
   },
   "metadata": {
-    "description": "Official CathyGO Learning Skills marketplace for AI Tutor and CathyGO Agent education workflows.",
-    "version": "0.1.0",
+    "description": "CathyGO content-production skill library for knowledge maps, learning packs, and QIJ question artifacts.",
+    "version": "0.3.0",
     "license": "MIT"
   },
   "plugins": [
     {
-      "name": "common-tutor-skills",
-      "description": "Reusable tutor Skills for explanation, quiz generation, and answer checking.",
+      "name": "cathygo-learning-skills",
+      "description": "CathyGO content skill library. Install cathygo-knowledge-map, cathygo-learning-pack, or cathygo-qij-question by SKILL frontmatter name.",
+      "version": "0.3.0",
       "source": ".",
       "strict": true,
       "skills": [
-        "./skills/common-concept-explain",
-        "./skills/common-quiz-generate",
-        "./skills/common-answer-check"
-      ]
-    },
-    {
-      "name": "math-grade7b-fraction",
-      "description": "Demo Skills for Grade 7B algebraic fraction concept explanation and domain diagnosis.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/math-grade7b-fraction-concept-explain",
-        "./skills/math-grade7b-fraction-domain-diagnosis"
-      ]
-    },
-    {
-      "name": "cathygo-authoring-skills",
-      "description": "Official Skill authoring helper for creating CathyGO Learning Skills.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/cathygo-skill-creator"
-      ]
-    },
-    {
-      "name": "cathygo-photo-intake",
-      "description": "Photo intake Skills for per-page OCR layout extraction and problem-set segmentation.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/cathygo-ocr-layout",
-        "./skills/cathygo-problem-segment"
-      ]
-    },
-    {
-      "name": "cathygo-content-authoring",
-      "description": "Content production Skills for CathyGO knowledge graph construction and later task/courseware generation.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/cathygo-kg-build"
-      ]
-    },
-    {
-      "name": "math-grade7b-cn-zj-s2",
-      "description": "Full Grade 7B CN-ZJ semester 2 math course skeleton with common tutor Skills and chapter Skills.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/common-concept-explain",
-        "./skills/common-quiz-generate",
-        "./skills/common-answer-check",
-        "./skills/math-grade7b-cn-zj-s2-course-guide",
-        "./skills/math-grade7b-cn-zj-s2-ch01-lines-and-parallels",
-        "./skills/math-grade7b-cn-zj-s2-ch02-equation-systems",
-        "./skills/math-grade7b-cn-zj-s2-ch03-polynomial-ops",
-        "./skills/math-grade7b-cn-zj-s2-ch04-factorization",
-        "./skills/math-grade7b-cn-zj-s2-ch05-fractions",
-        "./skills/math-grade7b-cn-zj-s2-ch06-data-statistics"
-      ]
-    },
-    {
-      "name": "math-grade7b-cn-zj-s2-ch01-lines",
-      "description": "Chapter 1 Skill plugin for intersecting lines, parallel lines, angle relationships, and translations.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/common-concept-explain",
-        "./skills/common-quiz-generate",
-        "./skills/common-answer-check",
-        "./skills/math-grade7b-cn-zj-s2-ch01-lines-and-parallels"
-      ]
-    },
-    {
-      "name": "math-grade7b-cn-zj-s2-ch02-equation-systems",
-      "description": "Chapter 2 Skill plugin for two-variable and three-variable linear equation systems.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/common-concept-explain",
-        "./skills/common-quiz-generate",
-        "./skills/common-answer-check",
-        "./skills/math-grade7b-cn-zj-s2-ch02-equation-systems"
-      ]
-    },
-    {
-      "name": "math-grade7b-cn-zj-s2-ch03-polynomial-ops",
-      "description": "Chapter 3 Skill plugin for monomial and polynomial multiplication, division, and formula use.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/common-concept-explain",
-        "./skills/common-quiz-generate",
-        "./skills/common-answer-check",
-        "./skills/math-grade7b-cn-zj-s2-ch03-polynomial-ops"
-      ]
-    },
-    {
-      "name": "math-grade7b-cn-zj-s2-ch04-factorization",
-      "description": "Chapter 4 Skill plugin for the meaning and methods of factorization.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/common-concept-explain",
-        "./skills/common-quiz-generate",
-        "./skills/common-answer-check",
-        "./skills/math-grade7b-cn-zj-s2-ch04-factorization"
-      ]
-    },
-    {
-      "name": "math-grade7b-cn-zj-s2-ch05-fractions",
-      "description": "Chapter 5 Skill plugin for algebraic fractions, operations, and fraction equations.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/common-concept-explain",
-        "./skills/common-quiz-generate",
-        "./skills/common-answer-check",
-        "./skills/math-grade7b-cn-zj-s2-ch05-fractions"
-      ]
-    },
-    {
-      "name": "math-grade7b-cn-zj-s2-ch06-data-statistics",
-      "description": "Chapter 6 Skill plugin for data collection, statistical charts, frequency, and histograms.",
-      "source": ".",
-      "strict": true,
-      "skills": [
-        "./skills/common-concept-explain",
-        "./skills/common-quiz-generate",
-        "./skills/common-answer-check",
-        "./skills/math-grade7b-cn-zj-s2-ch06-data-statistics"
+        "./skills/cathygo-knowledge-map",
+        "./skills/cathygo-learning-pack",
+        "./skills/cathygo-qij-question"
+      ],
+      "author": {
+        "name": "CathyGO"
+      },
+      "homepage": "https://github.com/guanyuhong/cathygo-learning-skills",
+      "repository": "https://github.com/guanyuhong/cathygo-learning-skills",
+      "license": "MIT",
+      "category": "education",
+      "keywords": [
+        "cathygo",
+        "learning",
+        "knowledge-graph",
+        "learning-pack",
+        "qij",
+        "k12"
       ]
     }
   ]

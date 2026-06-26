@@ -1,0 +1,44 @@
+{
+  "nodes": [
+    {
+      "id": "abio-biochemistry-allosteric-enzyme-regulation",
+      "name": "变构酶调控",
+      "name_en": "Allosteric Enzyme Regulation",
+      "subject": "advanced-biology",
+      "grade": 0,
+      "domain": "abio-biochemistry",
+      "difficulty": 0,
+      "definition": "Allosteric regulation occurs when a regulatory ligand binds to a site distant from the active site, inducing a conformational change that alters substrate binding affinity and catalytic activity.",
+      "skills": [],
+      "stage": "university",
+      "curriculum": "cn-unified",
+      "tree_path": "cn-unified/advanced-biology.json",
+      "display_name": "变构酶调控"
+    },
+    {
+      "id": "abio-biochemistry-amino-acid-structure-and-properties",
+      "name": "氨基酸结构与性质",
+      "name_en": "Amino Acid Structure And Properties",
+      "subject": "advanced-biology",
+      "grade": 0,
+      "domain": "abio-biochemistry",
+      "difficulty": 0,
+      "definition": "Amino acids are organic molecules containing an amino group, a carboxyl group, a hydrogen atom, and a distinctive side chain bonded to a central alpha carbon.",
+      "skills": [],
+      "stage": "university",
+      "curriculum": "cn-unified",
+      "tree_path": "cn-unified/advanced-biology.json",
+      "display_name": "氨基酸结构与性质"
+    }
+  ],
+  "edges": [
+    {
+      "source": "abio-biochemistry-amino-acid-structure-and-properties",
+      "target": "abio-biochemistry-allosteric-enzyme-regulation",
+      "type": "RELATED_TO",
+      "confidence": 0.6,
+      "evidence": "Both concepts are in biochemistry and relate to protein structure/function context.",
+      "source_refs": ["example:manual"]
+    }
+  ]
+}

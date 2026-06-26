@@ -1,9 +1,0 @@
-skill_name: learning-skill
-assessment_items:
-  - id: item-1
-    clean_room_origin: "original"
-    target: ""
-    difficulty: "easy"
-    prompt: "Write an original prompt."
-    expected_answer: "Write the expected answer or rubric."
-    feedback_guidance: "Explain how the tutor should respond."

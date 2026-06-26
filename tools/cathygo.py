@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Small CathyGO Learning Skills marketplace helper."""
+"""CathyGO Learning Skills repository helper."""
 
 from __future__ import annotations
 
@@ -15,8 +15,63 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKETPLACE_PATH = ROOT / ".claude-plugin" / "marketplace.json"
+PLUGIN_PATH = ROOT / ".claude-plugin" / "plugin.json"
 SKILLS_ROOT = ROOT / "skills"
-COURSE_CHAPTER_SKILL_PREFIX = "math-grade7b-cn-zj-s2-ch"
+CONTENT_PACKS_ROOT = ROOT / "content" / "packs"
+
+EXPECTED_SKILLS: dict[str, dict[str, tuple[str, ...]]] = {
+    "cathygo-knowledge-map": {
+        "required": (
+            "SKILL.md",
+            "scripts/kg.py",
+            "workflows/kg-build.md",
+            "references/kg-contract.md",
+            "references/extraction-rules.md",
+            "references/ontology.md",
+            "schemas/kg.schema.json",
+            "schemas/kg-candidates.schema.json",
+            "examples/kg.sample.json",
+            "requirements.txt",
+        )
+    },
+    "cathygo-learning-pack": {
+        "required": (
+            "SKILL.md",
+            "scripts/pack.py",
+            "workflows/learning-pack-build.md",
+            "references/learning-pack-contract.md",
+            "references/teachany-compat.md",
+            "schemas/learning-pack.schema.json",
+            "requirements.txt",
+        )
+    },
+    "cathygo-qij-question": {
+        "required": (
+            "SKILL.md",
+            "scripts/ocr.py",
+            "scripts/problem_set.py",
+            "scripts/_learning_core.py",
+            "workflows/photo-intake.md",
+            "references/ocr-layout-contract.md",
+            "references/problem-segmentation-rules.md",
+            "references/qij-1.0.md",
+            "schemas/qij-1.0.schema.json",
+            "schemas/ocr-layout-output.schema.json",
+            "schemas/problem-set-output.schema.json",
+            "examples/single-page.layout.json",
+            "requirements.txt",
+        )
+    },
+}
+
+EXPECTED_SKILL_PATHS = [f"./skills/{name}" for name in EXPECTED_SKILLS]
+
+REQUIRED_PACK_FILES = (
+    "kg.json",
+    "learning-pack.json",
+    "knowledge-context.json",
+    "manifest.json",
+)
 
 DISALLOWED_EXTENSIONS = {
     ".pdf",
@@ -29,7 +84,6 @@ DISALLOWED_EXTENSIONS = {
     ".tif",
     ".tiff",
     ".heic",
-    ".svg",
 }
 
 DISALLOWED_FILENAME_PATTERNS = (
@@ -48,25 +102,18 @@ DISALLOWED_FILENAME_PATTERNS = (
 )
 
 
-def load_marketplace(errors: list[str] | None = None) -> dict[str, Any] | None:
-    if not MARKETPLACE_PATH.exists():
-        if errors is not None:
-            errors.append(".claude-plugin/marketplace.json does not exist.")
+def load_json(path: Path, errors: list[str]) -> dict[str, Any] | None:
+    if not path.exists():
+        errors.append(f"{path.relative_to(ROOT)} does not exist.")
         return None
-
     try:
-        with MARKETPLACE_PATH.open("r", encoding="utf-8") as handle:
-            data = json.load(handle)
+        data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
-        if errors is not None:
-            errors.append(f".claude-plugin/marketplace.json is not valid JSON: {exc}")
+        errors.append(f"{path.relative_to(ROOT)} is not valid JSON: {exc}")
         return None
-
     if not isinstance(data, dict):
-        if errors is not None:
-            errors.append(".claude-plugin/marketplace.json must contain a JSON object.")
+        errors.append(f"{path.relative_to(ROOT)} must contain a JSON object.")
         return None
-
     return data
 
 
@@ -82,145 +129,167 @@ def parse_skill_frontmatter(skill_md: Path) -> tuple[dict[str, Any] | None, str 
     match = re.match(r"^---\s*\n(.*?)\n---\s*(?:\n|$)", text, flags=re.DOTALL)
     if not match:
         return None, "missing YAML frontmatter delimited by ---"
-
     try:
         metadata = yaml.safe_load(match.group(1)) or {}
     except yaml.YAMLError as exc:
         return None, f"invalid YAML frontmatter: {exc}"
-
     if not isinstance(metadata, dict):
         return None, "frontmatter must be a YAML mapping"
-
     return metadata, None
 
 
-def marketplace_skill_paths(data: dict[str, Any], errors: list[str]) -> list[Path]:
-    paths: list[Path] = []
-    plugins = data.get("plugins")
+def validate_marketplace(errors: list[str]) -> None:
+    marketplace = load_json(MARKETPLACE_PATH, errors)
+    plugin_manifest = load_json(PLUGIN_PATH, errors)
 
-    if not isinstance(plugins, list):
-        errors.append("marketplace field 'plugins' must be a list.")
-        return paths
+    if marketplace is not None:
+        plugins = marketplace_plugins(marketplace)
+        if len(plugins) != 1:
+            errors.append(".claude-plugin/marketplace.json must expose exactly one plugin.")
+        elif plugins[0].get("name") != "cathygo-learning-skills":
+            errors.append("marketplace plugin name must be 'cathygo-learning-skills'.")
+        else:
+            skills = plugins[0].get("skills")
+            if skills is not None and skills != EXPECTED_SKILL_PATHS:
+                errors.append(f"marketplace plugin skills must be {EXPECTED_SKILL_PATHS!r}.")
 
-    for plugin_index, plugin in enumerate(plugins):
-        if not isinstance(plugin, dict):
-            errors.append(f"plugins[{plugin_index}] must be an object.")
+    if plugin_manifest is not None:
+        if plugin_manifest.get("name") != "cathygo-learning-skills":
+            errors.append(".claude-plugin/plugin.json name must be 'cathygo-learning-skills'.")
+        skills = plugin_manifest.get("skills")
+        if skills is not None and skills != EXPECTED_SKILL_PATHS:
+            errors.append(f".claude-plugin/plugin.json skills must be omitted or {EXPECTED_SKILL_PATHS!r}.")
+
+
+def validate_skills(errors: list[str]) -> None:
+    if not SKILLS_ROOT.exists():
+        errors.append("skills directory does not exist.")
+        return
+
+    actual_dirs = sorted(child.name for child in SKILLS_ROOT.iterdir() if child.is_dir())
+    expected_dirs = sorted(EXPECTED_SKILLS)
+    for name in expected_dirs:
+        if name not in actual_dirs:
+            errors.append(f"missing skill directory: skills/{name}")
+    for name in actual_dirs:
+        if name not in EXPECTED_SKILLS:
+            errors.append(f"unexpected skill directory: skills/{name}")
+
+    for skill_name, config in EXPECTED_SKILLS.items():
+        skill_dir = SKILLS_ROOT / skill_name
+        if not skill_dir.is_dir():
             continue
-
-        plugin_name = plugin.get("name", f"plugins[{plugin_index}]")
-        skills = plugin.get("skills")
-        if not isinstance(skills, list):
-            errors.append(f"plugin {plugin_name!r} field 'skills' must be a list.")
+        for rel in config["required"]:
+            if not (skill_dir / rel).exists():
+                errors.append(f"skills/{skill_name} is missing {rel}.")
+        skill_md = skill_dir / "SKILL.md"
+        if not skill_md.exists():
             continue
-
-        for skill_index, raw_path in enumerate(skills):
-            if not isinstance(raw_path, str):
-                errors.append(f"plugin {plugin_name!r} skills[{skill_index}] must be a string path.")
-                continue
-
-            resolved = (ROOT / raw_path).resolve()
-            try:
-                resolved.relative_to(ROOT)
-            except ValueError:
-                errors.append(f"plugin {plugin_name!r} references path outside the repository: {raw_path}")
-                continue
-
-            if not resolved.exists():
-                errors.append(f"plugin {plugin_name!r} references missing skill path: {raw_path}")
-                continue
-
-            if not resolved.is_dir():
-                errors.append(f"plugin {plugin_name!r} skill path is not a directory: {raw_path}")
-                continue
-
-            paths.append(resolved)
-
-    return paths
-
-
-def all_skill_dirs(marketplace_paths: list[Path]) -> list[Path]:
-    skill_dirs: set[Path] = set(marketplace_paths)
-    if SKILLS_ROOT.exists():
-        for child in SKILLS_ROOT.iterdir():
-            if child.is_dir():
-                skill_dirs.add(child.resolve())
-    return sorted(skill_dirs)
-
-
-def validate_skill_dir(skill_dir: Path, errors: list[str]) -> None:
-    rel_dir = skill_dir.relative_to(ROOT)
-    skill_md = skill_dir / "SKILL.md"
-    if not skill_md.exists():
-        errors.append(f"{rel_dir} is missing SKILL.md.")
-        return
-
-    metadata, frontmatter_error = parse_skill_frontmatter(skill_md)
-    if frontmatter_error:
-        errors.append(f"{skill_md.relative_to(ROOT)} {frontmatter_error}.")
-        return
-
-    assert metadata is not None
-    name = metadata.get("name")
-    description = metadata.get("description")
-
-    if not isinstance(name, str) or not name.strip():
-        errors.append(f"{skill_md.relative_to(ROOT)} frontmatter must include non-empty name.")
-    elif name != skill_dir.name:
-        errors.append(
-            f"{skill_md.relative_to(ROOT)} name {name!r} must match parent directory {skill_dir.name!r}."
-        )
-
-    if not isinstance(description, str) or not description.strip():
-        errors.append(f"{skill_md.relative_to(ROOT)} frontmatter must include non-empty description.")
-
-    eval_cases = skill_dir / "evals" / "eval_cases.jsonl"
-    if not eval_cases.exists():
-        errors.append(f"{rel_dir} is missing evals/eval_cases.jsonl.")
-        return
-
-    validate_jsonl(eval_cases, errors)
-
-    if skill_dir.name.startswith(COURSE_CHAPTER_SKILL_PREFIX):
-        validate_chapter_skill(skill_dir, errors)
-
-
-def validate_jsonl(path: Path, errors: list[str]) -> None:
-    lines = path.read_text(encoding="utf-8").splitlines()
-    if not any(line.strip() for line in lines):
-        errors.append(f"{path.relative_to(ROOT)} must contain at least one eval case.")
-        return
-
-    for line_number, line in enumerate(lines, start=1):
-        if not line.strip():
+        metadata, frontmatter_error = parse_skill_frontmatter(skill_md)
+        if frontmatter_error:
+            errors.append(f"{skill_md.relative_to(ROOT)} {frontmatter_error}.")
             continue
-        try:
-            value = json.loads(line)
-        except json.JSONDecodeError as exc:
-            errors.append(f"{path.relative_to(ROOT)} line {line_number} is not valid JSON: {exc}")
+        assert metadata is not None
+        if metadata.get("name") != skill_name:
+            errors.append(f"{skill_md.relative_to(ROOT)} name must be {skill_name!r}.")
+        description = metadata.get("description")
+        if not isinstance(description, str) or not description.strip():
+            errors.append(f"{skill_md.relative_to(ROOT)} must include a non-empty description.")
+
+    for path in sorted(SKILLS_ROOT.rglob("*.mjs")):
+        errors.append(f"legacy JavaScript script is not allowed: {path.relative_to(ROOT)}")
+
+
+def string_values(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        result: list[str] = []
+        for item in value:
+            result.extend(string_values(item))
+        return result
+    if isinstance(value, dict):
+        result = []
+        for item in value.values():
+            result.extend(string_values(item))
+        return result
+    return []
+
+
+def validate_pack(pack_dir: Path, errors: list[str]) -> None:
+    rel_dir = pack_dir.relative_to(ROOT)
+    for filename in REQUIRED_PACK_FILES:
+        if not (pack_dir / filename).exists():
+            errors.append(f"{rel_dir} is missing {filename}.")
+
+    kg = load_json(pack_dir / "kg.json", errors)
+    learning_pack = load_json(pack_dir / "learning-pack.json", errors)
+    knowledge_context = load_json(pack_dir / "knowledge-context.json", errors)
+    manifest = load_json(pack_dir / "manifest.json", errors)
+
+    if kg is not None:
+        if kg.get("schema") != "cgo.kg.v1":
+            errors.append(f"{rel_dir}/kg.json schema must be cgo.kg.v1.")
+        if kg.get("kind") != "kg":
+            errors.append(f"{rel_dir}/kg.json kind must be kg.")
+        if kg.get("id") != pack_dir.name:
+            errors.append(f"{rel_dir}/kg.json id must match the pack directory name.")
+
+    if learning_pack is not None:
+        if learning_pack.get("schema") != "cgo.learning_pack.v1":
+            errors.append(f"{rel_dir}/learning-pack.json schema must be cgo.learning_pack.v1.")
+        if learning_pack.get("kind") != "learning_pack":
+            errors.append(f"{rel_dir}/learning-pack.json kind must be learning_pack.")
+        if learning_pack.get("id") != pack_dir.name:
+            errors.append(f"{rel_dir}/learning-pack.json id must match the pack directory name.")
+        for field in ["kg_refs", "objectives", "tasks"]:
+            if not isinstance(learning_pack.get(field), list) or not learning_pack[field]:
+                errors.append(f"{rel_dir}/learning-pack.json must contain a non-empty {field} list.")
+
+    if knowledge_context is not None:
+        if not isinstance(knowledge_context.get("matches"), list) or not knowledge_context["matches"]:
+            errors.append(f"{rel_dir}/knowledge-context.json must contain at least one match.")
+
+    if manifest is not None:
+        if manifest.get("pack_id") != pack_dir.name:
+            errors.append(f"{rel_dir}/manifest.json pack_id must match the pack directory name.")
+        artifacts = manifest.get("artifacts")
+        if not isinstance(artifacts, dict):
+            errors.append(f"{rel_dir}/manifest.json must contain artifacts mapping.")
+        else:
+            for key, filename in {
+                "kg": "kg.json",
+                "learning_pack": "learning-pack.json",
+                "knowledge_context": "knowledge-context.json",
+            }.items():
+                if artifacts.get(key) != filename:
+                    errors.append(f"{rel_dir}/manifest.json artifacts.{key} must be {filename!r}.")
+
+    for payload_name, payload in [
+        ("kg.json", kg),
+        ("learning-pack.json", learning_pack),
+        ("knowledge-context.json", knowledge_context),
+        ("manifest.json", manifest),
+    ]:
+        if payload is None:
             continue
-        if not isinstance(value, dict):
-            errors.append(f"{path.relative_to(ROOT)} line {line_number} must be a JSON object.")
+        for value in string_values(payload):
+            if "[待补充]" in value or "TODO" in value:
+                errors.append(f"{rel_dir}/{payload_name} contains placeholder text: {value!r}")
 
 
-def validate_chapter_skill(skill_dir: Path, errors: list[str]) -> None:
-    coverage_matrix = skill_dir / "references" / "coverage-matrix.yaml"
-    if not coverage_matrix.exists():
-        errors.append(f"{skill_dir.relative_to(ROOT)} is missing references/coverage-matrix.yaml.")
+def validate_content_packs(errors: list[str]) -> None:
+    if not CONTENT_PACKS_ROOT.exists():
+        errors.append("content/packs does not exist.")
         return
 
-    try:
-        data = yaml.safe_load(coverage_matrix.read_text(encoding="utf-8")) or {}
-    except yaml.YAMLError as exc:
-        errors.append(f"{coverage_matrix.relative_to(ROOT)} is not valid YAML: {exc}")
+    pack_dirs = [child for child in CONTENT_PACKS_ROOT.iterdir() if child.is_dir()]
+    if not pack_dirs:
+        errors.append("content/packs must contain at least one pack.")
         return
 
-    if not isinstance(data, dict):
-        errors.append(f"{coverage_matrix.relative_to(ROOT)} must contain a YAML mapping.")
-        return
-
-    coverage = data.get("coverage")
-    if not isinstance(coverage, list) or not coverage:
-        errors.append(f"{coverage_matrix.relative_to(ROOT)} must contain a non-empty coverage list.")
+    for pack_dir in sorted(pack_dirs):
+        validate_pack(pack_dir, errors)
 
 
 def validate_disallowed_assets(errors: list[str]) -> None:
@@ -232,41 +301,40 @@ def validate_disallowed_assets(errors: list[str]) -> None:
 
         rel = path.relative_to(ROOT)
         lower_name = path.name.lower()
-        if path.suffix.lower() in DISALLOWED_EXTENSIONS:
-            errors.append(f"Disallowed file extension for public learning asset: {rel}")
+        if lower_name == ".ds_store":
+            errors.append(f"Temporary macOS metadata file is not allowed: {rel}")
+        elif path.suffix.lower() in DISALLOWED_EXTENSIONS:
+            errors.append(f"Disallowed public learning asset extension: {rel}")
         elif any(pattern in lower_name for pattern in DISALLOWED_FILENAME_PATTERNS):
             errors.append(f"Disallowed textbook/screenshot-like filename: {rel}")
 
 
 def command_list() -> int:
-    data = load_marketplace()
-    if data is None:
-        print("No valid marketplace found.", file=sys.stderr)
+    errors: list[str] = []
+    marketplace = load_json(MARKETPLACE_PATH, errors)
+    if marketplace is None:
+        for error in errors:
+            print(error, file=sys.stderr)
         return 1
 
-    plugins = marketplace_plugins(data)
-    if not plugins:
-        print("No plugins found.")
-        return 0
+    for plugin in marketplace_plugins(marketplace):
+        print(f"{plugin.get('name', '<unnamed>')}: {plugin.get('description', '')}")
+        print("skills:")
+        for skill_name in EXPECTED_SKILLS:
+            print(f"  - {skill_name}: ./skills/{skill_name}")
 
-    for plugin in plugins:
-        name = plugin.get("name", "<unnamed>")
-        description = plugin.get("description", "")
-        print(f"{name}: {description}")
-        for skill_path in plugin.get("skills", []):
-            print(f"  - {skill_path}")
+    if CONTENT_PACKS_ROOT.exists():
+        print("content packs:")
+        for pack_dir in sorted(child for child in CONTENT_PACKS_ROOT.iterdir() if child.is_dir()):
+            print(f"  - {pack_dir.name}")
     return 0
 
 
 def command_validate() -> int:
     errors: list[str] = []
-    data = load_marketplace(errors)
-
-    if data is not None:
-        marketplace_paths = marketplace_skill_paths(data, errors)
-        for skill_dir in all_skill_dirs(marketplace_paths):
-            validate_skill_dir(skill_dir, errors)
-
+    validate_marketplace(errors)
+    validate_skills(errors)
+    validate_content_packs(errors)
     validate_disallowed_assets(errors)
 
     if errors:
@@ -280,10 +348,10 @@ def command_validate() -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="CathyGO Learning Skills marketplace helper")
+    parser = argparse.ArgumentParser(description="CathyGO Learning Skills repository helper")
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("list", help="List marketplace plugins and skills")
-    subparsers.add_parser("validate", help="Validate marketplace and Skill structure")
+    subparsers.add_parser("list", help="List skill library entries and content packs")
+    subparsers.add_parser("validate", help="Validate skill library structure and content packs")
     return parser
 
 

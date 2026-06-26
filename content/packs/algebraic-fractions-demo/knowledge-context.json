@@ -1,0 +1,67 @@
+{
+  "topic": "Algebraic Fractions",
+  "subject": "math",
+  "match_count": 1,
+  "matches": [
+    {
+      "node_id": "math-m-algebraic-fractions-demo",
+      "name_zh": "代数分式示例",
+      "name_en": "Algebraic Fractions Demo",
+      "subject": "math",
+      "stage": "middle",
+      "curriculum": "CathyGO clean-room demo content",
+      "sources": [
+        {
+          "id": "fractions-source",
+          "type": "markdown",
+          "title": "Algebraic Fractions Mini Source",
+          "note": "Original demo content bundled with cathygo-learning."
+        }
+      ],
+      "curriculum_excerpts": [
+        {
+          "id": "cp-001",
+          "source": "fractions-source#c001",
+          "text": "An algebraic fraction has a denominator that contains a variable."
+        },
+        {
+          "id": "cp-002",
+          "source": "fractions-source#c002",
+          "text": "Before simplifying or solving, the original denominator cannot be zero."
+        }
+      ],
+      "exercises": [
+        {
+          "id": "q-001",
+          "type": "pretest",
+          "stem": "Which values must be excluded before simplifying an algebraic fraction?",
+          "answer": "Values that make the original denominator zero."
+        },
+        {
+          "id": "q-002",
+          "type": "concept_check",
+          "stem": "Why is canceling matching letters not always valid in an algebraic fraction?",
+          "answer": "Only complete common factors may be canceled."
+        }
+      ],
+      "common_errors": [
+        {
+          "id": "err-001",
+          "error": "Canceling matching letters that are not complete factors.",
+          "fix": "Factor numerator and denominator first, then cancel only complete common factors."
+        }
+      ],
+      "prerequisites": [
+        "Equivalent fractions",
+        "Factoring simple algebraic expressions"
+      ],
+      "extends": [
+        "Solving fraction equations",
+        "Rational expressions"
+      ],
+      "gaps": [],
+      "fallback_used": false
+    }
+  ],
+  "_source": "cathygo-learning-pack"
+}
