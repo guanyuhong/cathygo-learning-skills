@@ -2,7 +2,7 @@
 
 本文件描述 `cathygo-knowledge-map` 处理结构化知识点、LLM 抽取结果和规范图谱时使用的最小数据形状。字段名、枚举值和 JSON key 保持英文。
 
-## 输入：TeachAny-style JSON
+## 输入：产品图谱风格 JSON
 
 ```json
 {

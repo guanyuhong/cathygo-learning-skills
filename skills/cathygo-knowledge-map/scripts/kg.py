@@ -9,6 +9,8 @@ Commands:
 - search: lexical search across nodes and edges.
 - extract: extract a focused subgraph around a center node.
 - report: write a Markdown graph health report.
+- export-product: export cgo.kg.v1 to the product knowledge-map-data shape.
+- validate-product: validate the product knowledge-map-data shape.
 
 The script intentionally has no third-party dependencies.
 """
@@ -54,6 +56,66 @@ EDGE_TYPES = {
 
 REVIEW_STATES = {"accepted", "needs_review", "rejected", "draft"}
 SYMMETRIC_EDGE_TYPES = {"confuses_with", "related_to", "same_as"}
+PRODUCT_NODE_FIELDS = [
+    "id",
+    "name",
+    "name_en",
+    "subject",
+    "grade",
+    "domain",
+    "difficulty",
+    "definition",
+    "skills",
+    "stage",
+    "curriculum",
+    "tree_path",
+    "display_name",
+]
+PRODUCT_DEFAULT_EDGE_TYPES = {
+    "requires",
+    "part_of",
+    "extends",
+    "applies_to",
+    "procedure_step_of",
+    "related_to",
+}
+PRODUCT_DEFAULT_NODE_TYPES = {
+    "concept",
+    "skill",
+    "procedure",
+    "task",
+    "assessment",
+}
+SUBJECT_SLUGS = {
+    "\u79d1\u5b66": "science",
+    "\u7269\u7406": "physics",
+    "\u5316\u5b66": "chemistry",
+    "\u751f\u7269": "biology",
+    "\u6570\u5b66": "math",
+    "\u8bed\u6587": "chinese",
+    "\u82f1\u8bed": "english",
+    "\u5730\u7406": "geography",
+    "\u5386\u53f2": "history",
+    "\u9053\u5fb7\u4e0e\u6cd5\u6cbb": "morality-law",
+    "\u4fe1\u606f\u6280\u672f": "it",
+}
+STAGE_SLUGS = {
+    "\u5c0f\u5b66": "elementary",
+    "\u521d\u4e2d": "middle",
+    "\u9ad8\u4e2d": "high",
+    "\u5927\u5b66": "university",
+}
+GRADE_CHARS = {
+    "\u4e00": 1,
+    "\u4e8c": 2,
+    "\u4e09": 3,
+    "\u56db": 4,
+    "\u4e94": 5,
+    "\u516d": 6,
+    "\u4e03": 7,
+    "\u516b": 8,
+    "\u4e5d": 9,
+}
 
 
 def utc_now() -> str:
@@ -779,6 +841,328 @@ def command_report(args: argparse.Namespace) -> int:
     return 0 if not errors else 2
 
 
+def first_text(*values: Any) -> str:
+    for value in values:
+        if value is None:
+            continue
+        text = str(value).strip()
+        if text:
+            return text
+    return ""
+
+
+def nested_text(item: dict[str, Any], *path: str) -> str:
+    value: Any = item
+    for key in path:
+        if not isinstance(value, dict):
+            return ""
+        value = value.get(key)
+    return first_text(value)
+
+
+def normalize_slug(value: Any, mapping: dict[str, str], fallback: str = "") -> str:
+    text = first_text(value)
+    if not text:
+        return fallback
+    if text in mapping:
+        return mapping[text]
+    lowered = text.lower()
+    if re.fullmatch(r"[a-z][a-z0-9_-]*", lowered):
+        return lowered
+    return slugify(text) or fallback
+
+
+def parse_grade(value: Any, fallback: int = 0) -> int:
+    if isinstance(value, bool):
+        return fallback
+    if isinstance(value, int):
+        return value
+    text = first_text(value)
+    if not text:
+        return fallback
+    match = re.search(r"\d+", text)
+    if match:
+        return int(match.group(0))
+    for char, grade in GRADE_CHARS.items():
+        if char in text:
+            return grade
+    return fallback
+
+
+def product_node_definition(node: dict[str, Any]) -> str:
+    definition = first_text(
+        node.get("definition"),
+        nested_text(node, "properties", "definition"),
+        node.get("summary"),
+    )
+    return re.sub(r"\s+", " ", definition).strip()
+
+
+def product_node_skills(node: dict[str, Any]) -> list[str]:
+    values = node.get("skills")
+    if values is None and isinstance(node.get("properties"), dict):
+        values = node["properties"].get("skills")
+    skills: list[str] = []
+    for value in as_list(values):
+        text = first_text(value)
+        if text and text not in skills:
+            skills.append(text)
+    return skills
+
+
+def product_node_name_en(node: dict[str, Any]) -> str:
+    name_en = first_text(
+        node.get("name_en"),
+        nested_text(node, "properties", "name_en"),
+        nested_text(node, "compat", "name_en"),
+    )
+    if name_en:
+        return name_en
+    for alias in as_list(node.get("aliases")):
+        text = first_text(alias)
+        if text and re.fullmatch(r"[A-Za-z0-9 ,;:()/_-]+", text):
+            return text
+    return ""
+
+
+def product_node_id(node: dict[str, Any]) -> str:
+    return first_text(
+        nested_text(node, "compat", "external_ids", "knowledge_map"),
+        nested_text(node, "compat", "external_ids", "product"),
+        nested_text(node, "properties", "product_id"),
+        node.get("id"),
+    )
+
+
+def product_domain(node: dict[str, Any], fallback: str) -> str:
+    domain = first_text(
+        nested_text(node, "properties", "domain"),
+        node.get("domain"),
+    )
+    if domain:
+        return normalize_slug(domain, {}, fallback)
+    for tag in as_list(node.get("tags")):
+        text = first_text(tag)
+        if text and text not in {"lesson-anchor"}:
+            return normalize_slug(text, {}, fallback)
+    return fallback
+
+
+def product_difficulty(node: dict[str, Any], fallback: int) -> int:
+    value = node.get("difficulty")
+    if value is None and isinstance(node.get("properties"), dict):
+        value = node["properties"].get("difficulty")
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return fallback
+
+
+def product_node_from_kg(node: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
+    subject = normalize_slug(args.subject or node.get("subject"), SUBJECT_SLUGS, args.default_subject)
+    stage = normalize_slug(args.stage or node.get("stage"), STAGE_SLUGS, args.default_stage)
+    grade = parse_grade(args.grade if args.grade is not None else node.get("grade") or node.get("grade_band"), args.default_grade)
+    curriculum = first_text(args.curriculum, node.get("curriculum"), args.default_curriculum)
+    tree_path = first_text(args.tree_path, nested_text(node, "properties", "tree_path"), f"{curriculum}/{subject}.json" if curriculum and subject else "")
+    name = first_text(node.get("name"), node.get("id"))
+    return {
+        "id": product_node_id(node),
+        "name": name,
+        "name_en": product_node_name_en(node),
+        "subject": subject,
+        "grade": grade,
+        "domain": normalize_slug(args.domain, {}, "") if args.domain else product_domain(node, args.default_domain),
+        "difficulty": product_difficulty(node, args.default_difficulty),
+        "definition": product_node_definition(node),
+        "skills": product_node_skills(node),
+        "stage": stage,
+        "curriculum": curriculum,
+        "tree_path": tree_path,
+        "display_name": first_text(node.get("display_name"), nested_text(node, "properties", "display_name"), name),
+    }
+
+
+def parse_csv_set(value: str | None, default: set[str]) -> set[str]:
+    if not value:
+        return set(default)
+    return {item.strip() for item in value.split(",") if item.strip()}
+
+
+def product_stats(nodes: list[dict[str, Any]], edges: list[dict[str, Any]]) -> dict[str, Any]:
+    by_subject = Counter(str(node.get("subject") or "") for node in nodes)
+    by_grade = Counter(str(node.get("grade") or "") for node in nodes)
+    by_id = {str(node.get("id")): node for node in nodes}
+    cn_unified = [node for node in nodes if node.get("curriculum") == "cn-unified"]
+    sci_cross_edges = 0
+    for edge in edges:
+        source = by_id.get(str(edge.get("source")))
+        target = by_id.get(str(edge.get("target")))
+        if not source or not target:
+            continue
+        if source.get("subject") == "science" and target.get("subject") and target.get("subject") != "science":
+            sci_cross_edges += 1
+        elif target.get("subject") == "science" and source.get("subject") and source.get("subject") != "science":
+            sci_cross_edges += 1
+    return {
+        "generated_at": utc_now(),
+        "totalNodes": len(nodes),
+        "totalEdges": len(edges),
+        "subjects": sorted(key for key in by_subject if key),
+        "bySubject": dict(sorted(by_subject.items())),
+        "byGrade": dict(sorted(by_grade.items(), key=lambda item: item[0])),
+        "cnUnifiedNodes": len(cn_unified),
+        "internationalNodes": len(nodes) - len(cn_unified),
+        "stageBridgeEdges": 0,
+        "universityBridgeEdges": 0,
+        "sciElementaryNodes": sum(1 for node in nodes if node.get("subject") == "science" and node.get("stage") == "elementary"),
+        "sciCrossEdges": sci_cross_edges,
+        "translated_at": "",
+    }
+
+
+def command_export_product(args: argparse.Namespace) -> int:
+    kg = load_json(Path(args.kg))
+    node_types = parse_csv_set(args.node_types, PRODUCT_DEFAULT_NODE_TYPES)
+    edge_types = parse_csv_set(args.edge_types, PRODUCT_DEFAULT_EDGE_TYPES)
+    review_states = parse_csv_set(args.review_states, {"accepted", "needs_review", "draft", ""})
+    nodes: list[dict[str, Any]] = []
+    selected_ids: set[str] = set()
+    product_ids_by_internal_id: dict[str, str] = {}
+    for node in kg.get("nodes") or []:
+        if not isinstance(node, dict):
+            continue
+        node_id = first_text(node.get("id"))
+        if not node_id:
+            continue
+        if first_text(node.get("type")) not in node_types:
+            continue
+        if review_state(node) not in review_states:
+            continue
+        conf = confidence(node)
+        if conf is not None and conf < args.min_confidence:
+            continue
+        product_node = product_node_from_kg(node, args)
+        if args.require_definition and not product_node["definition"]:
+            continue
+        nodes.append(product_node)
+        selected_ids.add(node_id)
+        product_ids_by_internal_id[node_id] = product_node["id"]
+
+    edges: list[dict[str, str]] = []
+    seen_edges: set[tuple[str, str]] = set()
+    for edge in kg.get("edges") or []:
+        if not isinstance(edge, dict):
+            continue
+        if first_text(edge.get("type")) not in edge_types:
+            continue
+        if review_state(edge) not in review_states:
+            continue
+        conf = confidence(edge)
+        if conf is not None and conf < args.min_confidence:
+            continue
+        source = first_text(edge.get("source"))
+        target = first_text(edge.get("target"))
+        if source not in selected_ids or target not in selected_ids or source == target:
+            continue
+        product_source = product_ids_by_internal_id[source]
+        product_target = product_ids_by_internal_id[target]
+        key = (product_source, product_target)
+        if key in seen_edges:
+            continue
+        edges.append({"source": product_source, "target": product_target})
+        seen_edges.add(key)
+
+    out = {
+        "nodes": sorted(nodes, key=lambda item: str(item.get("id"))),
+        "edges": sorted(edges, key=lambda item: (str(item.get("source")), str(item.get("target")))),
+    }
+    out["stats"] = product_stats(out["nodes"], out["edges"])
+    errors, warnings = validate_product_graph(out)
+    if errors:
+        print(json.dumps({"exported": False, "errors": errors, "warnings": warnings}, ensure_ascii=False, indent=2), file=sys.stderr)
+        return 2
+    write_json(Path(args.out), out)
+    print(json.dumps({"exported": True, "out": args.out, "nodes": len(out["nodes"]), "edges": len(out["edges"]), "warnings": warnings}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def validate_product_graph(data: dict[str, Any]) -> tuple[list[str], list[str]]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    nodes = data.get("nodes")
+    edges = data.get("edges")
+    stats = data.get("stats")
+    if not isinstance(nodes, list):
+        errors.append("nodes must be a list")
+        nodes = []
+    if not isinstance(edges, list):
+        errors.append("edges must be a list")
+        edges = []
+    if not isinstance(stats, dict):
+        errors.append("stats must be an object")
+        stats = {}
+
+    node_ids: set[str] = set()
+    for idx, node in enumerate(nodes):
+        if not isinstance(node, dict):
+            errors.append(f"nodes[{idx}] must be an object")
+            continue
+        missing = [field for field in PRODUCT_NODE_FIELDS if field not in node]
+        if missing:
+            errors.append(f"node {node.get('id') or idx} missing fields: {', '.join(missing)}")
+        node_id = first_text(node.get("id"))
+        if not node_id:
+            errors.append(f"nodes[{idx}] missing id")
+        elif node_id in node_ids:
+            errors.append(f"duplicate node id: {node_id}")
+        node_ids.add(node_id)
+        if not first_text(node.get("name")):
+            errors.append(f"node {node_id or idx} missing name")
+        if not isinstance(node.get("skills"), list):
+            errors.append(f"node {node_id or idx} skills must be a list")
+        if parse_grade(node.get("grade"), -1) < 0:
+            errors.append(f"node {node_id or idx} grade must be a non-negative integer")
+        if not first_text(node.get("definition")):
+            warnings.append(f"node {node_id or idx} has empty definition")
+
+    seen_edges: set[tuple[str, str]] = set()
+    for idx, edge in enumerate(edges):
+        if not isinstance(edge, dict):
+            errors.append(f"edges[{idx}] must be an object")
+            continue
+        keys = set(edge.keys())
+        if keys != {"source", "target"}:
+            errors.append(f"edge {idx} fields must be source,target")
+        source = first_text(edge.get("source"))
+        target = first_text(edge.get("target"))
+        if source not in node_ids:
+            errors.append(f"edge {idx} source missing: {source}")
+        if target not in node_ids:
+            errors.append(f"edge {idx} target missing: {target}")
+        if source == target:
+            errors.append(f"edge {idx} self-loop is not allowed: {source}")
+        key = (source, target)
+        if key in seen_edges:
+            errors.append(f"duplicate edge: {source} -> {target}")
+        seen_edges.add(key)
+
+    expected_nodes = stats.get("totalNodes")
+    expected_edges = stats.get("totalEdges")
+    if isinstance(expected_nodes, int) and expected_nodes != len(nodes):
+        warnings.append(f"stats.totalNodes mismatch: {expected_nodes} != {len(nodes)}")
+    if isinstance(expected_edges, int) and expected_edges != len(edges):
+        warnings.append(f"stats.totalEdges mismatch: {expected_edges} != {len(edges)}")
+    return errors, warnings
+
+
+def command_validate_product(args: argparse.Namespace) -> int:
+    data = load_json(Path(args.input))
+    errors, warnings = validate_product_graph(data)
+    result = {"valid": not errors, "error_count": len(errors), "warning_count": len(warnings), "errors": errors, "warnings": warnings}
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if not errors else 2
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="CathyGO KG authoring helper")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -826,6 +1210,32 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("--kg", required=True)
     report.add_argument("--out", required=True)
     report.set_defaults(func=command_report)
+
+    export_product = sub.add_parser("export-product")
+    export_product.add_argument("--kg", required=True)
+    export_product.add_argument("--out", required=True)
+    export_product.add_argument("--subject", help="Override product subject slug, for example science or physics.")
+    export_product.add_argument("--stage", help="Override product stage slug, for example elementary, middle, high.")
+    export_product.add_argument("--grade", type=int, help="Override numeric product grade.")
+    export_product.add_argument("--domain", help="Override product domain slug.")
+    export_product.add_argument("--curriculum", help="Override product curriculum slug.")
+    export_product.add_argument("--tree-path", help="Override product tree_path.")
+    export_product.add_argument("--default-subject", default="science")
+    export_product.add_argument("--default-stage", default="middle")
+    export_product.add_argument("--default-grade", type=int, default=0)
+    export_product.add_argument("--default-domain", default="")
+    export_product.add_argument("--default-curriculum", default="cn-unified")
+    export_product.add_argument("--default-difficulty", type=int, default=0)
+    export_product.add_argument("--node-types", help="Comma-separated cgo.kg.v1 node types to export.")
+    export_product.add_argument("--edge-types", help="Comma-separated cgo.kg.v1 edge types to export.")
+    export_product.add_argument("--review-states", help="Comma-separated review states to export.")
+    export_product.add_argument("--min-confidence", type=float, default=0.0)
+    export_product.add_argument("--require-definition", action="store_true")
+    export_product.set_defaults(func=command_export_product)
+
+    validate_product = sub.add_parser("validate-product")
+    validate_product.add_argument("--input", required=True)
+    validate_product.set_defaults(func=command_validate_product)
 
     return parser
 
