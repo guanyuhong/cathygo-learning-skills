@@ -11,6 +11,7 @@ Commands:
 - report: write a Markdown graph health report.
 - export-product: export cgo.kg.v1 to the product knowledge-map-data shape.
 - validate-product: validate the product knowledge-map-data shape.
+- validate-manifest: validate cgo.knowledge-map.manifest.v1.
 
 The script intentionally has no third-party dependencies.
 """
@@ -27,6 +28,11 @@ from collections import Counter, defaultdict, deque
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+try:
+    import yaml  # type: ignore
+except ImportError:  # pragma: no cover - optional profile support dependency.
+    yaml = None
 
 
 NODE_TYPES = {
@@ -1318,6 +1324,37 @@ def command_validate_groups(args: argparse.Namespace) -> int:
     return 0 if not errors else 2
 
 
+def load_profile(path: str | None) -> dict[str, Any]:
+    if not path:
+        return {}
+    profile_path = Path(path)
+    text = profile_path.read_text(encoding="utf-8")
+    if profile_path.suffix.lower() in {".yaml", ".yml"}:
+        if yaml is None:
+            raise RuntimeError("PyYAML is required for YAML profiles. Install PyYAML or pass a JSON profile.")
+        value = yaml.safe_load(text)
+    else:
+        value = json.loads(text)
+    if not isinstance(value, dict):
+        raise ValueError(f"profile must be an object: {profile_path}")
+    return value
+
+
+def profile_dict(profile: dict[str, Any], key: str) -> dict[str, Any]:
+    value = profile.get(key)
+    return value if isinstance(value, dict) else {}
+
+
+def profile_domain(profile: dict[str, Any], domain: str) -> dict[str, Any]:
+    value = profile_dict(profile, "domains").get(domain)
+    return value if isinstance(value, dict) else {}
+
+
+def profile_default(profile: dict[str, Any], key: str, fallback: Any = "") -> Any:
+    defaults = profile_dict(profile, "defaults")
+    return defaults.get(key, profile.get(key, fallback))
+
+
 def group_node_definition(node: dict[str, Any]) -> str:
     props = node.get("properties") if isinstance(node.get("properties"), dict) else {}
     if first_text(node.get("summary")):
@@ -1326,35 +1363,50 @@ def group_node_definition(node: dict[str, Any]) -> str:
         return first_text(node.get("definition"))
     if first_text(props.get("core_understanding")):
         return first_text(props.get("core_understanding"))
+    subject_title = first_text(props.get("subject_title"), node.get("subject"), "课程")
     if first_text(node.get("type")) == "domain":
-        return f"{first_text(node.get('name'))}是义务教育数学课程标准中的学习领域。"
+        return f"{first_text(node.get('name'))}是义务教育{subject_title}课程标准中的学习领域。"
     return f"{first_text(node.get('name'))}是{first_text(props.get('domain_name'), node.get('domain'))}领域下的知识点组。"
 
 
-def domain_layout(nodes: list[dict[str, Any]]) -> dict[str, tuple[float, float]]:
-    domain_y = {
+def domain_layout(nodes: list[dict[str, Any]], profile: dict[str, Any] | None = None) -> dict[str, tuple[float, float]]:
+    profile = profile or {}
+    domains = profile_dict(profile, "domains")
+    layout = profile_dict(profile, "layout")
+    default_domain_y = {
         "number-algebra": 5.2,
         "geometry": 1.7,
         "statistics-probability": -1.8,
         "synthesis-practice": -5.0,
     }
+    domain_y: dict[str, float] = {}
+    for index, (domain, meta) in enumerate(domains.items()):
+        if isinstance(meta, dict) and isinstance(meta.get("y"), (int, float)):
+            domain_y[domain] = float(meta["y"])
+        else:
+            domain_y[domain] = 5.2 - index * 3.2
+    domain_y.update({key: value for key, value in default_domain_y.items() if key not in domain_y})
     domain_counts: dict[str, int] = defaultdict(int)
     positions: dict[str, tuple[float, float]] = {}
     for node in sorted(nodes, key=lambda item: (int((item.get("properties") or {}).get("order", 999)), str(item.get("id")))):
         node_id = first_text(node.get("id"))
         domain = first_text(node.get("domain"), "core")
         node_type = first_text(node.get("type"))
+        domain_meta = profile_domain(profile, domain)
+        domain_x = float(layout.get("domain_x", -12.0))
         if node_type == "domain":
-            positions[node_id] = (-12.0, domain_y.get(domain, 0.0))
+            positions[node_id] = (domain_x, domain_y.get(domain, 0.0))
             continue
         index = domain_counts[domain]
         domain_counts[domain] += 1
-        columns = 9 if domain == "number-algebra" else 7 if domain == "geometry" else 8
+        columns = int(domain_meta.get("columns") or (9 if domain == "number-algebra" else 7 if domain == "geometry" else 8))
         column = index % columns
         row = index // columns
-        width = 20.0
-        x = -9.5 + (width / max(columns - 1, 1)) * column
-        y = domain_y.get(domain, 0.0) - row * 1.18
+        width = float(layout.get("width", 20.0))
+        x_start = float(layout.get("x_start", -9.5))
+        row_gap = float(layout.get("row_gap", 1.18))
+        x = x_start + (width / max(columns - 1, 1)) * column
+        y = domain_y.get(domain, 0.0) - row * row_gap
         positions[node_id] = (x, y)
     return positions
 
@@ -1367,17 +1419,32 @@ def fallback_position(index: int, total: int) -> tuple[float, float]:
 
 def group_node_to_product(node: dict[str, Any], positions: dict[str, tuple[float, float]], args: argparse.Namespace) -> dict[str, Any]:
     props = dict(node.get("properties") if isinstance(node.get("properties"), dict) else {})
+    profile = getattr(args, "_profile", {}) or {}
     node_type = first_text(node.get("type"), "knowledge_group")
     points = [first_text(item) for item in as_list(node.get("points") or props.get("knowledge_points")) if first_text(item)]
-    domain = first_text(node.get("domain"), props.get("domain"), args.default_domain)
+    domain = first_text(node.get("domain"), props.get("domain"), profile_default(profile, "domain", args.default_domain))
     node_id = first_text(node.get("id"))
     fallback = fallback_position(len(positions), max(len(positions), 1))
     x, y = positions.get(node_id, fallback)
+    domain_meta = profile_domain(profile, domain)
+    subject_title = first_text(profile.get("subject_title"), profile.get("title"), props.get("subject_title"), node.get("subject"))
     props.setdefault("section_type", node_type)
     props.setdefault("layout", "knowledge_group_map")
     props.setdefault("knowledge_points", points)
-    props.setdefault("framework_path", ["数学", first_text(props.get("domain_name"), domain), first_text(props.get("theme_name"), node.get("theme")), first_text(node.get("name"))])
+    props.setdefault(
+        "framework_path",
+        [
+            first_text(subject_title, args.default_subject),
+            first_text(props.get("domain_name"), domain_meta.get("name"), domain),
+            first_text(props.get("theme_name"), node.get("theme")),
+            first_text(node.get("name")),
+        ],
+    )
     props.setdefault("core_understanding", first_text(node.get("core_understanding"), props.get("core_understanding")))
+    if first_text(domain_meta.get("name")):
+        props.setdefault("domain_name", first_text(domain_meta.get("name")))
+    if first_text(domain_meta.get("color")):
+        props.setdefault("color", first_text(domain_meta.get("color")))
     props["x"] = x
     props["y"] = y
     product_node: dict[str, Any] = {
@@ -1385,15 +1452,15 @@ def group_node_to_product(node: dict[str, Any], positions: dict[str, tuple[float
         "name": first_text(node.get("name"), node_id),
         "name_en": first_text(node.get("name_en")),
         "type": node_type,
-        "subject": first_text(node.get("subject"), args.default_subject),
+        "subject": first_text(node.get("subject"), profile_default(profile, "subject", args.default_subject)),
         "grade": parse_grade(node.get("grade"), args.default_grade),
         "domain": domain,
         "difficulty": product_difficulty(node, args.default_difficulty),
         "definition": group_node_definition(node),
         "skills": points[:8],
         "stage": first_text(node.get("stage"), "general"),
-        "curriculum": first_text(node.get("curriculum"), args.default_curriculum),
-        "tree_path": first_text(node.get("tree_path"), f"{args.default_curriculum}/knowledge-groups.json"),
+        "curriculum": first_text(node.get("curriculum"), profile_default(profile, "curriculum", args.default_curriculum)),
+        "tree_path": first_text(node.get("tree_path"), f"{profile_default(profile, 'curriculum', args.default_curriculum)}/knowledge-groups.json"),
         "display_name": first_text(node.get("display_name"), node.get("name"), node_id),
         "properties": props,
     }
@@ -1410,6 +1477,7 @@ def group_node_to_product(node: dict[str, Any], positions: dict[str, tuple[float
 
 def command_export_groups_product(args: argparse.Namespace) -> int:
     data = load_json(Path(args.input))
+    args._profile = load_profile(getattr(args, "profile", None))
     errors, warnings = validate_knowledge_groups(data)
     if errors:
         print(json.dumps({"exported": False, "errors": errors, "warnings": warnings}, ensure_ascii=False, indent=2), file=sys.stderr)
@@ -1424,11 +1492,12 @@ def command_export_groups_product(args: argparse.Namespace) -> int:
         and first_text(node.get("type")) in KNOWLEDGE_GROUP_NODE_TYPES
         and review_state(node) in review_states
     ]
-    positions = domain_layout(source_nodes)
+    positions = domain_layout(source_nodes, args._profile)
     nodes = [group_node_to_product(node, positions, args) for node in source_nodes]
     node_ids = {first_text(node.get("id")) for node in nodes}
     edges: list[dict[str, Any]] = []
     seen_edges: set[tuple[str, str, str]] = set()
+    seen_pairs: set[tuple[str, str]] = set()
     for edge in data.get("edges") or []:
         if not isinstance(edge, dict):
             continue
@@ -1438,6 +1507,10 @@ def command_export_groups_product(args: argparse.Namespace) -> int:
         source = first_text(edge.get("source"))
         target = first_text(edge.get("target"))
         if source not in node_ids or target not in node_ids:
+            continue
+        pair_key = (source, target)
+        if pair_key in seen_pairs:
+            warnings.append(f"skipped duplicate source-target edge for product graph: {source} -> {target}")
             continue
         key = (source, target, edge_type)
         if key in seen_edges:
@@ -1461,6 +1534,7 @@ def command_export_groups_product(args: argparse.Namespace) -> int:
             product_edge["properties"] = edge["properties"]
         edges.append(product_edge)
         seen_edges.add(key)
+        seen_pairs.add(pair_key)
 
     out = {
         "nodes": sorted(nodes, key=lambda item: (nodeTypeOrderForProduct(item), str(item.get("domain")), str(item.get("id")))),
@@ -1473,6 +1547,7 @@ def command_export_groups_product(args: argparse.Namespace) -> int:
             "title": first_text(data.get("title"), "义务教育数学课程标准（2022年版）知识点组图谱"),
             "view": "knowledge_group_map",
             "curriculum": first_text(data.get("curriculum"), args.default_curriculum),
+            "profile": first_text((args._profile or {}).get("id")),
             "semanticEdges": sum(1 for edge in out["edges"] if edge.get("type") != "part_of"),
         }
     )
@@ -1484,6 +1559,169 @@ def command_export_groups_product(args: argparse.Namespace) -> int:
     write_json(Path(args.out), out)
     print(json.dumps({"exported": True, "out": args.out, "nodes": len(out["nodes"]), "edges": len(out["edges"]), "warnings": warnings + product_warnings}, ensure_ascii=False, indent=2))
     return 0
+
+
+def ratio(count: int, total: int) -> float:
+    if total <= 0:
+        return 1.0
+    return count / total
+
+
+def quality_grade(score: float) -> str:
+    if score >= 90:
+        return "A"
+    if score >= 80:
+        return "B"
+    if score >= 70:
+        return "C"
+    if score >= 60:
+        return "D"
+    return "F"
+
+
+def knowledge_group_detail_fields(node: dict[str, Any]) -> dict[str, bool]:
+    props = node.get("properties") if isinstance(node.get("properties"), dict) else {}
+    return {
+        "source_refs": bool([ref for ref in as_list(node.get("source_refs")) if first_text(ref)]),
+        "points": bool([item for item in as_list(node.get("points") or props.get("knowledge_points")) if first_text(item)]),
+        "summary": bool(first_text(node.get("summary"), node.get("definition"), props.get("core_understanding"))),
+        "progression": bool(as_list(node.get("progression") or props.get("progression") or props.get("grade_progression"))),
+        "typical_tasks": bool(as_list(node.get("typical_tasks") or props.get("typical_tasks"))),
+        "misconceptions": bool(as_list(node.get("misconceptions") or props.get("misconceptions"))),
+    }
+
+
+def edge_has_quality_evidence(edge: dict[str, Any]) -> bool:
+    return (
+        bool(first_text(edge.get("evidence"), edge.get("reason")))
+        and bool([ref for ref in as_list(edge.get("source_refs")) if first_text(ref)])
+        and confidence(edge) is not None
+    )
+
+
+def knowledge_groups_quality(data: dict[str, Any]) -> dict[str, Any]:
+    errors, warnings = validate_knowledge_groups(data)
+    nodes = [node for node in data.get("nodes") or [] if isinstance(node, dict)]
+    edges = [edge for edge in data.get("edges") or [] if isinstance(edge, dict)]
+    domains = [node for node in nodes if first_text(node.get("type")) == "domain"]
+    groups = [node for node in nodes if first_text(node.get("type")) == "knowledge_group"]
+    semantic_edges = [edge for edge in edges if first_text(edge.get("type")) != "part_of"]
+    structural_edges = [edge for edge in edges if first_text(edge.get("type")) == "part_of"]
+    semantic_edge_count: dict[str, int] = defaultdict(int)
+    duplicate_product_pairs = Counter((first_text(edge.get("source")), first_text(edge.get("target"))) for edge in edges)
+    duplicate_pair_warnings = [
+        f"duplicate source-target pair may be collapsed in product export: {source} -> {target}"
+        for (source, target), count in duplicate_product_pairs.items()
+        if source and target and count > 1
+    ]
+    warnings.extend(duplicate_pair_warnings)
+    for edge in semantic_edges:
+        source = first_text(edge.get("source"))
+        target = first_text(edge.get("target"))
+        if source:
+            semantic_edge_count[source] += 1
+        if target:
+            semantic_edge_count[target] += 1
+
+    detail_counts = Counter()
+    group_blockers: list[str] = []
+    for group in groups:
+        fields = knowledge_group_detail_fields(group)
+        detail_counts.update(key for key, value in fields.items() if value)
+        group_id = first_text(group.get("id"))
+        props = group.get("properties") if isinstance(group.get("properties"), dict) else {}
+        if not fields["source_refs"]:
+            group_blockers.append(f"group {group_id} missing source_refs")
+        if not fields["points"]:
+            group_blockers.append(f"group {group_id} missing main knowledge points")
+        if not fields["summary"]:
+            group_blockers.append(f"group {group_id} missing summary/core_understanding")
+        if not semantic_edge_count.get(group_id) and not first_text(props.get("relationship_note")):
+            group_blockers.append(f"group {group_id} missing semantic relation or relationship_note")
+
+    semantic_evidence_count = sum(1 for edge in semantic_edges if edge_has_quality_evidence(edge))
+    reviewable_items = nodes + edges
+    review_counts = Counter(review_state(item) or "unspecified" for item in reviewable_items)
+    release_blockers = list(errors)
+    release_blockers.extend(group_blockers)
+    if review_counts.get("needs_review") or review_counts.get("draft") or review_counts.get("unspecified"):
+        release_blockers.append("all release items must be accepted before official release")
+    for edge in semantic_edges:
+        if not edge_has_quality_evidence(edge):
+            release_blockers.append(f"semantic edge {first_text(edge.get('id')) or first_text(edge.get('source')) + '->' + first_text(edge.get('target'))} missing evidence/source_refs/confidence")
+
+    group_total = len(groups)
+    semantic_total = len(semantic_edges)
+    score_parts = {
+        "source_refs": ratio(detail_counts["source_refs"], group_total) * 15,
+        "main_points": ratio(detail_counts["points"], group_total) * 20,
+        "core_detail": ratio(detail_counts["summary"], group_total) * 15,
+        "stage_progression": ratio(detail_counts["progression"], group_total) * 10,
+        "teaching_detail": ratio(detail_counts["typical_tasks"] + detail_counts["misconceptions"], max(group_total * 2, 1)) * 10,
+        "semantic_relations": ratio(sum(1 for group in groups if semantic_edge_count.get(first_text(group.get("id"))) or first_text((group.get("properties") if isinstance(group.get("properties"), dict) else {}).get("relationship_note"))), group_total) * 15,
+        "semantic_evidence": ratio(semantic_evidence_count, semantic_total) * 10,
+        "review_status": ratio(review_counts.get("accepted", 0), len(reviewable_items)) * 5,
+    }
+    score = round(sum(score_parts.values()), 2)
+    if errors:
+        score = max(0.0, score - min(30, len(errors) * 5))
+    return {
+        "schema": "cgo.knowledge_groups.quality_report.v1",
+        "generated_at": utc_now(),
+        "id": first_text(data.get("id")),
+        "title": first_text(data.get("title")),
+        "valid": not errors,
+        "release_ready": not release_blockers,
+        "score": score,
+        "grade": quality_grade(score),
+        "metrics": {
+            "domains": len(domains),
+            "knowledge_groups": len(groups),
+            "edges": len(edges),
+            "structural_edges": len(structural_edges),
+            "semantic_edges": semantic_total,
+            "semantic_edge_density": round(semantic_total / max(group_total, 1), 3),
+            "relation_types": dict(sorted(Counter(first_text(edge.get("type")) for edge in edges).items())),
+            "review_states": dict(sorted(review_counts.items())),
+            "coverage": {
+                "source_refs": round(ratio(detail_counts["source_refs"], group_total), 3),
+                "main_points": round(ratio(detail_counts["points"], group_total), 3),
+                "core_detail": round(ratio(detail_counts["summary"], group_total), 3),
+                "stage_progression": round(ratio(detail_counts["progression"], group_total), 3),
+                "typical_tasks": round(ratio(detail_counts["typical_tasks"], group_total), 3),
+                "misconceptions": round(ratio(detail_counts["misconceptions"], group_total), 3),
+                "semantic_relations": round(ratio(sum(1 for group in groups if semantic_edge_count.get(first_text(group.get("id"))) or first_text((group.get("properties") if isinstance(group.get("properties"), dict) else {}).get("relationship_note"))), group_total), 3),
+                "semantic_evidence": round(ratio(semantic_evidence_count, semantic_total), 3),
+            },
+        },
+        "score_parts": {key: round(value, 2) for key, value in score_parts.items()},
+        "blockers": release_blockers,
+        "warnings": warnings,
+    }
+
+
+def command_quality_groups(args: argparse.Namespace) -> int:
+    data = load_json(Path(args.input))
+    report = knowledge_groups_quality(data)
+    if args.out:
+        write_json(Path(args.out), report)
+        print(json.dumps({"wrote": args.out, "score": report["score"], "release_ready": report["release_ready"]}, ensure_ascii=False, indent=2))
+    else:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    if args.require_release_ready and not report["release_ready"]:
+        return 2
+    return 0 if report["valid"] else 2
+
+
+def command_validate_manifest(args: argparse.Namespace) -> int:
+    scripts_dir = Path(__file__).resolve().parent
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    from ucs_kg import validate_knowledge_map_manifest
+
+    report = validate_knowledge_map_manifest(load_json(Path(args.input)))
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if report["valid"] else 2
 
 
 def nodeTypeOrderForProduct(node: dict[str, Any]) -> int:
@@ -1569,13 +1807,24 @@ def build_parser() -> argparse.ArgumentParser:
     validate_product.add_argument("--input", required=True)
     validate_product.set_defaults(func=command_validate_product)
 
+    validate_manifest = sub.add_parser("validate-manifest")
+    validate_manifest.add_argument("--input", required=True)
+    validate_manifest.set_defaults(func=command_validate_manifest)
+
     validate_groups = sub.add_parser("validate-groups")
     validate_groups.add_argument("--input", required=True)
     validate_groups.set_defaults(func=command_validate_groups)
 
+    quality_groups = sub.add_parser("quality-groups")
+    quality_groups.add_argument("--input", required=True)
+    quality_groups.add_argument("--out")
+    quality_groups.add_argument("--require-release-ready", action="store_true")
+    quality_groups.set_defaults(func=command_quality_groups)
+
     export_groups_product = sub.add_parser("export-groups-product")
     export_groups_product.add_argument("--input", required=True)
     export_groups_product.add_argument("--out", required=True)
+    export_groups_product.add_argument("--profile")
     export_groups_product.add_argument("--default-subject", default="mathematics")
     export_groups_product.add_argument("--default-grade", type=int, default=0)
     export_groups_product.add_argument("--default-domain", default="mathematics")

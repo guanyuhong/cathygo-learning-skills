@@ -10,6 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "skills" / "cathygo-knowledge-map" / "scripts" / "kg.py"
 SAMPLE = ROOT / "tests" / "fixtures" / "knowledge-map" / "knowledge-groups.sample.json"
+MANIFEST = ROOT / "tests" / "fixtures" / "knowledge-map" / "manifest.sample.json"
 
 
 def load_module():
@@ -61,6 +62,16 @@ class KnowledgeGroupsValidationTest(unittest.TestCase):
             data = self.kg.load_json(out)
             self.assertEqual(data["stats"]["view"], "knowledge_group_map")
             self.assertTrue(any(node["id"] == "kg:number-algebra:变化规律与建模" for node in data["nodes"]))
+
+    def test_quality_groups_release_ready(self) -> None:
+        report = self.kg.knowledge_groups_quality(self.sample)
+        self.assertTrue(report["valid"])
+        self.assertTrue(report["release_ready"])
+        self.assertEqual(report["grade"], "A")
+
+    def test_validate_manifest_command(self) -> None:
+        result = self.kg.main(["validate-manifest", "--input", str(MANIFEST)])
+        self.assertEqual(result, 0)
 
 
 if __name__ == "__main__":
