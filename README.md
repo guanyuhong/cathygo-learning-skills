@@ -55,6 +55,14 @@ cathygo-learning-skills/
       schemas/
       examples/
   content/
+    curricula/
+      cn-math-2022/
+        ucs-kg.json
+        cgo-kg-candidates.json
+        cgo-kg.json
+        manifest.json
+        exports/
+          knowledge-map-data.json
     packs/
       algebraic-fractions-demo/
         kg.json
@@ -77,6 +85,49 @@ cathygo-learning-skills/
 - `manifest.json`：内容包元数据和 compat 信息
 
 未来题目内容优先放在内容包内部的 `questions/*.qij.json` 或 `problem-set.json`，由 `cathygo-qij-question` 维护。
+
+## 课程标准图谱
+
+`content/curricula/<curriculum-id>/` 保存课程标准层 artifact。`ucs-kg.json` 是 source
+of truth，先保留 curriculum、framework、standard item、concept、competency 和
+learning evidence，再导出 `cgo-kg-candidates.json`、`cgo-kg.json` 和前台使用的
+`exports/knowledge-map-data.json`。
+
+常用命令：
+
+```bash
+python skills/cathygo-knowledge-map/scripts/pdf_source.py extract-pages \
+  --pdf "/path/to/W020220420582346895190.pdf" \
+  --pages 23-130 \
+  --out-dir tmp/textbook-cache/cn-math-2022/pages \
+  --book-id cn-math-2022-standard \
+  --images none \
+  --ocr always \
+  --ocr-lang chi_sim+eng
+
+python skills/cathygo-knowledge-map/scripts/build_cn_math_2022.py \
+  --pages-dir tmp/textbook-cache/cn-math-2022/pages \
+  --out content/curricula/cn-math-2022/ucs-kg.json \
+  --start-page 23 \
+  --end-page 130
+
+python skills/cathygo-knowledge-map/scripts/ucs_kg.py validate \
+  --input content/curricula/cn-math-2022/ucs-kg.json
+
+python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-candidates \
+  --input content/curricula/cn-math-2022/ucs-kg.json \
+  --out content/curricula/cn-math-2022/cgo-kg-candidates.json
+
+python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-cgo-kg \
+  --input content/curricula/cn-math-2022/ucs-kg.json \
+  --out content/curricula/cn-math-2022/cgo-kg.json
+
+python skills/cathygo-knowledge-map/scripts/kg.py export-product \
+  --kg content/curricula/cn-math-2022/cgo-kg.json \
+  --out content/curricula/cn-math-2022/exports/knowledge-map-data.json \
+  --curriculum cn-math-2022 \
+  --tree-path cn-math-2022/mathematics.json
+```
 
 ## 常用命令
 

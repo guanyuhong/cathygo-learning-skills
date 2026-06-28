@@ -64,6 +64,52 @@ python skills/cathygo-knowledge-map/scripts/pdf_source.py compare-backends \
 python -m pip install -r skills/cathygo-knowledge-map/requirements-optional.txt
 ```
 
+扫描型 PDF 会在 `--ocr auto` 下触发本地 Tesseract OCR。默认语言是
+`chi_sim+eng`，先检查本机语言包：
+
+```bash
+python skills/cathygo-knowledge-map/scripts/pdf_source.py check-ocr \
+  --lang chi_sim+eng
+```
+
+macOS 如果缺少 `chi_sim`，安装：
+
+```bash
+brew install tesseract-lang
+```
+
+需要强制 OCR 时：
+
+```bash
+python skills/cathygo-knowledge-map/scripts/pdf_source.py extract-lesson \
+  --pdf "/path/to/source.pdf" \
+  --pages 23-31 \
+  --lesson-id cn-math-stage1-number-algebra \
+  --ocr always \
+  --ocr-lang chi_sim+eng \
+  --out tmp/textbook-cache/<book-id>/lessons/cn-math-stage1-number-algebra.json
+```
+
+课程标准类 PDF 可以按页段生成 page cache，再用专用构建器产出 UCS-KG。以
+`cn-math-2022` 为例：
+
+```bash
+python skills/cathygo-knowledge-map/scripts/pdf_source.py extract-pages \
+  --pdf "/path/to/W020220420582346895190.pdf" \
+  --pages 23-130 \
+  --out-dir tmp/textbook-cache/cn-math-2022/pages \
+  --book-id cn-math-2022-standard \
+  --images none \
+  --ocr always \
+  --ocr-lang chi_sim+eng
+
+python skills/cathygo-knowledge-map/scripts/build_cn_math_2022.py \
+  --pages-dir tmp/textbook-cache/cn-math-2022/pages \
+  --out content/curricula/cn-math-2022/ucs-kg.json \
+  --start-page 23 \
+  --end-page 130
+```
+
 4. 生成可 review 的 candidates scaffold：
 
 ```bash

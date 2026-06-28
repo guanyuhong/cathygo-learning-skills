@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import re
 import sys
 from collections import Counter, defaultdict, deque
@@ -56,6 +57,9 @@ EDGE_TYPES = {
 
 REVIEW_STATES = {"accepted", "needs_review", "rejected", "draft"}
 SYMMETRIC_EDGE_TYPES = {"confuses_with", "related_to", "same_as"}
+KNOWLEDGE_GROUP_NODE_TYPES = {"domain", "knowledge_group"}
+KNOWLEDGE_GROUP_EDGE_TYPES = {"part_of", "requires", "extends", "related_to", "applies_to"}
+KNOWLEDGE_GROUP_EXPORT_EDGE_TYPES = {"part_of", "requires", "extends", "related_to", "applies_to"}
 PRODUCT_NODE_FIELDS = [
     "id",
     "name",
@@ -77,6 +81,7 @@ PRODUCT_DEFAULT_EDGE_TYPES = {
     "extends",
     "applies_to",
     "procedure_step_of",
+    "assesses",
     "related_to",
 }
 PRODUCT_DEFAULT_NODE_TYPES = {
@@ -959,16 +964,18 @@ def product_difficulty(node: dict[str, Any], fallback: int) -> int:
 
 
 def product_node_from_kg(node: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
+    grade_band = node.get("grade_band") if isinstance(node.get("grade_band"), dict) else {}
     subject = normalize_slug(args.subject or node.get("subject"), SUBJECT_SLUGS, args.default_subject)
-    stage = normalize_slug(args.stage or node.get("stage"), STAGE_SLUGS, args.default_stage)
+    stage = normalize_slug(args.stage or node.get("stage") or grade_band.get("stage"), STAGE_SLUGS, args.default_stage)
     grade = parse_grade(args.grade if args.grade is not None else node.get("grade") or node.get("grade_band"), args.default_grade)
     curriculum = first_text(args.curriculum, node.get("curriculum"), args.default_curriculum)
     tree_path = first_text(args.tree_path, nested_text(node, "properties", "tree_path"), f"{curriculum}/{subject}.json" if curriculum and subject else "")
     name = first_text(node.get("name"), node.get("id"))
-    return {
+    product_node: dict[str, Any] = {
         "id": product_node_id(node),
         "name": name,
         "name_en": product_node_name_en(node),
+        "type": first_text(node.get("type")),
         "subject": subject,
         "grade": grade,
         "domain": normalize_slug(args.domain, {}, "") if args.domain else product_domain(node, args.default_domain),
@@ -980,6 +987,17 @@ def product_node_from_kg(node: dict[str, Any], args: argparse.Namespace) -> dict
         "tree_path": tree_path,
         "display_name": first_text(node.get("display_name"), nested_text(node, "properties", "display_name"), name),
     }
+    if grade_band:
+        product_node["grade_band"] = grade_band
+    refs = [str(ref) for ref in as_list(node.get("source_refs")) if str(ref).strip()]
+    if refs:
+        product_node["source_refs"] = refs
+    conf = confidence(node)
+    if conf is not None:
+        product_node["confidence"] = conf
+    if isinstance(node.get("properties"), dict):
+        product_node["properties"] = node["properties"]
+    return product_node
 
 
 def parse_csv_set(value: str | None, default: set[str]) -> set[str]:
@@ -1048,8 +1066,8 @@ def command_export_product(args: argparse.Namespace) -> int:
         selected_ids.add(node_id)
         product_ids_by_internal_id[node_id] = product_node["id"]
 
-    edges: list[dict[str, str]] = []
-    seen_edges: set[tuple[str, str]] = set()
+    edges: list[dict[str, Any]] = []
+    seen_edges: set[tuple[str, str, str]] = set()
     for edge in kg.get("edges") or []:
         if not isinstance(edge, dict):
             continue
@@ -1066,10 +1084,20 @@ def command_export_product(args: argparse.Namespace) -> int:
             continue
         product_source = product_ids_by_internal_id[source]
         product_target = product_ids_by_internal_id[target]
-        key = (product_source, product_target)
+        edge_type = first_text(edge.get("type"))
+        key = (product_source, product_target, edge_type)
         if key in seen_edges:
             continue
-        edges.append({"source": product_source, "target": product_target})
+        product_edge: dict[str, Any] = {"source": product_source, "target": product_target}
+        if edge_type:
+            product_edge["type"] = edge_type
+        conf = confidence(edge)
+        if conf is not None:
+            product_edge["confidence"] = conf
+        refs = [str(ref) for ref in as_list(edge.get("source_refs")) if str(ref).strip()]
+        if refs:
+            product_edge["source_refs"] = refs
+        edges.append(product_edge)
         seen_edges.add(key)
 
     out = {
@@ -1130,20 +1158,25 @@ def validate_product_graph(data: dict[str, Any]) -> tuple[list[str], list[str]]:
         if not isinstance(edge, dict):
             errors.append(f"edges[{idx}] must be an object")
             continue
-        keys = set(edge.keys())
-        if keys != {"source", "target"}:
-            errors.append(f"edge {idx} fields must be source,target")
         source = first_text(edge.get("source"))
         target = first_text(edge.get("target"))
+        if not source or not target:
+            errors.append(f"edge {idx} must contain source and target")
+        edge_type = first_text(edge.get("type"))
+        conf = confidence(edge)
+        if "confidence" in edge and conf is None:
+            errors.append(f"edge {idx} confidence must be numeric")
+        elif conf is not None and (conf < 0 or conf > 1):
+            errors.append(f"edge {idx} confidence outside [0,1]")
         if source not in node_ids:
             errors.append(f"edge {idx} source missing: {source}")
         if target not in node_ids:
             errors.append(f"edge {idx} target missing: {target}")
         if source == target:
             errors.append(f"edge {idx} self-loop is not allowed: {source}")
-        key = (source, target)
+        key = (source, target, edge_type)
         if key in seen_edges:
-            errors.append(f"duplicate edge: {source} -> {target}")
+            errors.append(f"duplicate edge: {source} -> {target} ({edge_type})")
         seen_edges.add(key)
 
     expected_nodes = stats.get("totalNodes")
@@ -1161,6 +1194,305 @@ def command_validate_product(args: argparse.Namespace) -> int:
     result = {"valid": not errors, "error_count": len(errors), "warning_count": len(warnings), "errors": errors, "warnings": warnings}
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if not errors else 2
+
+
+def validate_knowledge_groups(data: dict[str, Any]) -> tuple[list[str], list[str]]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    if data.get("schema") != "cgo.knowledge_groups.v1":
+        errors.append("top-level schema must be cgo.knowledge_groups.v1")
+    if data.get("kind") != "knowledge_groups":
+        errors.append("top-level kind must be knowledge_groups")
+
+    nodes = data.get("nodes") or []
+    edges = data.get("edges") or []
+    if not isinstance(nodes, list):
+        errors.append("nodes must be a list")
+        nodes = []
+    if not isinstance(edges, list):
+        errors.append("edges must be a list")
+        edges = []
+
+    node_ids: set[str] = set()
+    group_ids: set[str] = set()
+    semantic_edge_count: dict[str, int] = defaultdict(int)
+    for index, node in enumerate(nodes):
+        if not isinstance(node, dict):
+            errors.append(f"nodes[{index}] must be an object")
+            continue
+        node_id = first_text(node.get("id"))
+        node_type = first_text(node.get("type"))
+        if not node_id:
+            errors.append(f"nodes[{index}] missing id")
+            continue
+        if node_id in node_ids:
+            errors.append(f"duplicate node id: {node_id}")
+        node_ids.add(node_id)
+        if node_type not in KNOWLEDGE_GROUP_NODE_TYPES:
+            errors.append(f"node {node_id} has invalid type: {node_type}")
+        if node_type == "knowledge_group":
+            group_ids.add(node_id)
+            points = node.get("points")
+            props = node.get("properties") if isinstance(node.get("properties"), dict) else {}
+            if not isinstance(points, list) or not [item for item in points if first_text(item)]:
+                errors.append(f"knowledge group {node_id} missing points")
+            if not first_text(node.get("summary"), node.get("definition"), props.get("core_understanding")):
+                warnings.append(f"knowledge group {node_id} has sparse detail")
+        if not first_text(node.get("name")):
+            errors.append(f"node {node_id} missing name")
+        if not first_text(node.get("domain")):
+            errors.append(f"node {node_id} missing domain")
+        if not [ref for ref in as_list(node.get("source_refs")) if first_text(ref)]:
+            errors.append(f"node {node_id} missing source_refs")
+        state = review_state(node)
+        if state and state not in REVIEW_STATES:
+            errors.append(f"node {node_id} has invalid review state: {state}")
+        conf = confidence(node)
+        if conf is None:
+            errors.append(f"node {node_id} missing numeric confidence")
+        elif conf < 0 or conf > 1:
+            errors.append(f"node {node_id} confidence outside [0,1]")
+
+    edge_ids: set[str] = set()
+    normalized_edges: list[dict[str, Any]] = []
+    for index, edge in enumerate(edges):
+        if not isinstance(edge, dict):
+            errors.append(f"edges[{index}] must be an object")
+            continue
+        edge_id = first_text(edge.get("id"))
+        edge_type = first_text(edge.get("type"))
+        source = first_text(edge.get("source"))
+        target = first_text(edge.get("target"))
+        if not edge_id:
+            errors.append(f"edges[{index}] missing id")
+        elif edge_id in edge_ids:
+            errors.append(f"duplicate edge id: {edge_id}")
+        edge_ids.add(edge_id)
+        if edge_type not in KNOWLEDGE_GROUP_EDGE_TYPES:
+            errors.append(f"edge {edge_id or index} has invalid type: {edge_type}")
+        if source not in node_ids:
+            errors.append(f"edge {edge_id or index} source missing: {source}")
+        if target not in node_ids:
+            errors.append(f"edge {edge_id or index} target missing: {target}")
+        if source and source == target:
+            errors.append(f"edge {edge_id or index} self-loop is not allowed")
+        if not first_text(edge.get("evidence"), edge.get("reason")):
+            errors.append(f"edge {edge_id or index} missing evidence or reason")
+        if not [ref for ref in as_list(edge.get("source_refs")) if first_text(ref)]:
+            errors.append(f"edge {edge_id or index} missing source_refs")
+        state = review_state(edge)
+        if state and state not in REVIEW_STATES:
+            errors.append(f"edge {edge_id or index} has invalid review state: {state}")
+        conf = confidence(edge)
+        if conf is None:
+            errors.append(f"edge {edge_id or index} missing numeric confidence")
+        elif conf < 0 or conf > 1:
+            errors.append(f"edge {edge_id or index} confidence outside [0,1]")
+        if edge_type != "part_of":
+            if source in group_ids:
+                semantic_edge_count[source] += 1
+            if target in group_ids:
+                semantic_edge_count[target] += 1
+        normalized_edges.append({"type": edge_type, "source": source, "target": target})
+
+    cycle = detect_requires_cycle(node_ids, normalized_edges)
+    if cycle:
+        errors.append("requires cycle: " + " -> ".join(cycle))
+
+    for node in nodes:
+        if not isinstance(node, dict) or first_text(node.get("type")) != "knowledge_group":
+            continue
+        node_id = first_text(node.get("id"))
+        props = node.get("properties") if isinstance(node.get("properties"), dict) else {}
+        if semantic_edge_count.get(node_id, 0) == 0 and not first_text(props.get("relationship_note")):
+            errors.append(f"knowledge group {node_id} has no semantic edge or relationship_note")
+
+    return errors, warnings
+
+
+def command_validate_groups(args: argparse.Namespace) -> int:
+    data = load_json(Path(args.input))
+    errors, warnings = validate_knowledge_groups(data)
+    result = {"valid": not errors, "error_count": len(errors), "warning_count": len(warnings), "errors": errors, "warnings": warnings}
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if not errors else 2
+
+
+def group_node_definition(node: dict[str, Any]) -> str:
+    props = node.get("properties") if isinstance(node.get("properties"), dict) else {}
+    if first_text(node.get("summary")):
+        return first_text(node.get("summary"))
+    if first_text(node.get("definition")):
+        return first_text(node.get("definition"))
+    if first_text(props.get("core_understanding")):
+        return first_text(props.get("core_understanding"))
+    if first_text(node.get("type")) == "domain":
+        return f"{first_text(node.get('name'))}是义务教育数学课程标准中的学习领域。"
+    return f"{first_text(node.get('name'))}是{first_text(props.get('domain_name'), node.get('domain'))}领域下的知识点组。"
+
+
+def domain_layout(nodes: list[dict[str, Any]]) -> dict[str, tuple[float, float]]:
+    domain_y = {
+        "number-algebra": 5.2,
+        "geometry": 1.7,
+        "statistics-probability": -1.8,
+        "synthesis-practice": -5.0,
+    }
+    domain_counts: dict[str, int] = defaultdict(int)
+    positions: dict[str, tuple[float, float]] = {}
+    for node in sorted(nodes, key=lambda item: (int((item.get("properties") or {}).get("order", 999)), str(item.get("id")))):
+        node_id = first_text(node.get("id"))
+        domain = first_text(node.get("domain"), "core")
+        node_type = first_text(node.get("type"))
+        if node_type == "domain":
+            positions[node_id] = (-12.0, domain_y.get(domain, 0.0))
+            continue
+        index = domain_counts[domain]
+        domain_counts[domain] += 1
+        columns = 9 if domain == "number-algebra" else 7 if domain == "geometry" else 8
+        column = index % columns
+        row = index // columns
+        width = 20.0
+        x = -9.5 + (width / max(columns - 1, 1)) * column
+        y = domain_y.get(domain, 0.0) - row * 1.18
+        positions[node_id] = (x, y)
+    return positions
+
+
+def fallback_position(index: int, total: int) -> tuple[float, float]:
+    angle = (math.pi * 2 * index) / max(total, 1)
+    radius = max(4.0, math.sqrt(max(total, 1)))
+    return (math.cos(angle) * radius, math.sin(angle) * radius)
+
+
+def group_node_to_product(node: dict[str, Any], positions: dict[str, tuple[float, float]], args: argparse.Namespace) -> dict[str, Any]:
+    props = dict(node.get("properties") if isinstance(node.get("properties"), dict) else {})
+    node_type = first_text(node.get("type"), "knowledge_group")
+    points = [first_text(item) for item in as_list(node.get("points") or props.get("knowledge_points")) if first_text(item)]
+    domain = first_text(node.get("domain"), props.get("domain"), args.default_domain)
+    node_id = first_text(node.get("id"))
+    fallback = fallback_position(len(positions), max(len(positions), 1))
+    x, y = positions.get(node_id, fallback)
+    props.setdefault("section_type", node_type)
+    props.setdefault("layout", "knowledge_group_map")
+    props.setdefault("knowledge_points", points)
+    props.setdefault("framework_path", ["数学", first_text(props.get("domain_name"), domain), first_text(props.get("theme_name"), node.get("theme")), first_text(node.get("name"))])
+    props.setdefault("core_understanding", first_text(node.get("core_understanding"), props.get("core_understanding")))
+    props["x"] = x
+    props["y"] = y
+    product_node: dict[str, Any] = {
+        "id": node_id,
+        "name": first_text(node.get("name"), node_id),
+        "name_en": first_text(node.get("name_en")),
+        "type": node_type,
+        "subject": first_text(node.get("subject"), args.default_subject),
+        "grade": parse_grade(node.get("grade"), args.default_grade),
+        "domain": domain,
+        "difficulty": product_difficulty(node, args.default_difficulty),
+        "definition": group_node_definition(node),
+        "skills": points[:8],
+        "stage": first_text(node.get("stage"), "general"),
+        "curriculum": first_text(node.get("curriculum"), args.default_curriculum),
+        "tree_path": first_text(node.get("tree_path"), f"{args.default_curriculum}/knowledge-groups.json"),
+        "display_name": first_text(node.get("display_name"), node.get("name"), node_id),
+        "properties": props,
+    }
+    grade_band = node.get("grade_band") if isinstance(node.get("grade_band"), dict) else {"local": "1-9年级", "min_grade": 1, "max_grade": 9, "stage": "general"}
+    product_node["grade_band"] = grade_band
+    refs = [first_text(ref) for ref in as_list(node.get("source_refs")) if first_text(ref)]
+    if refs:
+        product_node["source_refs"] = refs
+    conf = confidence(node)
+    if conf is not None:
+        product_node["confidence"] = conf
+    return product_node
+
+
+def command_export_groups_product(args: argparse.Namespace) -> int:
+    data = load_json(Path(args.input))
+    errors, warnings = validate_knowledge_groups(data)
+    if errors:
+        print(json.dumps({"exported": False, "errors": errors, "warnings": warnings}, ensure_ascii=False, indent=2), file=sys.stderr)
+        return 2
+
+    review_states = parse_csv_set(args.review_states, {"accepted"})
+    edge_types = parse_csv_set(args.edge_types, KNOWLEDGE_GROUP_EXPORT_EDGE_TYPES)
+    source_nodes = [
+        node
+        for node in data.get("nodes") or []
+        if isinstance(node, dict)
+        and first_text(node.get("type")) in KNOWLEDGE_GROUP_NODE_TYPES
+        and review_state(node) in review_states
+    ]
+    positions = domain_layout(source_nodes)
+    nodes = [group_node_to_product(node, positions, args) for node in source_nodes]
+    node_ids = {first_text(node.get("id")) for node in nodes}
+    edges: list[dict[str, Any]] = []
+    seen_edges: set[tuple[str, str, str]] = set()
+    for edge in data.get("edges") or []:
+        if not isinstance(edge, dict):
+            continue
+        edge_type = first_text(edge.get("type"))
+        if edge_type not in edge_types or review_state(edge) not in review_states:
+            continue
+        source = first_text(edge.get("source"))
+        target = first_text(edge.get("target"))
+        if source not in node_ids or target not in node_ids:
+            continue
+        key = (source, target, edge_type)
+        if key in seen_edges:
+            continue
+        product_edge: dict[str, Any] = {
+            "source": source,
+            "target": target,
+            "type": edge_type,
+        }
+        conf = confidence(edge)
+        if conf is not None:
+            product_edge["confidence"] = conf
+        refs = [first_text(ref) for ref in as_list(edge.get("source_refs")) if first_text(ref)]
+        if refs:
+            product_edge["source_refs"] = refs
+        for key_name in ("evidence", "reason"):
+            text = first_text(edge.get(key_name))
+            if text:
+                product_edge[key_name] = text
+        if isinstance(edge.get("properties"), dict):
+            product_edge["properties"] = edge["properties"]
+        edges.append(product_edge)
+        seen_edges.add(key)
+
+    out = {
+        "nodes": sorted(nodes, key=lambda item: (nodeTypeOrderForProduct(item), str(item.get("domain")), str(item.get("id")))),
+        "edges": sorted(edges, key=lambda item: (str(item.get("type")), str(item.get("source")), str(item.get("target")))),
+    }
+    stats = product_stats(out["nodes"], out["edges"])
+    stats.update(
+        {
+            "id": first_text(data.get("id"), "cn-math-2022-knowledge-groups"),
+            "title": first_text(data.get("title"), "义务教育数学课程标准（2022年版）知识点组图谱"),
+            "view": "knowledge_group_map",
+            "curriculum": first_text(data.get("curriculum"), args.default_curriculum),
+            "semanticEdges": sum(1 for edge in out["edges"] if edge.get("type") != "part_of"),
+        }
+    )
+    out["stats"] = stats
+    product_errors, product_warnings = validate_product_graph(out)
+    if product_errors:
+        print(json.dumps({"exported": False, "errors": product_errors, "warnings": product_warnings + warnings}, ensure_ascii=False, indent=2), file=sys.stderr)
+        return 2
+    write_json(Path(args.out), out)
+    print(json.dumps({"exported": True, "out": args.out, "nodes": len(out["nodes"]), "edges": len(out["edges"]), "warnings": warnings + product_warnings}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def nodeTypeOrderForProduct(node: dict[str, Any]) -> int:
+    node_type = first_text(node.get("type"))
+    if node_type == "domain":
+        return 0
+    if node_type == "knowledge_group":
+        return 1
+    return 2
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1236,6 +1568,22 @@ def build_parser() -> argparse.ArgumentParser:
     validate_product = sub.add_parser("validate-product")
     validate_product.add_argument("--input", required=True)
     validate_product.set_defaults(func=command_validate_product)
+
+    validate_groups = sub.add_parser("validate-groups")
+    validate_groups.add_argument("--input", required=True)
+    validate_groups.set_defaults(func=command_validate_groups)
+
+    export_groups_product = sub.add_parser("export-groups-product")
+    export_groups_product.add_argument("--input", required=True)
+    export_groups_product.add_argument("--out", required=True)
+    export_groups_product.add_argument("--default-subject", default="mathematics")
+    export_groups_product.add_argument("--default-grade", type=int, default=0)
+    export_groups_product.add_argument("--default-domain", default="mathematics")
+    export_groups_product.add_argument("--default-curriculum", default="cn-math-2022")
+    export_groups_product.add_argument("--default-difficulty", type=int, default=0)
+    export_groups_product.add_argument("--edge-types", help="Comma-separated group edge types to export.")
+    export_groups_product.add_argument("--review-states", help="Comma-separated review states to export.")
+    export_groups_product.set_defaults(func=command_export_groups_product)
 
     return parser
 
