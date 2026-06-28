@@ -24,13 +24,13 @@
   "assets": {
     "kg": {
       "path": "cgo-kg.json",
-      "source_path": "content/curricula/cn-math-2022/cgo-kg.json",
+      "source_path": "packages/official.cn-math-2022/source/ucs-kg.json",
       "bytes": 123,
       "sha256": "..."
     },
     "group_map": {
       "path": "knowledge-group-map-data.json",
-      "source_path": "content/curricula/cn-math-2022/exports/knowledge-group-map-data.json",
+      "source_path": "dist/official.cn-math-2022/knowledge-group-map-data.json",
       "bytes": 123,
       "sha256": "..."
     }
@@ -59,3 +59,4 @@
 - `visibility` is `public`, `private`, `shared`, or `draft`.
 - `assets.group_map` is the preferred frontend overview when present; `assets.map` and `assets.kg` are fallbacks.
 - User overlays must not mutate official assets. Store progress, notes, and custom edges separately.
+- Official full content source lives in `cathygo-knowledge`. This skill repository keeps the schema and validation/export tools only.

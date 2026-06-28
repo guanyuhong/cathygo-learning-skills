@@ -9,7 +9,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "skills" / "cathygo-knowledge-map" / "scripts" / "kg.py"
-SAMPLE = ROOT / "content" / "curricula" / "cn-math-2022" / "knowledge-groups.json"
+SAMPLE = ROOT / "tests" / "fixtures" / "knowledge-map" / "knowledge-groups.sample.json"
 
 
 def load_module():
@@ -31,12 +31,12 @@ class KnowledgeGroupsValidationTest(unittest.TestCase):
         self.assertEqual(warnings, [])
         group_nodes = [node for node in self.sample["nodes"] if node["type"] == "knowledge_group"]
         semantic_edges = [edge for edge in self.sample["edges"] if edge["type"] != "part_of"]
-        self.assertGreaterEqual(len(group_nodes), 40)
-        self.assertGreaterEqual(len(semantic_edges), 40)
+        self.assertEqual(len(group_nodes), 3)
+        self.assertEqual(len(semantic_edges), 2)
 
     def test_group_without_semantic_relation_is_error(self) -> None:
         data = copy.deepcopy(self.sample)
-        group_id = "kg:number-algebra:数量关系:变化规律与建模"
+        group_id = "kg:number-algebra:变化规律与建模"
         data["edges"] = [
             edge
             for edge in data["edges"]
@@ -60,7 +60,7 @@ class KnowledgeGroupsValidationTest(unittest.TestCase):
             self.assertEqual(result, 0)
             data = self.kg.load_json(out)
             self.assertEqual(data["stats"]["view"], "knowledge_group_map")
-            self.assertTrue(any(node["id"] == "kg:number-algebra:数量关系:变化规律与建模" for node in data["nodes"]))
+            self.assertTrue(any(node["id"] == "kg:number-algebra:变化规律与建模" for node in data["nodes"]))
 
 
 if __name__ == "__main__":

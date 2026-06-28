@@ -109,32 +109,32 @@ python skills/cathygo-knowledge-map/scripts/pdf_source.py candidates \
 
 python skills/cathygo-knowledge-map/scripts/build_cn_math_2022.py \
   --pages-dir tmp/textbook-cache/cn-math-2022/pages \
-  --out content/curricula/cn-math-2022/ucs-kg.json \
+  --out ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
   --start-page 23 \
   --end-page 130
 
 python skills/cathygo-knowledge-map/scripts/ucs_kg.py validate \
-  --input content/curricula/cn-math-2022/ucs-kg.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json
 
 python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-candidates \
-  --input content/curricula/cn-math-2022/ucs-kg.json \
-  --out content/curricula/cn-math-2022/cgo-kg-candidates.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg-candidates.json
 
 python skills/cathygo-knowledge-map/scripts/kg.py export-product \
-  --kg content/curricula/cn-math-2022/cgo-kg.json \
-  --out content/curricula/cn-math-2022/exports/knowledge-map-data.json \
+  --kg ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/knowledge-map-data.json \
   --curriculum cn-math-2022 \
   --tree-path cn-math-2022/mathematics.json
 
 python skills/cathygo-knowledge-map/scripts/build_cn_math_knowledge_groups.py \
-  --out content/curricula/cn-math-2022/knowledge-groups.json
+  --out ../cathygo-knowledge/packages/official.cn-math-2022/source/knowledge-groups.json
 
 python skills/cathygo-knowledge-map/scripts/kg.py validate-groups \
-  --input content/curricula/cn-math-2022/knowledge-groups.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/knowledge-groups.json
 
 python skills/cathygo-knowledge-map/scripts/kg.py export-groups-product \
-  --input content/curricula/cn-math-2022/knowledge-groups.json \
-  --out content/curricula/cn-math-2022/exports/knowledge-group-map-data.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/knowledge-groups.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/knowledge-group-map-data.json
 ```
 
 ## 输出要求
@@ -146,6 +146,7 @@ python skills/cathygo-knowledge-map/scripts/kg.py export-groups-product \
 - 前台知识点组图谱必须从 `knowledge-groups.json` 导出，不能在前端硬编码知识点组或组间关系。
 - 面向用户的产品入口叫“知识”；底层协议仍使用 `cgo.knowledge-map.manifest.v1`、`cgo.kg.v1` 和相关导出命名。
 - 官方内容包使用 `official.<domain>` id，用户本地图谱使用 `user.local.<slug>` id；不要把官方源和用户 overlay 混写。
+- 官方全量知识内容属于 `cathygo-knowledge`；本 skill 仓库只保留生产工具、小样例和测试 fixture。
 - 知识点组必须保存 `part_of` 以外的语义关系，优先使用 `requires`、`extends`、`related_to`、`applies_to`；关系方向必须遵循 KG contract。
 - 每个知识点组详情至少包括定位摘要、核心理解、主知识点、阶段推进、典型任务、常见误区和 `source_refs`。未充分审校的组可标记 `properties.detail_status="seeded"`，逐组 review 后再提升。
 - 新 node / edge 先进入 candidate，review 后再 merge。

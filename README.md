@@ -54,15 +54,12 @@ cathygo-learning-skills/
       references/
       schemas/
       examples/
-  content/
-    curricula/
-      cn-math-2022/
-        ucs-kg.json
-        cgo-kg-candidates.json
-        cgo-kg.json
-        manifest.json
-        exports/
-          knowledge-map-data.json
+  tests/
+    fixtures/
+      knowledge-map/
+        ucs-kg.sample.json
+        knowledge-groups.sample.json
+        manifest.sample.json
     packs/
       algebraic-fractions-demo/
         kg.json
@@ -86,12 +83,31 @@ cathygo-learning-skills/
 
 未来题目内容优先放在内容包内部的 `questions/*.qij.json` 或 `problem-set.json`，由 `cathygo-qij-question` 维护。
 
-## 课程标准图谱
+## 官方知识生产边界
 
-`content/curricula/<curriculum-id>/` 保存课程标准层 artifact。`ucs-kg.json` 是 source
-of truth，先保留 curriculum、framework、standard item、concept、competency 和
-learning evidence，再导出 `cgo-kg-candidates.json`、`cgo-kg.json` 和前台使用的
-`exports/knowledge-map-data.json`。
+`cathygo-learning-skills` 只保存知识生产能力：PDF/OCR 处理、UCS-KG schema、
+validator、candidate/exporter 和小型测试 fixture。CathyGO 官方全量知识内容不放在
+本仓库，应该进入 `cathygo-knowledge`，再通过 GitHub Release bundle 发布。
+
+建议本地并列 checkout：
+
+```text
+beanX/
+  cathygo-learning-skills/
+  cathygo-knowledge/
+```
+
+官方包源数据位置：
+
+```text
+../cathygo-knowledge/packages/official.cn-math-2022/source/
+  ucs-kg.json
+  knowledge-groups.json
+```
+
+编译产物如 `cgo-kg.json`、`cgo-kg-candidates.json`、`knowledge-map-data.json` 和
+`knowledge-group-map-data.json` 应输出到 `../cathygo-knowledge/dist/...` 或 GitHub
+Release bundle，不提交到本仓库。
 
 常用命令：
 
@@ -107,24 +123,24 @@ python skills/cathygo-knowledge-map/scripts/pdf_source.py extract-pages \
 
 python skills/cathygo-knowledge-map/scripts/build_cn_math_2022.py \
   --pages-dir tmp/textbook-cache/cn-math-2022/pages \
-  --out content/curricula/cn-math-2022/ucs-kg.json \
+  --out ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
   --start-page 23 \
   --end-page 130
 
 python skills/cathygo-knowledge-map/scripts/ucs_kg.py validate \
-  --input content/curricula/cn-math-2022/ucs-kg.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json
 
 python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-candidates \
-  --input content/curricula/cn-math-2022/ucs-kg.json \
-  --out content/curricula/cn-math-2022/cgo-kg-candidates.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg-candidates.json
 
 python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-cgo-kg \
-  --input content/curricula/cn-math-2022/ucs-kg.json \
-  --out content/curricula/cn-math-2022/cgo-kg.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg.json
 
 python skills/cathygo-knowledge-map/scripts/kg.py export-product \
-  --kg content/curricula/cn-math-2022/cgo-kg.json \
-  --out content/curricula/cn-math-2022/exports/knowledge-map-data.json \
+  --kg ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/knowledge-map-data.json \
   --curriculum cn-math-2022 \
   --tree-path cn-math-2022/mathematics.json
 ```

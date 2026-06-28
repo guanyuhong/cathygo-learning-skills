@@ -1,0 +1,209 @@
+{
+  "schema": "cgo.knowledge_groups.v1",
+  "kind": "knowledge_groups",
+  "id": "sample-knowledge-groups",
+  "title": "Sample Knowledge Groups",
+  "version": "0.1.0",
+  "language": "zh-CN",
+  "subject": "mathematics",
+  "curriculum": "sample.curriculum",
+  "source_policy": "test fixture",
+  "nodes": [
+    {
+      "id": "domain:number-algebra",
+      "type": "domain",
+      "name": "数与代数",
+      "subject": "mathematics",
+      "stage": "general",
+      "curriculum": "sample.curriculum",
+      "domain": "number-algebra",
+      "source_refs": [
+        "src:sample"
+      ],
+      "confidence": 1.0,
+      "review": {
+        "state": "accepted"
+      }
+    },
+    {
+      "id": "domain:synthesis-practice",
+      "type": "domain",
+      "name": "综合与实践",
+      "subject": "mathematics",
+      "stage": "general",
+      "curriculum": "sample.curriculum",
+      "domain": "synthesis-practice",
+      "source_refs": [
+        "src:sample"
+      ],
+      "confidence": 1.0,
+      "review": {
+        "state": "accepted"
+      }
+    },
+    {
+      "id": "kg:number-algebra:变化规律与建模",
+      "type": "knowledge_group",
+      "name": "变化规律与建模",
+      "summary": "用数、符号、表格或图像表达和分析变化中的数量关系。",
+      "subject": "mathematics",
+      "stage": "general",
+      "curriculum": "sample.curriculum",
+      "domain": "number-algebra",
+      "points": [
+        "变化规律",
+        "成正比例的量",
+        "成反比例的量",
+        "实际问题建模"
+      ],
+      "source_refs": [
+        "src:sample#std-modeling"
+      ],
+      "confidence": 0.9,
+      "review": {
+        "state": "accepted"
+      },
+      "properties": {
+        "framework_path": [
+          "数学",
+          "数与代数",
+          "数量关系",
+          "变化规律与建模"
+        ],
+        "core_understanding": "变化关系可以被抽象、表达、比较和预测。"
+      }
+    },
+    {
+      "id": "kg:number-algebra:函数基础",
+      "type": "knowledge_group",
+      "name": "函数基础",
+      "summary": "理解变量之间的对应关系及其表示。",
+      "subject": "mathematics",
+      "stage": "general",
+      "curriculum": "sample.curriculum",
+      "domain": "number-algebra",
+      "points": [
+        "常量与变量",
+        "函数概念",
+        "函数表示法"
+      ],
+      "source_refs": [
+        "src:sample#std-function"
+      ],
+      "confidence": 0.88,
+      "review": {
+        "state": "accepted"
+      },
+      "properties": {
+        "framework_path": [
+          "数学",
+          "数与代数",
+          "函数",
+          "函数基础"
+        ]
+      }
+    },
+    {
+      "id": "kg:synthesis-practice:真实问题建模",
+      "type": "knowledge_group",
+      "name": "真实问题建模",
+      "summary": "把真实情境转化为数学问题并检验结果。",
+      "subject": "mathematics",
+      "stage": "general",
+      "curriculum": "sample.curriculum",
+      "domain": "synthesis-practice",
+      "points": [
+        "情境分析",
+        "模型建立",
+        "结果解释"
+      ],
+      "source_refs": [
+        "src:sample#std-practice"
+      ],
+      "confidence": 0.86,
+      "review": {
+        "state": "accepted"
+      },
+      "properties": {
+        "framework_path": [
+          "数学",
+          "综合与实践",
+          "真实问题建模"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "kgrel:part-of:modeling:number-algebra",
+      "type": "part_of",
+      "source": "kg:number-algebra:变化规律与建模",
+      "target": "domain:number-algebra",
+      "evidence": "知识点组隶属于数与代数领域。",
+      "source_refs": [
+        "src:sample"
+      ],
+      "confidence": 1.0,
+      "review": {
+        "state": "accepted"
+      }
+    },
+    {
+      "id": "kgrel:part-of:function:number-algebra",
+      "type": "part_of",
+      "source": "kg:number-algebra:函数基础",
+      "target": "domain:number-algebra",
+      "evidence": "知识点组隶属于数与代数领域。",
+      "source_refs": [
+        "src:sample"
+      ],
+      "confidence": 1.0,
+      "review": {
+        "state": "accepted"
+      }
+    },
+    {
+      "id": "kgrel:part-of:practice:synthesis-practice",
+      "type": "part_of",
+      "source": "kg:synthesis-practice:真实问题建模",
+      "target": "domain:synthesis-practice",
+      "evidence": "知识点组隶属于综合与实践领域。",
+      "source_refs": [
+        "src:sample"
+      ],
+      "confidence": 1.0,
+      "review": {
+        "state": "accepted"
+      }
+    },
+    {
+      "id": "kgrel:requires:modeling:function",
+      "type": "requires",
+      "source": "kg:number-algebra:函数基础",
+      "target": "kg:number-algebra:变化规律与建模",
+      "evidence": "函数学习依赖对变化关系和数量模型的理解。",
+      "source_refs": [
+        "src:sample#std-function"
+      ],
+      "confidence": 0.84,
+      "review": {
+        "state": "accepted"
+      }
+    },
+    {
+      "id": "kgrel:applies-to:modeling:practice",
+      "type": "applies_to",
+      "source": "kg:number-algebra:变化规律与建模",
+      "target": "kg:synthesis-practice:真实问题建模",
+      "evidence": "真实问题建模需要抽取并表达变化关系。",
+      "source_refs": [
+        "src:sample#std-practice"
+      ],
+      "confidence": 0.82,
+      "review": {
+        "state": "accepted"
+      }
+    }
+  ]
+}
+

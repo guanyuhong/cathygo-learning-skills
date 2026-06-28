@@ -59,21 +59,25 @@ Use `skills/cathygo-knowledge-map/scripts/ucs_kg.py`:
 
 ```bash
 python skills/cathygo-knowledge-map/scripts/ucs_kg.py validate \
-  --input content/curricula/cn-math-2022/ucs-kg.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json
 
 python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-candidates \
-  --input content/curricula/cn-math-2022/ucs-kg.json \
-  --out content/curricula/cn-math-2022/cgo-kg-candidates.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg-candidates.json
 
 python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-cgo-kg \
-  --input content/curricula/cn-math-2022/ucs-kg.json \
-  --out content/curricula/cn-math-2022/cgo-kg.json
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg.json
 
 python skills/cathygo-knowledge-map/scripts/kg.py export-product \
-  --kg content/curricula/cn-math-2022/cgo-kg.json \
-  --out content/curricula/cn-math-2022/exports/knowledge-map-data.json
+  --kg ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/knowledge-map-data.json
 ```
 
 Keep OCR output and textbook/page excerpts under `tmp/textbook-cache/`. Public
 content should contain clean-room statements plus source refs, not copied
 textbook pages or long source excerpts.
+
+Official full content packages should be stored in `cathygo-knowledge`, not in
+this skill repository. This repository should keep only schemas, scripts,
+documentation, and small validation fixtures.

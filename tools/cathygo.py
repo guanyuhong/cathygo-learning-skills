@@ -337,6 +337,8 @@ def validate_curricula(errors: list[str]) -> None:
     if not CONTENT_CURRICULA_ROOT.exists():
         return
     for curriculum_dir in sorted(child for child in CONTENT_CURRICULA_ROOT.iterdir() if child.is_dir()):
+        if not (curriculum_dir / "ucs-kg.json").exists():
+            continue
         validate_curriculum(curriculum_dir, errors)
 
 

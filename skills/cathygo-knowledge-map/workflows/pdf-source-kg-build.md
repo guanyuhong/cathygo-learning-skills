@@ -105,7 +105,7 @@ python skills/cathygo-knowledge-map/scripts/pdf_source.py extract-pages \
 
 python skills/cathygo-knowledge-map/scripts/build_cn_math_2022.py \
   --pages-dir tmp/textbook-cache/cn-math-2022/pages \
-  --out content/curricula/cn-math-2022/ucs-kg.json \
+  --out ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
   --start-page 23 \
   --end-page 130
 ```

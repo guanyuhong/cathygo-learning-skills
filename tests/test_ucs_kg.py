@@ -9,8 +9,9 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "skills" / "cathygo-knowledge-map" / "scripts" / "ucs_kg.py"
-SAMPLE = ROOT / "content" / "curricula" / "cn-math-2022" / "ucs-kg.json"
-MANIFEST = ROOT / "content" / "curricula" / "cn-math-2022" / "manifest.json"
+FIXTURES = ROOT / "tests" / "fixtures" / "knowledge-map"
+SAMPLE = FIXTURES / "ucs-kg.sample.json"
+MANIFEST = FIXTURES / "manifest.sample.json"
 
 
 def load_module():
@@ -29,17 +30,9 @@ class UcsKgValidationTest(unittest.TestCase):
     def test_valid_sample(self) -> None:
         report = self.ucs_kg.validate_ucs_kg(self.sample)
         self.assertTrue(report["valid"], report)
-        self.assertGreaterEqual(report["stats"]["concepts"], 200)
-        self.assertGreaterEqual(report["stats"]["standard_items"], 170)
-        grade_bands = {
-            item.get("grade_band", {}).get("local")
-            for item in self.sample["standard_items"]
-        }
-        self.assertTrue({"1-2年级", "3-4年级", "5-6年级", "7-9年级"}.issubset(grade_bands))
-        domains = {item.get("domain") for item in self.sample["standard_items"]}
-        self.assertTrue(
-            {"number-algebra", "geometry", "statistics-probability", "synthesis-practice"}.issubset(domains)
-        )
+        self.assertEqual(report["stats"]["concepts"], 2)
+        self.assertEqual(report["stats"]["standard_items"], 2)
+        self.assertEqual(self.sample["dataset_id"], "sample.curriculum")
 
     def test_duplicate_ids_are_errors(self) -> None:
         data = copy.deepcopy(self.sample)
@@ -67,11 +60,11 @@ class UcsKgValidationTest(unittest.TestCase):
         report = self.ucs_kg.validate_knowledge_map_manifest(manifest)
         self.assertTrue(report["valid"], report)
         self.assertEqual(manifest["schema"], "cgo.knowledge-map.manifest.v1")
-        self.assertEqual(manifest["id"], "official.cn-math-2022")
+        self.assertEqual(manifest["id"], "official.sample-math")
         self.assertEqual(manifest["owner"]["type"], "official")
         self.assertEqual(manifest["visibility"], "public")
-        self.assertEqual(manifest["curriculum"], "cn-math-2022")
-        self.assertIn("cn-math-2022", manifest["legacy_ids"])
+        self.assertEqual(manifest["curriculum"], "sample.curriculum")
+        self.assertIn("sample.curriculum", manifest["legacy_ids"])
         self.assertIn("group_map", manifest["assets"])
 
     def test_manifest_missing_owner_is_error(self) -> None:
@@ -82,7 +75,7 @@ class UcsKgValidationTest(unittest.TestCase):
         self.assertTrue(any("owner" in error for error in report["errors"]))
 
     def test_bundle_manifest_command_writes_manifest_v1(self) -> None:
-        source_file = ROOT / "content" / "curricula" / "cn-math-2022" / "exports" / "knowledge-group-map-data.json"
+        source_file = FIXTURES / "exports" / "knowledge-group-map-data.json"
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "manifest.json"
             result = self.ucs_kg.main(
