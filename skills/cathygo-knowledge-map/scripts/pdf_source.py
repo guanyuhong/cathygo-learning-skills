@@ -20,7 +20,10 @@ import hashlib
 import io
 import json
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -29,8 +32,7 @@ from typing import Any
 try:
     import fitz  # PyMuPDF
 except ImportError:
-    print("[ERROR] PyMuPDF is not installed. Run: pip install PyMuPDF", file=sys.stderr)
-    sys.exit(1)
+    fitz = None  # type: ignore[assignment]
 
 
 CONTROL_CHARS_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
@@ -44,6 +46,14 @@ MAX_ASPECT_RATIO = 12
 MAX_LOW_INFO_BPP = 0.08
 MAX_LOW_INFO_AREA = 500000
 BACKENDS = {"pymupdf", "pymupdf4llm"}
+OCR_MODES = {"never", "auto", "always"}
+MIN_TEXT_CHARS_FOR_OCR_SKIP = 24
+
+
+def require_fitz() -> Any:
+    if fitz is None:
+        raise RuntimeError("PyMuPDF is not installed. Run: python -m pip install -r skills/cathygo-knowledge-map/requirements.txt")
+    return fitz
 
 
 def utc_now() -> str:
@@ -146,6 +156,52 @@ def require_pymupdf4llm() -> Any:
             "python -m pip install -r skills/cathygo-knowledge-map/requirements-optional.txt"
         ) from exc
     return pymupdf4llm
+
+
+def split_ocr_langs(value: str) -> list[str]:
+    return [item.strip() for item in re.split(r"[+,]", value) if item.strip()]
+
+
+def tesseract_languages() -> set[str]:
+    exe = shutil.which("tesseract")
+    if not exe:
+        raise RuntimeError("Tesseract is not installed. Run: brew install tesseract tesseract-lang")
+    result = subprocess.run([exe, "--list-langs"], check=False, text=True, capture_output=True)
+    if result.returncode != 0:
+        raise RuntimeError((result.stderr or result.stdout or "tesseract --list-langs failed").strip())
+    return {line.strip() for line in result.stdout.splitlines() if line.strip() and not line.startswith("List of")}
+
+
+def ensure_ocr_languages(lang: str) -> None:
+    available = tesseract_languages()
+    missing = [item for item in split_ocr_langs(lang) if item not in available]
+    if missing:
+        raise RuntimeError(
+            "Tesseract OCR language not available: "
+            + ", ".join(missing)
+            + ". On macOS run: brew install tesseract-lang"
+        )
+
+
+def ocr_page(page: Any, *, lang: str, dpi: int) -> str:
+    ensure_ocr_languages(lang)
+    exe = shutil.which("tesseract")
+    if not exe:
+        raise RuntimeError("Tesseract is not installed. Run: brew install tesseract tesseract-lang")
+    zoom = dpi / 72
+    matrix = require_fitz().Matrix(zoom, zoom)
+    pixmap = page.get_pixmap(matrix=matrix, alpha=False)
+    with tempfile.NamedTemporaryFile(suffix=".png") as handle:
+        pixmap.save(handle.name)
+        result = subprocess.run(
+            [exe, handle.name, "stdout", "-l", lang, "--psm", "6"],
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+    if result.returncode != 0:
+        raise RuntimeError((result.stderr or result.stdout or "tesseract OCR failed").strip())
+    return clean_text(result.stdout)
 
 
 def analyze_font_sizes(doc: fitz.Document) -> dict[str, float]:
@@ -263,7 +319,11 @@ def extract_page(
     assets_dir: Path | None,
     image_mode: str,
     seen_image_hashes: set[str],
+    ocr: str,
+    ocr_lang: str,
+    ocr_dpi: int,
 ) -> dict[str, Any]:
+    require_fitz()
     page = doc[page_number - 1]
     blocks: list[dict[str, Any]] = []
     tables: list[dict[str, Any]] = []
@@ -362,6 +422,33 @@ def extract_page(
                 }
             )
 
+    ocr_used = False
+    ocr_error = ""
+    if ocr == "always" or (ocr == "auto" and len(clean_text("\n".join(text_parts))) < MIN_TEXT_CHARS_FOR_OCR_SKIP):
+        try:
+            ocr_text = ocr_page(page, lang=ocr_lang, dpi=ocr_dpi)
+        except Exception as exc:
+            if ocr == "always":
+                raise
+            ocr_error = str(exc)
+        else:
+            if ocr_text:
+                ocr_used = True
+                text_block_index += 1
+                block_id = f"p{page_number:03d}-ocr{text_block_index:03d}"
+                blocks.append(
+                    {
+                        "id": block_id,
+                        "type": "text",
+                        "role": "body",
+                        "heading_level": 0,
+                        "bbox": None,
+                        "text": ocr_text,
+                        "source_backend": "tesseract",
+                    }
+                )
+                text_parts.append(ocr_text)
+
     return {
         "schema": "cgo.textbook_page_cache.v1",
         "kind": "textbook_page_cache",
@@ -384,6 +471,14 @@ def extract_page(
         "meta": {
             "extracted_at": utc_now(),
             "tool": "cathygo-knowledge-map/scripts/pdf_source.py",
+            "backend": "pymupdf",
+            "ocr": {
+                "mode": ocr,
+                "lang": ocr_lang,
+                "dpi": ocr_dpi,
+                "used": ocr_used,
+                "error": ocr_error,
+            },
         },
     }
 
@@ -494,6 +589,7 @@ def infer_book_id(pdf_path: Path, provided: str | None) -> str:
 
 
 def cmd_index(args: argparse.Namespace) -> int:
+    require_fitz()
     pdf_path = Path(args.pdf).expanduser().resolve()
     book_id = infer_book_id(pdf_path, args.book_id)
     with fitz.open(pdf_path) as doc:
@@ -549,6 +645,7 @@ def cmd_index(args: argparse.Namespace) -> int:
 
 
 def cmd_extract_pages(args: argparse.Namespace) -> int:
+    require_fitz()
     pdf_path = Path(args.pdf).expanduser().resolve()
     book_id = infer_book_id(pdf_path, args.book_id)
     out_dir = Path(args.out_dir)
@@ -582,6 +679,9 @@ def cmd_extract_pages(args: argparse.Namespace) -> int:
                 assets_dir=assets_dir,
                 image_mode=args.images,
                 seen_image_hashes=seen_hashes,
+                ocr=args.ocr,
+                ocr_lang=args.ocr_lang,
+                ocr_dpi=args.ocr_dpi,
             )
             out_path = out_dir / f"page-{page_number:03d}.json"
             write_json(out_path, page_cache)
@@ -631,6 +731,7 @@ def build_chunks(pages: list[dict[str, Any]], max_chars: int) -> list[dict[str, 
 
 
 def cmd_extract_lesson(args: argparse.Namespace) -> int:
+    require_fitz()
     pdf_path = Path(args.pdf).expanduser().resolve()
     book_id = infer_book_id(pdf_path, args.book_id)
     assets_dir = Path(args.assets_dir) if args.assets_dir else Path(args.out).parent.parent / "assets"
@@ -654,6 +755,9 @@ def cmd_extract_lesson(args: argparse.Namespace) -> int:
                     assets_dir=assets_dir,
                     image_mode=args.images,
                     seen_image_hashes=seen_hashes,
+                    ocr=args.ocr,
+                    ocr_lang=args.ocr_lang,
+                    ocr_dpi=args.ocr_dpi,
                 )
                 for page_number in page_numbers
             ]
@@ -756,6 +860,9 @@ def cmd_compare_backends(args: argparse.Namespace) -> int:
             assets_dir=None,
             book_id=args.book_id,
             images=args.images,
+            ocr=args.ocr,
+            ocr_lang=args.ocr_lang,
+            ocr_dpi=args.ocr_dpi,
             max_chunk_chars=args.max_chunk_chars,
             backend=backend,
         )
@@ -890,6 +997,20 @@ def cmd_candidates(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_check_ocr(args: argparse.Namespace) -> int:
+    languages = sorted(tesseract_languages())
+    missing = [item for item in split_ocr_langs(args.lang) if item not in languages]
+    result = {
+        "ok": not missing,
+        "lang": args.lang,
+        "available": languages,
+        "missing": missing,
+        "hint": "brew install tesseract-lang" if missing else "",
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if not missing else 2
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Build local PDF source caches and KG candidate scaffolds.",
@@ -911,6 +1032,9 @@ def build_parser() -> argparse.ArgumentParser:
     extract_pages.add_argument("--book-id", default=None, help="Stable book id")
     extract_pages.add_argument("--images", choices=["none", "filtered", "all"], default="filtered")
     extract_pages.add_argument("--backend", choices=sorted(BACKENDS), default="pymupdf")
+    extract_pages.add_argument("--ocr", choices=sorted(OCR_MODES), default="auto")
+    extract_pages.add_argument("--ocr-lang", default="chi_sim+eng")
+    extract_pages.add_argument("--ocr-dpi", type=int, default=240)
     extract_pages.set_defaults(func=cmd_extract_pages)
 
     lesson = subparsers.add_parser("extract-lesson", help="Extract lesson-level cache")
@@ -924,6 +1048,9 @@ def build_parser() -> argparse.ArgumentParser:
     lesson.add_argument("--images", choices=["none", "filtered", "all"], default="filtered")
     lesson.add_argument("--max-chunk-chars", type=int, default=1800)
     lesson.add_argument("--backend", choices=sorted(BACKENDS), default="pymupdf")
+    lesson.add_argument("--ocr", choices=sorted(OCR_MODES), default="auto")
+    lesson.add_argument("--ocr-lang", default="chi_sim+eng")
+    lesson.add_argument("--ocr-dpi", type=int, default=240)
     lesson.set_defaults(func=cmd_extract_lesson)
 
     compare = subparsers.add_parser("compare-backends", help="Compare lesson extraction across PDF backends")
@@ -934,6 +1061,9 @@ def build_parser() -> argparse.ArgumentParser:
     compare.add_argument("--out-dir", required=True, help="Output directory for comparison artifacts")
     compare.add_argument("--book-id", default=None, help="Stable book id")
     compare.add_argument("--images", choices=["none", "filtered", "all"], default="none")
+    compare.add_argument("--ocr", choices=sorted(OCR_MODES), default="auto")
+    compare.add_argument("--ocr-lang", default="chi_sim+eng")
+    compare.add_argument("--ocr-dpi", type=int, default=240)
     compare.add_argument("--max-chunk-chars", type=int, default=1800)
     compare.add_argument("--backends", nargs="+", choices=sorted(BACKENDS), default=["pymupdf", "pymupdf4llm"])
     compare.set_defaults(func=cmd_compare_backends)
@@ -944,6 +1074,10 @@ def build_parser() -> argparse.ArgumentParser:
     candidates.add_argument("--target-kg", default=None, help="Target KG id")
     candidates.add_argument("--excerpt-chars", type=int, default=220)
     candidates.set_defaults(func=cmd_candidates)
+
+    check_ocr = subparsers.add_parser("check-ocr", help="Check local Tesseract language availability")
+    check_ocr.add_argument("--lang", default="chi_sim+eng")
+    check_ocr.set_defaults(func=cmd_check_ocr)
     return parser
 
 

@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cathygo.local/schemas/ucs-kg-v0.1.schema.json",
+  "title": "UCS-KG v0.1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "curricula",
+    "framework_nodes",
+    "standard_items",
+    "concepts",
+    "relations"
+  ],
+  "properties": {
+    "schema_version": { "const": "ucs-kg-v0.1" },
+    "dataset_id": { "type": "string", "minLength": 1 },
+    "metadata": { "type": "object" },
+    "curricula": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/curriculum" }
+    },
+    "framework_nodes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/framework_node" }
+    },
+    "standard_items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/standard_item" }
+    },
+    "concepts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/concept" }
+    },
+    "competencies": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/competency" }
+    },
+    "learning_evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/learning_evidence" }
+    },
+    "activities": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/activity" }
+    },
+    "assessments": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/assessment" }
+    },
+    "relations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/relation" }
+    },
+    "alignments": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/alignment" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "id": { "type": "string", "minLength": 1 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "source": { "type": "object" },
+    "grade_band": { "type": "object" },
+    "curriculum": {
+      "type": "object",
+      "required": ["id", "type", "name", "country", "subject", "language", "version"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "const": "curriculum" },
+        "name": { "type": "string" },
+        "name_zh": { "type": "string" },
+        "country": { "type": "string" },
+        "jurisdiction": { "type": "string" },
+        "publisher": { "type": "string" },
+        "subject": { "type": "string" },
+        "language": { "type": "string" },
+        "version": { "type": "string" },
+        "education_levels": { "type": "array" },
+        "grade_range": { "type": "array" },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "additionalProperties": true
+    },
+    "framework_node": {
+      "type": "object",
+      "required": ["id", "type", "curriculum_id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "type": "string" },
+        "curriculum_id": { "type": "string" },
+        "parent_id": { "type": "string" },
+        "native_code": { "type": "string" },
+        "name": { "type": "string" },
+        "name_zh": { "type": "string" },
+        "grade_band": { "$ref": "#/$defs/grade_band" },
+        "order": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "standard_item": {
+      "type": "object",
+      "required": ["id", "type", "curriculum_id", "subject", "statement"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "type": "string" },
+        "curriculum_id": { "type": "string" },
+        "native_code": { "type": "string" },
+        "subject": { "type": "string" },
+        "framework_node_ids": { "type": "array", "items": { "type": "string" } },
+        "framework_path": { "type": "array", "items": { "type": "string" } },
+        "grade_band": { "$ref": "#/$defs/grade_band" },
+        "statement": { "type": "string" },
+        "statement_original": { "type": "string" },
+        "statement_language": { "type": "string" },
+        "cognitive_process": { "type": "array" },
+        "knowledge_dimension": { "type": "array" },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      },
+      "additionalProperties": true
+    },
+    "concept": {
+      "type": "object",
+      "required": ["id", "type", "name", "subject", "definition", "grade_band"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "const": "concept" },
+        "name": { "type": "string" },
+        "subject": { "type": "string" },
+        "definition": { "type": "string" },
+        "grade_band": { "$ref": "#/$defs/grade_band" },
+        "domain": { "type": "string" },
+        "concept_type": { "type": "string" },
+        "source_standard_ids": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      },
+      "additionalProperties": true
+    },
+    "competency": {
+      "type": "object",
+      "required": ["id", "type", "name", "subject", "description"],
+      "additionalProperties": true
+    },
+    "learning_evidence": {
+      "type": "object",
+      "required": ["id", "type", "concept_id", "statement"],
+      "additionalProperties": true
+    },
+    "activity": {
+      "type": "object",
+      "required": ["id", "type", "title"],
+      "additionalProperties": true
+    },
+    "assessment": {
+      "type": "object",
+      "required": ["id", "type", "title"],
+      "additionalProperties": true
+    },
+    "relation": {
+      "type": "object",
+      "required": ["id", "type", "source_id", "target_id"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "type": "string" },
+        "source_id": { "type": "string" },
+        "target_id": { "type": "string" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "rationale": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "alignment": {
+      "type": "object",
+      "required": ["id", "type", "source_id", "target_id", "alignment_type"],
+      "additionalProperties": true
+    }
+  }
+}

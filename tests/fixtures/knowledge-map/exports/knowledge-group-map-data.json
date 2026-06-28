@@ -1,0 +1,21 @@
+{
+  "schema": "cgo.knowledge-map-data.v1",
+  "kind": "knowledge_map_data",
+  "id": "sample-knowledge-group-map",
+  "title": "Sample Knowledge Group Map",
+  "stats": {
+    "view": "knowledge_group_map",
+    "totalNodes": 3,
+    "totalEdges": 2
+  },
+  "nodes": [
+    {
+      "id": "kg:number-algebra:变化规律与建模",
+      "type": "knowledge_group",
+      "name": "变化规律与建模",
+      "domain": "number-algebra"
+    }
+  ],
+  "edges": []
+}
+

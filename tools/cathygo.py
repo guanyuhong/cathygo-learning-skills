@@ -18,18 +18,23 @@ MARKETPLACE_PATH = ROOT / ".claude-plugin" / "marketplace.json"
 PLUGIN_PATH = ROOT / ".claude-plugin" / "plugin.json"
 SKILLS_ROOT = ROOT / "skills"
 CONTENT_PACKS_ROOT = ROOT / "content" / "packs"
+CONTENT_CURRICULA_ROOT = ROOT / "content" / "curricula"
 
 EXPECTED_SKILLS: dict[str, dict[str, tuple[str, ...]]] = {
     "cathygo-knowledge-map": {
         "required": (
             "SKILL.md",
             "scripts/kg.py",
+            "scripts/ucs_kg.py",
+            "scripts/build_cn_math_2022.py",
             "workflows/kg-build.md",
             "references/kg-contract.md",
             "references/extraction-rules.md",
             "references/ontology.md",
             "schemas/kg.schema.json",
             "schemas/kg-candidates.schema.json",
+            "schemas/ucs-kg-v0.1.schema.json",
+            "schemas/knowledge-map-manifest.schema.json",
             "examples/kg.sample.json",
             "requirements.txt",
         )
@@ -100,6 +105,17 @@ DISALLOWED_FILENAME_PATTERNS = (
     "截图",
     "扫描",
 )
+
+IGNORED_ASSET_SCAN_PARTS = {
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "node_modules",
+    "tmp",
+}
 
 
 def load_json(path: Path, errors: list[str]) -> dict[str, Any] | None:
@@ -292,9 +308,43 @@ def validate_content_packs(errors: list[str]) -> None:
         validate_pack(pack_dir, errors)
 
 
+def validate_curriculum(curriculum_dir: Path, errors: list[str]) -> None:
+    rel_dir = curriculum_dir.relative_to(ROOT)
+    ucs = load_json(curriculum_dir / "ucs-kg.json", errors)
+    if ucs is None:
+        return
+    if ucs.get("schema_version") != "ucs-kg-v0.1":
+        errors.append(f"{rel_dir}/ucs-kg.json schema_version must be ucs-kg-v0.1.")
+    if ucs.get("dataset_id") != curriculum_dir.name:
+        errors.append(f"{rel_dir}/ucs-kg.json dataset_id must match the curriculum directory name.")
+    for field in ["curricula", "framework_nodes", "standard_items", "concepts", "relations"]:
+        if not isinstance(ucs.get(field), list):
+            errors.append(f"{rel_dir}/ucs-kg.json must contain a {field} list.")
+
+    exports = curriculum_dir / "exports"
+    if exports.exists():
+        product = load_json(exports / "knowledge-map-data.json", errors)
+        if product is not None:
+            if not isinstance(product.get("nodes"), list):
+                errors.append(f"{rel_dir}/exports/knowledge-map-data.json must contain nodes list.")
+            if not isinstance(product.get("edges"), list):
+                errors.append(f"{rel_dir}/exports/knowledge-map-data.json must contain edges list.")
+            if not isinstance(product.get("stats"), dict):
+                errors.append(f"{rel_dir}/exports/knowledge-map-data.json must contain stats object.")
+
+
+def validate_curricula(errors: list[str]) -> None:
+    if not CONTENT_CURRICULA_ROOT.exists():
+        return
+    for curriculum_dir in sorted(child for child in CONTENT_CURRICULA_ROOT.iterdir() if child.is_dir()):
+        if not (curriculum_dir / "ucs-kg.json").exists():
+            continue
+        validate_curriculum(curriculum_dir, errors)
+
+
 def validate_disallowed_assets(errors: list[str]) -> None:
     for path in ROOT.rglob("*"):
-        if ".git" in path.parts or "tmp" in path.parts or "node_modules" in path.parts:
+        if any(part in IGNORED_ASSET_SCAN_PARTS for part in path.parts):
             continue
         if not path.is_file():
             continue
@@ -335,6 +385,7 @@ def command_validate() -> int:
     validate_marketplace(errors)
     validate_skills(errors)
     validate_content_packs(errors)
+    validate_curricula(errors)
     validate_disallowed_assets(errors)
 
     if errors:

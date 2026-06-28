@@ -1,0 +1,142 @@
+{
+  "schema_version": "ucs-kg-v0.1",
+  "dataset_id": "sample.curriculum",
+  "metadata": {
+    "title": "Sample curriculum standard",
+    "language": "zh-CN",
+    "status": "test-fixture"
+  },
+  "curricula": [
+    {
+      "id": "sample.curriculum",
+      "type": "curriculum",
+      "name": "Sample curriculum standard",
+      "country": "CN",
+      "subject": "mathematics",
+      "language": "zh-CN",
+      "version": "test"
+    }
+  ],
+  "framework_nodes": [
+    {
+      "id": "sample.stage1",
+      "type": "stage_group",
+      "curriculum_id": "sample.curriculum",
+      "name": "第一学段"
+    },
+    {
+      "id": "sample.domain.number-algebra",
+      "type": "domain",
+      "curriculum_id": "sample.curriculum",
+      "parent_id": "sample.stage1",
+      "name": "数与代数"
+    }
+  ],
+  "standard_items": [
+    {
+      "id": "sample.std.number-sense",
+      "type": "content_requirement",
+      "curriculum_id": "sample.curriculum",
+      "subject": "mathematics",
+      "statement": "理解数的意义，并能在情境中表示数量关系。",
+      "framework_node_ids": [
+        "sample.stage1",
+        "sample.domain.number-algebra"
+      ],
+      "source": {
+        "title": "Sample curriculum standard",
+        "section": "数与代数"
+      },
+      "confidence": 0.9
+    },
+    {
+      "id": "sample.std.modeling",
+      "type": "content_requirement",
+      "curriculum_id": "sample.curriculum",
+      "subject": "mathematics",
+      "statement": "能用表格、符号或图像描述简单变化规律。",
+      "framework_node_ids": [
+        "sample.stage1",
+        "sample.domain.number-algebra"
+      ],
+      "source": {
+        "title": "Sample curriculum standard",
+        "section": "数与代数"
+      },
+      "confidence": 0.9
+    }
+  ],
+  "concepts": [
+    {
+      "id": "sample.concept.number-sense",
+      "type": "concept",
+      "name": "数的意义",
+      "subject": "mathematics",
+      "definition": "理解数量、位值和数的表示。",
+      "grade_band": {
+        "local": "1-2年级",
+        "min_grade": 1,
+        "max_grade": 2,
+        "stage": "elementary"
+      },
+      "source_standard_ids": [
+        "sample.std.number-sense"
+      ],
+      "confidence": 0.86
+    },
+    {
+      "id": "sample.concept.modeling",
+      "type": "concept",
+      "name": "变化规律与建模",
+      "subject": "mathematics",
+      "definition": "用数、表格、符号或图像表达变化关系。",
+      "grade_band": {
+        "local": "3-4年级",
+        "min_grade": 3,
+        "max_grade": 4,
+        "stage": "elementary"
+      },
+      "source_standard_ids": [
+        "sample.std.modeling"
+      ],
+      "confidence": 0.86
+    }
+  ],
+  "competencies": [
+    {
+      "id": "sample.competency.modeling",
+      "type": "competency",
+      "name": "模型意识",
+      "subject": "mathematics",
+      "description": "能从情境中抽取数量关系并建立表达。"
+    }
+  ],
+  "learning_evidence": [
+    {
+      "id": "sample.evidence.number-sense",
+      "type": "learning_evidence",
+      "concept_id": "sample.concept.number-sense",
+      "statement": "能解释一个数在具体情境中的含义。"
+    },
+    {
+      "id": "sample.evidence.modeling",
+      "type": "learning_evidence",
+      "concept_id": "sample.concept.modeling",
+      "statement": "能用表格或符号表示简单变化规律。"
+    }
+  ],
+  "activities": [],
+  "assessments": [],
+  "relations": [
+    {
+      "id": "sample.rel.number-sense-to-modeling",
+      "type": "prerequisite_for",
+      "source_id": "sample.concept.number-sense",
+      "target_id": "sample.concept.modeling",
+      "rationale": "建模需要先理解数量和数量表示。",
+      "confidence": 0.85
+    }
+  ],
+  "alignments": []
+}
+

@@ -54,7 +54,12 @@ cathygo-learning-skills/
       references/
       schemas/
       examples/
-  content/
+  tests/
+    fixtures/
+      knowledge-map/
+        ucs-kg.sample.json
+        knowledge-groups.sample.json
+        manifest.sample.json
     packs/
       algebraic-fractions-demo/
         kg.json
@@ -77,6 +82,68 @@ cathygo-learning-skills/
 - `manifest.json`：内容包元数据和 compat 信息
 
 未来题目内容优先放在内容包内部的 `questions/*.qij.json` 或 `problem-set.json`，由 `cathygo-qij-question` 维护。
+
+## 官方知识生产边界
+
+`cathygo-learning-skills` 只保存知识生产能力：PDF/OCR 处理、UCS-KG schema、
+validator、candidate/exporter 和小型测试 fixture。CathyGO 官方全量知识内容不放在
+本仓库，应该进入 `cathygo-knowledge`，再通过 GitHub Release bundle 发布。
+
+建议本地并列 checkout：
+
+```text
+beanX/
+  cathygo-learning-skills/
+  cathygo-knowledge/
+```
+
+官方包源数据位置：
+
+```text
+../cathygo-knowledge/packages/official.cn-math-2022/source/
+  ucs-kg.json
+  knowledge-groups.json
+```
+
+编译产物如 `cgo-kg.json`、`cgo-kg-candidates.json`、`knowledge-map-data.json` 和
+`knowledge-group-map-data.json` 应输出到 `../cathygo-knowledge/dist/...` 或 GitHub
+Release bundle，不提交到本仓库。
+
+常用命令：
+
+```bash
+python skills/cathygo-knowledge-map/scripts/pdf_source.py extract-pages \
+  --pdf "/path/to/W020220420582346895190.pdf" \
+  --pages 23-130 \
+  --out-dir tmp/textbook-cache/cn-math-2022/pages \
+  --book-id cn-math-2022-standard \
+  --images none \
+  --ocr always \
+  --ocr-lang chi_sim+eng
+
+python skills/cathygo-knowledge-map/scripts/build_cn_math_2022.py \
+  --pages-dir tmp/textbook-cache/cn-math-2022/pages \
+  --out ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
+  --start-page 23 \
+  --end-page 130
+
+python skills/cathygo-knowledge-map/scripts/ucs_kg.py validate \
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json
+
+python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-candidates \
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg-candidates.json
+
+python skills/cathygo-knowledge-map/scripts/ucs_kg.py export-cgo-kg \
+  --input ../cathygo-knowledge/packages/official.cn-math-2022/source/ucs-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg.json
+
+python skills/cathygo-knowledge-map/scripts/kg.py export-product \
+  --kg ../cathygo-knowledge/dist/official.cn-math-2022/cgo-kg.json \
+  --out ../cathygo-knowledge/dist/official.cn-math-2022/knowledge-map-data.json \
+  --curriculum cn-math-2022 \
+  --tree-path cn-math-2022/mathematics.json
+```
 
 ## 常用命令
 
